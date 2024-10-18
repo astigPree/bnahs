@@ -1,6 +1,43 @@
 from django.db import models
+import random
+import string
 
 # Create your models here.
+
+def token_id_generator():
+    
+    code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
+    
+    while RedirectHandler.objects.filter(token=code).exists():
+        code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
+    
+    return code
+    
+
+class RedirectHandler(models.Model):
+    user = models.CharField(max_length=255, blank=True, default='')
+    token = models.CharField(max_length=255, blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+    redirect_url = models.CharField(max_length=255, blank=True, default='')
+
+    def __str__(self):
+        return f"{self.token} - {self.redirect_url}"
+    
+    @classmethod
+    def create_token(cls , user : str , redirect_url : str):
+        """
+        This function is used to create token.
+        
+        """
+        try:
+            code = token_id_generator()
+            handler = cls.objects.create(token=code, user=user, redirect_url=redirect_url.format(token=code))
+            return handler
+        
+        except Exception as e:
+            return None
+        
+        
 
 
 # class HeadAdmin(models.Model):
@@ -74,30 +111,54 @@ class People(models.Model):
     password = models.CharField(max_length=255, blank=True, default='')
     confirm_password = models.CharField(max_length=255, blank=True, default='')
     
+    
+    
+    educations = models.JSONField(default=list, blank=True)
+    """
+        educations = [
+            {
+                'degree' : '',
+                'university' : ''
+            }
+        ]
+    """
+    
+    
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-
-class Forms(models.Model):
-    is_answered = models.BooleanField(default=False)
-    is_pending = models.BooleanField(default=False)
-    purpose = models.CharField(max_length=255, blank=True, default='',
-        choices=(
-            ('Evaluation', 'Evaluation'), 
-            ('Admission', 'Admission'), 
-            ('Other', 'Other')
-        )
-    )
-    for_who = models.CharField(max_length=255, blank=True, default='')
-
+    def get_information(self):
+        return {
+            'role' : self.role,
+            'school_id' : self.school_id,
+            'employee_id' : self.employee_id,
+            'first_name' : self.first_name,
+            'last_name' : self.last_name,
+            'email_address' : self.email_address,
+            'position' : self.position,
+            'job_started' : self.job_started,
+            'job_ended' : self.job_ended,
+            'grade_level' : self.grade_level,
+            'department' : self.department,
+            'password' : self.password,
+            'confirm_password' : self.confirm_password,
+        }
+    
+    
+    def update_educations(self, data):
+        self.educations = data
+        self.save()
+    
+    
+            
 
 
 class Post(models.Model):
-    post_owner = models.CharField(max_length=255, blank=True, default='') # Name of owner of post
+    post_owner = models.CharField(max_length=255, blank=True, default='') # Name or ID of owner of post
     title = models.CharField(max_length=255, blank=True, default='')
     content = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
-    liked = models.JSONField(default=list)
+    liked = models.JSONField(default=list, blank=True)
     """
         liked = [
             employee_id,
@@ -105,11 +166,64 @@ class Post(models.Model):
         ]
     """
     
+    def __str__(self):
+        return f"{self.post_owner} - {self.title}"
+    
+    
+    def get_post(self):
+        return {
+            'post_owner' : self.post_owner,
+            'title' : self.title,
+            'content' : self.content,
+            'created_at' : self.created_at,
+            'liked' : self.liked
+        }
+    
 
 class Comment(models.Model):
     content = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
-    post_id = models.IntegerField(default=0)
+    post_id = models.IntegerField(default=0) # ID of post where comment is posted
     comment_owner = models.CharField(max_length=255, blank=True, default='')
     
+    replied_to = models.CharField(max_length=255, blank=True, default='') # Name or ID where comment is replied
+    is_seen = models.BooleanField(default=False) # Check if comment has been seen 
+    
+    def __str__(self):
+        return f"{self.comment_owner} - {self.post_id}"
+    
+    def get_comment(self):
+        return {
+            'content' : self.content,
+            'created_at' : self.created_at,
+            'post_id' : self.post_id,
+            'comment_owner' : self.comment_owner
+        }
+    
+
+
+class RatingSheetForm(models.Model):
+    pass
+    # is_answered = models.BooleanField(default=False)
+    # is_pending = models.BooleanField(default=False)
+    # purpose = models.CharField(max_length=255, blank=True, default='',
+    #     choices=(
+    #         ('Evaluation', 'Evaluation'), 
+    #         ('Admission', 'Admission'), 
+    #         ('Other', 'Other')
+    #     )
+    # )
+    # for_who = models.CharField(max_length=255, blank=True, default='')
+
+
+
+class IndividualPerformanceForm(models.Model):
+    pass
+
+
+
+class ResultBasedForm(models.Model):
+    pass
+
+
 
