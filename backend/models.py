@@ -33,7 +33,8 @@ class People(models.Model):
     role = models.CharField(max_length=255, choices=(
         ('Evaluator', 'Evaluator'), 
         ('Teacher', 'Teacher')) , 
-    blank=True, default='')
+    blank=True, default='') # What the person does
+    school_id = models.CharField(max_length=255, blank=True, default='') # Where the person belongs
     
     # ratings = models.IntegerField(default=0)
     # recomendation
