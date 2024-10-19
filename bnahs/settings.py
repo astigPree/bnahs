@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     
-    'corsheaders',
+    'corsheaders', 
+    
     'backend.apps.BackendConfig'
 ]
 
@@ -154,7 +155,33 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ]
 
 # For development purposes, you can allow all origins, but it's not recommended for production
-CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ORIGIN_ALLOW_ALL = True 
+CORS_ALLOWED_ORIGINS = [
+    'https://bnahs.pythonanywhere.com',
+]
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    'Authorization',
+    'Content-Type',
+    'credentials',  # Add this line
+    'X-Requested-With',  # Ensure this header is allowed
+    'X-CSRFToken', 
+]
+
+
+SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SECURE = True
+
+CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SECURE = True
+
+
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+
 
 
 
