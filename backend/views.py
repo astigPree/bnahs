@@ -19,6 +19,7 @@ from . import models
 @csrf_exempt
 def register_teacher(request):
     try:
+        # TODO : CHECK IF THE SCHOOL ADMIN IS LOGIN
         if request.method == 'POST':
             role = request.POST.get('role')
             school_id = request.POST.get('school_id')
