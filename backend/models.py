@@ -1,54 +1,36 @@
-from django.db import models
-import random
-import string
+from django.db import models 
+import uuid
 
 # Create your models here.
 
-def token_id_generator():
-    
-    code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
-    
-    while RedirectHandler.objects.filter(token=code).exists():
-        code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=15))
-    
-    return code
-    
+def generate_link_key():
+    link_key = str(uuid.uuid4())
+    while VerificationLink.objects.filter(verification_link=link_key).exists():
+        link_key = str(uuid.uuid4())
+    return link_key
 
-class RedirectHandler(models.Model):
-    user = models.CharField(max_length=255, blank=True, default='')
-    token = models.CharField(max_length=255, blank=True, default='')
+class VerificationLink(models.Model):
+    email = models.CharField(max_length=255, blank=True, default='')
+    verification_link = models.CharField(max_length=255, blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
-    redirect_url = models.CharField(max_length=255, blank=True, default='')
-
-    def __str__(self):
-        return f"{self.token} - {self.redirect_url}"
     
     @classmethod
-    def create_token(cls , user : str , redirect_url : str):
-        """
-        This function is used to create token.
-        
-        """
-        try:
-            code = token_id_generator()
-            handler = cls.objects.create(token=code, user=user, redirect_url=redirect_url.format(token=code))
-            return handler
-        
-        except Exception as e:
-            return None
-        
-        
+    def generate_link(cls, email):
+        link_key = generate_link_key()
+        return cls.objects.create(email=email, verification_link=link_key)
+    
 
-
-# class HeadAdmin(models.Model):
-#     username = models.CharField(max_length=255, blank=True, default='')
-#     password = models.CharField(max_length=255, blank=True, default='')
+class MainAdmin(models.Model):
+    username = models.CharField(max_length=255, blank=True, default='')
+    password = models.CharField(max_length=255, blank=True, default='')
     
 #     # total school
 #     # total teacher
 #     # number of forms answered
 
+
 class School(models.Model):
+    
     name = models.CharField(max_length=255 , blank=True, default='')
     school_id = models.CharField(max_length=255, blank=True, default='')
     school_name = models.CharField(max_length=255, blank=True, default='')
@@ -61,9 +43,33 @@ class School(models.Model):
     school_logo = models.ImageField(upload_to='school_logo', blank=True, null=True)
     
     # number of forms answered / evaluation submision rate
+    
+    is_accepted = models.BooleanField(default=False) # Is the school accepted
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.name} - {self.school_id} - {self.email_address} - {self.contact_number}"
+    
+    def get_school_information(self):
+        
+        school = {
+            'name' : self.name,
+            'school_id' : self.school_id,
+            'school_name' : self.school_name,
+            'school_address' : self.school_address,
+            'school_type' : self.school_type,
+            'contact_number' : self.contact_number,
+            'email_address' : self.email_address,
+            'password' : self.password,
+            'confirm_password' : self.confirm_password,
+            'school_logo' : ''
+        }
+        
+        if self.school_logo:
+            if self.school_logo.url:
+                school['school_logo'] = self.school_logo.url
+        
+        
     
 
 class People(models.Model):
@@ -71,7 +77,7 @@ class People(models.Model):
         ('Evaluator', 'Evaluator'), 
         ('Teacher', 'Teacher')) , 
     blank=True, default='') # What the person does
-    school_id = models.CharField(max_length=255, blank=True, default='') # Where the person belongs
+    school_id = models.CharField(max_length=255, blank=True, default='') # Where school the person belongs
     
     # ratings = models.IntegerField(default=0)
     # recomendation
@@ -228,4 +234,346 @@ class ResultBasedForm(models.Model):
     pass
 
 
+# class IPCRFForm(models.Model):
+#     school_id = models.CharField(max_length=255, blank=True, default='')
+#     employee_id = models.CharField(max_length=255, blank=True, default='')
+#     evaluator_id = models.CharField(max_length=255, blank=True, default='')
+#     form_type = models.CharField(max_length=255, blank=True, default='',
+#             choices=(
+#               ('PART 1', 'PART 1'), # Teacher to Evaluator
+#               ('PART 2', 'PART 2'), # For Teacher
+#               ('PART 3', 'PART 3'), # For Teacher
+#             ))
+    
+#     content_for_teacher = models.JSONField(default=dict, blank=True)
+#     """
+    
+#     # PART 1 DATA
+#     {
+        
+#         "1" : {
+#             "Question" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
+#             "QUALITY" : {
+#                 "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "Rate" : "5"
+#             },
+#             "EFFICIENCY" : {
+#                 "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "Rate" : "1"
+#             },
+#             "TIMELINES" : {
+#                 "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "Rate" : "0"
+#             }
+#         },
+#         "2" : {
+#             "Question" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
+#             "QUALITY" : {
+#                 "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "Rate" : "0"
+#             },
+#             "EFFICIENCY" : {
+#                 "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "Rate" : "0"
+#             },
+#             "TIMELINES" : {
+#                 "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "Rate" : "0"
+#             }
+#         }
+        
+        
+#     }
+    
+    
+#     """
+    
+#     """
+    
+#         # PART 2
+#         {
+#             "1" : {
+#                 "Title" : "SELF-MANAGEMENT",
+#                 "1" : "Sets personal goals and direction, needs and development.",
+#                 "2" : "Sets personal goals and direction, needs and development.",
+#                 "3" : "Sets personal goals and direction, needs and development.",
+#                 "4" : "Sets personal goals and direction, needs and development.",
+#                 "5" : "Sets personal goals and direction, needs and development.",
+#                 "Selected" : [
+#                     "1" , "2", "3"
+#                 ]
+#             },
+#             "2" : {
+#                 "Title" : "Professionalism and Ethics",
+#                 "1" : "Sets personal goals and direction, needs and development.",
+#                 "2" : "Sets personal goals and direction, needs and development.",
+#                 "3" : "Sets personal goals and direction, needs and development.",
+#                 "4" : "Sets personal goals and direction, needs and development.",
+#                 "5" : "Sets personal goals and direction, needs and development.",
+#                 "Selected" : [
+#                     "1" , "2", "3"
+#                 ]
+#             }
+#         }
+        
+#     """
+    
+#     """
+    
+#         # PART 3
+#         {
+#             "A" : {
+#                 "Strenghts" : {
+#                     "1" : {
+#                         "QUALITY" : "2",
+#                         "EFFICIENCY" : "5",
+#                         "TIMELINES" : ""
+#                     },
+#                     "2" : {
+#                         "QUALITY" : "2",
+#                         "EFFICIENCY" : "",
+#                         "TIMELINES" : ""
+#                     },
+#                 },
+#                 "Development Needs" : {
+#                     "1" : {
+#                         "QUALITY" : "2",
+#                         "EFFICIENCY" : "5",
+#                         "TIMELINES" : ""
+#                     },
+#                     "2" : {
+#                         "QUALITY" : "2",
+#                         "EFFICIENCY" : "",
+#                         "TIMELINES" : ""
+#                     },
+#                 },
+#                 "Learning Objectives": {
+#                     "1" : "Learning Objectives Learning Objectives Learning Objectives.",
+#                     "2" : "Learning Objectives Learning Objectives Learning Objectives.",
+#                 },
+#                 "Intervention": {
+#                     "1" : "Learning Objectives Learning Objectives Learning Objectives.",
+#                     "2" : "Learning Objectives Learning Objectives Learning Objectives.",
+#                 },
+#                 "Timeline": {
+#                     "1" : "Learning Objectives Learning Objectives Learning Objectives.",
+#                     "2" : "Learning Objectives Learning Objectives Learning Objectives.",
+#                 },
+#                 "Resources Needs": {
+#                     "1" : "Learning Objectives Learning Objectives Learning Objectives.",
+#                     "2" : "Learning Objectives Learning Objectives Learning Objectives.",
+#                 },
+                
+#             },
+            
+#             "B" : {
+#                 "Selections" : {
+#                     "1" : {
+#                         "Title" : "SELF-MANAGEMENT",
+#                         "Selected" : [
+#                             "1" , "2", "3"
+#                         ]
+#                     },
+#                     "2" : {
+#                         "Title" : "Professionalism and Ethics",
+#                         "Selected" : []
+#                     },
+#                 },
+#                 "Learning Objectives": {
+#                     "1" : "Learning Objectives Learning Objectives Learning Objectives.",
+#                     "2" : "Learning Objectives Learning Objectives Learning Objectives.",
+#                 },
+#                 "Intervention": {
+#                     "1" : "Learning Objectives Learning Objectives Learning Objectives.",
+#                     "2" : "Learning Objectives Learning Objectives Learning Objectives.",
+#                 },
+#                 "Timeline": {
+#                     "1" : "Learning Objectives Learning Objectives Learning Objectives.",
+#                     "2" : "Learning Objectives Learning Objectives Learning Objectives.",
+#                 },
+#                 "Resources Needs": {
+#                     "1" : "Learning Objectives Learning Objectives Learning Objectives.",
+#                     "2" : "Learning Objectives Learning Objectives Learning Objectives.",
+#                 },
+#             }
+            
+#         }
+        
+    
+#     """
+    
+#     content_for_evaluator = models.JSONField(default=dict, blank=True)
+#     """
+    
+#     # PART 1 DATA
+#     {
+        
+#         "1" : {
+#             "Question" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
+#             "QUALITY" : {
+#                 "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "Rate" : "0"
+#             },
+#             "EFFICIENCY" : {
+#                 "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "Rate" : "0"
+#             },
+#             "TIMELINES" : {
+#                 "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "Rate" : "0"
+#             }
+#         },
+#         "2" : {
+#             "Question" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
+#             "QUALITY" : {
+#                 "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "Rate" : "0"
+#             },
+#             "EFFICIENCY" : {
+#                 "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "Rate" : "0"
+#             },
+#             "TIMELINES" : {
+#                 "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+#                 "Rate" : "0"
+#             }
+#         }
+        
+        
+#     }
+    
+    
+#     """
 
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+# class COTForm(models.Model):
+#     school_id = models.CharField(max_length=255, blank=True, default='')
+#     employee_id = models.CharField(max_length=255, blank=True, default='')
+#     created_at = models.DateTimeField(auto_now_add=True)
+    
+#     content = models.JSONField(default=dict, blank=True)
+#     """
+#         {
+#             "Observer" : "Evaluator Name",
+#             "Teacher Observed" : "Evaluated Name",
+#             "Subject" : "Subject",
+#             "Grade Level" : "Grade 7",
+#             "Date : "September 05, 2023", !Save date after submiting,
+#             "Questions" : {
+#                 "1" : {
+#                     "Objective" : "Applied knowledge of content within and across curriculum teaching areas. *",
+#                     "Selected" : "7" !Selected rate
+#                 },
+#                 "2" : {
+#                     "Objective" : "Applied knowledge of content within and across curriculum teaching areas. *",
+#                     "Selected" : "7" !Selected rate, kung "NO" means its "3"
+#                 }
+#             },
+#             "Comments" : ""
+            
+#         }
+    
+    
+#     """
+    
+
+
+# class RPMSFolder(models.Model):
+#     school_id = models.CharField(max_length=255, blank=True, default='')
+#     employee_id = models.CharField(max_length=255, blank=True, default='')
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     rpms_folder_id = models.CharField(max_length=255, blank=True, default='')
+    
+
+# class RPMSAClassWork(models.Model):
+#     school_id = models.CharField(max_length=255, blank=True, default='')
+#     employee_id = models.CharField(max_length=255, blank=True, default='')
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     rpms_folder_id = models.CharField(max_length=255, blank=True, default='')
+#     class_work_id = models.CharField(max_length=255, blank=True, default='') # id of the class work
+#     title = models.CharField(max_length=255, blank=True, default='')
+#     objectives = models.TextField(blank=True, default='')
+#     """
+#         {
+#             "Instructions" : "<p>Hello World</p>"
+#             "Objectives" : {
+#                 "1" : {
+#                     "Content" : "Established safe and secure learning environments to enhance learning through the consistent implementation of policies",
+#                     "Score" : "5"
+#                 }
+#             },
+#             "Comment" : " "
+#         }
+#     """
+
+
+# class RPMSAttachment(models.Model):
+#     school_id = models.CharField(max_length=255, blank=True, default='')
+#     employee_id = models.CharField(max_length=255, blank=True, default='')
+#     created_at = models.DateTimeField(auto_now_add=True)
+    
+    
+#     streams_type = models.CharField(max_length=255, blank=True, default='')
+#     """
+#         "streams_type" : [
+#             "KRA 1: Content Knowledge and Pedagogy", !Title ng RPMSContainer,
+#             "KRA 3: Curriculum and Planning",  !Title ng RPMSContainer,
+#         ]
+#     """
+#     file = models.FileField(upload_to='rpms_attachments')
+
+
+
+# # 1. title and scores for KBA BREAKDOWN
+# # 2. rule based classifier for Promotion
+# # 3. date of submission and score Performance tru year
+# # 4. generated text SWOT from COTForm 

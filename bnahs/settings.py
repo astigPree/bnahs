@@ -182,6 +182,13 @@ CSRF_COOKIE_SECURE = True
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 
+# Default email backend settings
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'bnahs@gmail.com' # Email address
+# EMAIL_HOST_PASSWORD = 'bnahs' # Generated email password appp
 
 
 

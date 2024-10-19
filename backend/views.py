@@ -1,4 +1,4 @@
-from django.shortcuts import render
+
 from django.http import HttpResponse, JsonResponse
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -9,16 +9,53 @@ from .models import People
 from django.contrib.auth import authenticate, login, logout
 
 
-from . import models
+from . import models, my_utils
 
 
 # Create your views here.
+
+# ================================= General Views =============================== #
+@csrf_exempt
+def register_school(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        school_id = request.POST.get('school_id')
+        school_name = request.POST.get('school_name')
+        school_address = request.POST.get('school_address')
+        school_type = request.POST.get('school_type')
+        contact_number = request.POST.get('contact_number')
+        email_address = request.POST.get('email_address')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+        school_logo = request.FILES.get('school_logo')
+
+        if password != confirm_password:
+            return JsonResponse({'status': 'error', 'message': 'Passwords do not match'}, status=400)
+
+        school = models.School.objects.create(
+            name=name,
+            school_id=school_id,
+            school_name=school_name,
+            school_address=school_address,
+            school_type=school_type,
+            contact_number=contact_number,
+            email_address=email_address,
+            password=password,
+            school_logo=school_logo
+        )
+
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Check your email for verification link in order to activate your account',
+        })
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
 
 # ================================= Admin Views ============================== # 
 
 
 # ================================= School Views ============================== # 
-
 
 
 @csrf_exempt
@@ -35,7 +72,6 @@ def register_teacher(request):
             email_address = request.POST.get('email_address')
             position = request.POST.get('position')
             job_started = request.POST.get('job_started')
-            job_ended = request.POST.get('job_ended')
             grade_level = request.POST.get('grade_level')
             department = request.POST.get('department')
             password = request.POST.get('password')
@@ -56,8 +92,7 @@ def register_teacher(request):
                 last_name=last_name,
                 email_address=email_address,
                 position=position,
-                job_started=job_started,
-                job_ended=job_ended,
+                job_started=my_utils.parse_date_string(job_started),
                 grade_level=grade_level,
                 department=department,
                 password=password,  # Storing plain password temporarily
@@ -245,4 +280,21 @@ def teacher_profile(request ):
     return JsonResponse({
         'message' : 'Invalid request',
         }, status=400)
+
+
+@csrf_exempt
+def teacher_logout(request ):
+    if request.method == 'POST':
+        logout(request)
+        return JsonResponse({
+            'message' : 'Logout successful'
+            }, status=200)
+
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+
+
 
