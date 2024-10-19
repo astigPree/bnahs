@@ -80,6 +80,7 @@ class People(models.Model):
     
     employee_id = models.CharField(max_length=255, blank=True, default='')
     first_name = models.CharField(max_length=255, blank=True, default='')
+    middle_name = models.CharField(max_length=255, blank=True, default='')
     last_name = models.CharField(max_length=255, blank=True, default='')
     email_address = models.CharField(max_length=255, blank=True, default='')
     position = models.CharField(max_length=255, blank=True, default='',
@@ -133,6 +134,7 @@ class People(models.Model):
             'school_id' : self.school_id,
             'employee_id' : self.employee_id,
             'first_name' : self.first_name,
+            'middle_name' : self.middle_name,
             'last_name' : self.last_name,
             'email_address' : self.email_address,
             'position' : self.position,

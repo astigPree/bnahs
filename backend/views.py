@@ -14,8 +14,13 @@ from . import models
 
 # Create your views here.
 
+# ================================= Admin Views ============================== # 
+
 
 # ================================= School Views ============================== # 
+
+
+
 @csrf_exempt
 def register_teacher(request):
     try:
@@ -25,6 +30,7 @@ def register_teacher(request):
             school_id = request.POST.get('school_id')
             employee_id = request.POST.get('employee_id')
             first_name = request.POST.get('first_name')
+            middle_name = request.POST.get('middle_name')
             last_name = request.POST.get('last_name')
             email_address = request.POST.get('email_address')
             position = request.POST.get('position')
@@ -46,6 +52,7 @@ def register_teacher(request):
                 school_id=school_id,
                 employee_id=employee_id,
                 first_name=first_name,
+                middle_name=middle_name,
                 last_name=last_name,
                 email_address=email_address,
                 position=position,
@@ -153,7 +160,6 @@ def teacher_dashboard(request ):
     return JsonResponse({
         'message' : 'Invalid request',
         }, status=400)
-
 
 
 @csrf_exempt
