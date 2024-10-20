@@ -277,9 +277,12 @@ def teacher_report(request ):
 
             # Calculate all total scores each group
             total_scores = {}
+            overall_scores = 0
             for group in grouped_attachments:
-                total_scores[group] = sum([attachment.getScore() for attachment in grouped_attachments[group]])
-            
+                score = sum([attachment.getScore() for attachment in grouped_attachments[group]])
+                total_scores[group] = score
+                overall_scores += score
+            total_scores['Overall'] = overall_scores
             
             
             
@@ -355,7 +358,7 @@ def teacher_report(request ):
             
             """
             # attachments = models.RPMSAttachment.objects.filter(employee_id=user.employee_id)
-            attachments = models.RPMSAttachment.objects.filter(employee_id=user.employee_id).annotate(year=ExtractYear('created_at'))
+            attachments = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').annotate(year=ExtractYear('created_at'))
             performances = {}
             for attachment in attachments:
                 year = attachment.year
@@ -367,7 +370,8 @@ def teacher_report(request ):
             for year in performances:
                 performances[year]['Total'] = sum(performances[year]['Scores'])
             
-            
+            # Add the current percentage added from the past year to the current year
+         
             # 4. generated text SWOT from COTForm 
             cot_form = models.COTForm.objects.filter(employee_id=user.employee_id).first()
             generated_swot = {
