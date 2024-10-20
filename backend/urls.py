@@ -9,7 +9,7 @@ urlpatterns = [
     path('user/notifications/', views.get_notifications),
     path('user/logout/', views.people_logout),
     
-    path('register_school/', views.register_school),
+    path('register/school/', views.register_school),
     
     
     # ============ Admin Path ================
@@ -18,10 +18,12 @@ urlpatterns = [
     
     
     # ============== School Path ================
-    path('register_people/', views.register_people),
     path('login_school/', views.login_school),
+    path('school/register/people/', views.register_people),
     path('school/feeds/', views.get_school_feeds),
     path('school/post/', views.school_post),
+    path('school/faculties/', views.get_all_school_faculty),
+    path('school/faculties/search/', views.search_school_faculty),
     
     # ============== Evaluator Path ================
     path('login_evaluator/', views.login_evaluator),

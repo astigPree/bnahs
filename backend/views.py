@@ -353,10 +353,41 @@ def verify_school(request):
         'message' : 'Invalid request',
         }, status=400)
 
-
+@csrf_exempt
+def get_school_inbox(request):
+    try:
+        if request.method == 'GET':
+            
+            user = models.MainAdmin.objects.filter(employee_id=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+                
+            
+            school = models.School.objects.all().order_by('-created_at')
+            if not school:
+                return JsonResponse({
+                    'message' : 'School not found',
+                }, status=400)
+            
+            return JsonResponse({
+                'school' : [school.get_school_information() for school in school],
+            }, status=200)
+            
+            
+        
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
 
 @csrf_exempt
-def get_all_school(request):
+def get_all_schools(request):
     try:
         if request.method == 'GET':
             
@@ -387,7 +418,46 @@ def get_all_school(request):
         'message' : 'Invalid request',
         }, status=400)
 
+@csrf_exempt
+def get_search_schools(request):
+    try:
+        if request.method == 'POST':
+            
+            user = models.MainAdmin.objects.filter(employee_id=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+                
+            
+            query = request.POST.get('query')
+            if not query:
+                return JsonResponse({
+                    'message' : 'Please provide query',
+                }, status=400)
+            
+            schools = models.School.objects.filter(name__icontains=query)
+            if not schools:
+                return JsonResponse({
+                    'message' : 'School not found',
+                }, status=400)
+            
+            return JsonResponse({
+                'schools' : [school.get_school_information() for school in schools],
+            }, status=200)
+            
+        
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+    
 
+    
 
 # ================================= School Views ============================== # 
 
@@ -656,6 +726,134 @@ def search_school_faculty(request):
         'message' : 'Invalid request method'
     },status=400)
 
+
+@csrf_exempt
+def create_COTForm(request):
+    try:
+        if request.method == 'POST':
+            
+            user = models.School.objects.filter(school_id=request.user.username).first()
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            
+            # TODO : ASK HOW THE DATA SEND TO BACKEND
+            
+            
+            return JsonResponse({
+                'message' : 'COTForm created successfully'
+            },status=200)
+        
+        
+        
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Something went wrong : {e}'
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request method'
+    },status=400)
+    
+
+@csrf_exempt
+def create_IPCRFForm(request):
+    try:
+        if request.method == 'POST':
+            
+            user = models.School.objects.filter(school_id=request.user.username).first()
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            
+            # TODO : ASK HOW THE DATA SEND TO BACKEND
+            
+            
+            return JsonResponse({
+                'message' : 'IPCRF created successfully'
+            },status=200)
+        
+        
+        
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Something went wrong : {e}'
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request method'
+    },status=400)
+
+
+@csrf_exempt
+def create_RPMSFolder(request):
+    try:
+        if request.method == 'POST':
+            
+            user = models.School.objects.filter(school_id=request.user.username).first()
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            
+            # TODO : ASK HOW THE DATA SEND TO BACKEND
+            
+            
+            return JsonResponse({
+                'message' : 'RPMSFolder created successfully'
+            },status=200)
+    
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Something went wrong : {e}'
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request method'
+    },status=400)
+
+
+
+@csrf_exempt
+def create_RPMSClassWork(request):
+    try:
+        if request.method == 'POST':
+            
+            user = models.School.objects.filter(school_id=request.user.username).first()
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            
+            # TODO : ASK HOW THE DATA SEND TO BACKEND
+            
+            
+            return JsonResponse({
+                'message' : 'RPMSClassWork created successfully'
+            },status=200)
+    
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Something went wrong : {e}'
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request method'
+    }, status=400)
 
 
 

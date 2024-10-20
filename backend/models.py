@@ -65,7 +65,8 @@ class School(models.Model):
             'school_type' : self.school_type,
             'contact_number' : self.contact_number,
             'email_address' : self.email_address,
-            'school_logo' : ''
+            'school_logo' : '',
+            'is_accepted' : self.is_accepted
         }
         
         if self.school_logo:
