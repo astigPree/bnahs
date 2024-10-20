@@ -24,6 +24,9 @@ class MainAdmin(models.Model):
     username = models.CharField(max_length=255, blank=True, default='')
     password = models.CharField(max_length=255, blank=True, default='')
     
+    
+    action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
+    
 #     # total school
 #     # total teacher
 #     # number of forms answered
@@ -46,6 +49,8 @@ class School(models.Model):
     
     is_accepted = models.BooleanField(default=False) # Is the school accepted
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+
+    action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
 
     def __str__(self):
         return f"{self.name} - {self.school_id} - {self.email_address} - {self.contact_number}"
@@ -118,7 +123,7 @@ class People(models.Model):
     password = models.CharField(max_length=255, blank=True, default='')
     confirm_password = models.CharField(max_length=255, blank=True, default='')
     
-    
+    action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
     
     educations = models.JSONField(default=list, blank=True)
     """
@@ -157,20 +162,18 @@ class People(models.Model):
         self.educations = data
         self.save()
     
-    
-            
 
 
 class Post(models.Model):
-    post_owner = models.CharField(max_length=255, blank=True, default='') # Name or ID of owner of post
+    post_owner = models.CharField(max_length=255, blank=True, default='') # Action ID of owner of post
     title = models.CharField(max_length=255, blank=True, default='')
     content = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
     liked = models.JSONField(default=list, blank=True)
     """
         liked = [
-            employee_id,
-            employee_id,
+            action_id,
+            action_id,
         ]
     """
     
@@ -191,24 +194,55 @@ class Post(models.Model):
 class Comment(models.Model):
     content = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
-    post_id = models.IntegerField(default=0) # ID of post where comment is posted
-    comment_owner = models.CharField(max_length=255, blank=True, default='')
+    post_id = models.IntegerField(default=0) # Action ID of post where comment is posted
+    comment_owner = models.CharField(max_length=255, blank=True, default='') # Action ID of owner of comment
     attachment = models.FileField(upload_to='comment/', blank=True, default='')
     
-    replied_to = models.CharField(max_length=255, blank=True, default='') # Name or ID where comment is replied
-    is_seen = models.BooleanField(default=False) # Check if comment has been seen 
+    replied_to = models.CharField(max_length=255, blank=True, default='') # Action ID where comment is replied
+    is_seen = models.JSONField(default=list, blank=True)
+    """
+        is_seen = [
+            action_id,
+            action_id,
+        ]
+    """ 
     
     def __str__(self):
         return f"{self.comment_owner} - {self.post_id}"
     
     def get_comment(self):
-        return {
+        data = {
             'content' : self.content,
             'created_at' : self.created_at,
             'post_id' : self.post_id,
-            'comment_owner' : self.comment_owner
+            'comment_owner' : self.comment_owner,
+            'replied_to' : self.replied_to,
+            'is_seen' : self.is_seen,
+            'attachment' : '',
         }
+        
+        if self.attachment or self.attachment != "":
+            data['attachment'] = self.attachment.url
+            
+        return data
     
+    
+    def update_is_seen(self, action_id):
+        if action_id not in self.is_seen:
+            self.is_seen.append(action_id)
+            self.save()
+    
+    def is_seen(self, action_id):
+        """
+            Returns True if action_id == replied_to
+            Returns False if action_id != replied_to
+            
+            Returns None if action_id is not in is_seen
+            Returns boolean if action_id is in is_seen
+        """
+        if action_id != self.replied_to:
+            return (False, None)
+        return ( True, action_id in self.is_seen)
 
 
 

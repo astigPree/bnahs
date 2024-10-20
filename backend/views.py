@@ -13,7 +13,7 @@ from django.db.models import Count
 from . import models, my_utils
 
 from itertools import groupby
-
+from uuid import uuid4
 
 # Create your views here.
 
@@ -46,6 +46,10 @@ def register_school(request):
             password=password,
             school_logo=school_logo
         )
+        
+        school.action_id = str(uuid4())
+        school.save()
+        
 
         return JsonResponse({
             'status': 'success',
@@ -55,6 +59,219 @@ def register_school(request):
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
 
+@csrf_exempt
+def get_feeds(request):
+    """
+    This function is used to get the People feeds.
+    """
+    
+    try:
+        if request.method == 'GET':  
+            
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            feeds = {
+                
+            }
+            notifications = [] # Based on the replied and new post or mentions
+            posts = models.Post.objects.all().order_by('-created_at')
+            for post in posts:
+                comments = models.Comment.objects.filter(post_id=post.id).order_by('-created_at')
+                feeds[post.id] = {
+                    "post" : post.get_post(),
+                    "comments" : [comment.get_comment() for comment in comments]
+                }
+            
+            return JsonResponse({
+                'feeds' : feeds,
+                'user' : user.get_information(),
+                'notifications' : notifications
+            },status=200)
+            
+            
+    except Exception as e:
+        return JsonResponse({
+            'message' : 'Something went wrong',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+@csrf_exempt
+def get_notifications(request):
+    """
+        This function is used to get the People notifications.
+    """
+    
+    try:
+        if request.method == 'GET':  
+            
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            notifications = []
+            
+            comments = models.Comment.objects.filter(user_id=user.id).order_by('-created_at')
+            for comment in comments:
+                if comment.is_seen(user.action_id)[0]:
+                    notifications.append(comment.get_comment())
+            
+            
+            
+            return JsonResponse({
+                'notifications' : notifications
+            },status=200)
+            
+            
+    except Exception as e:
+        return JsonResponse({
+            'message' : 'Something went wrong',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+    
+@csrf_exempt
+def people_update_education(request ):
+    if request.method == 'POST':
+
+        try:
+            # Update educations if have
+            educations = request.POST.get('educations')
+            
+            if not educations:
+                return JsonResponse({
+                    'message' : 'Please provide educations',
+                }, status=400)
+                
+            if educations:
+                user = models.People.objects.filter(employee_id=request.user.username).first()
+                if not user:
+                    return JsonResponse({
+                        'message' : 'User not found',
+                    }, status=400)
+                
+                user.update_educations(educations)
+                return JsonResponse({
+                    'message' : 'Educations updated successfully',
+                }, status=200)
+                
+                
+        except Exception as e:
+            return JsonResponse({
+                'message' : f'Something went wrong : {e}',
+                }, status=500)
+    
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+@csrf_exempt
+def people_update_profile(request ):
+    if request.method == 'POST':
+
+        user = models.People.objects.filter(employee_id=request.user.username).first()
+        based_user = User.objects.filter(username=request.user.username).first()
+        
+        if not user:
+            return JsonResponse({
+                'message' : 'User not found',
+            }, status=400)
+        
+        
+        try:
+            # Update profile if have
+            has_changed = False
+            firstname = request.POST.get('firstname')
+            
+            if firstname:
+                user.first_name = firstname
+                has_changed = True
+            
+            middlename = request.POST.get('middlename')
+            if middlename:
+                user.middle_name = middlename
+                has_changed = True
+            
+            lastname = request.POST.get('lastname')
+            if lastname:
+                user.last_name = lastname
+                has_changed = True
+            
+            jobtitle = request.POST.get('jobtitle')
+            if jobtitle:
+                user.position = jobtitle
+                has_changed = True
+            
+            department = request.POST.get('department')
+            if department:
+                user.department = department
+                has_changed = True
+                
+            password = request.POST.get('password')
+            confirm_password = request.POST.get('confirm_password')
+            if password and password == confirm_password:
+                if based_user:
+                    pass
+                    
+                    # TODO : Change password
+                has_changed = True    
+                
+            
+            
+            if has_changed:
+                user.save()
+                return JsonResponse({
+                    'message' : 'Profile updated successfully',
+                }, status=200)
+            
+            return JsonResponse({
+                'message' : 'No changes made',
+            }, status=200)
+            
+                
+        except Exception as e:
+            return JsonResponse({
+                'message' : f'Something went wrong : {e}',
+                }, status=500)
+    
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+@csrf_exempt
+def people_logout(request ):
+    try:
+        if request.method == 'POST':
+            logout(request)
+            return JsonResponse({
+                'message' : 'Logout successful'
+                }, status=200)
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
 # ================================= Admin Views ============================== # 
 
 
@@ -62,7 +279,7 @@ def register_school(request):
 
 
 @csrf_exempt
-def register_teacher(request):
+def register_people(request):
     try:
         # TODO : CHECK IF THE SCHOOL ADMIN IS LOGIN
         if request.method == 'POST':
@@ -100,6 +317,9 @@ def register_teacher(request):
                 department=department,
                 password=password,  # Storing plain password temporarily
             )
+            
+            people.action_id = str(uuid4())
+            people.save()
 
             user = User.objects.create(
                 username=employee_id,
@@ -115,12 +335,13 @@ def register_teacher(request):
 
 
 
-# ================================= Teacher Views =============================== #
+# ================================= Evaluator Views =============================== #
 @csrf_exempt
-def login_teacher(request):
+def login_evaluator(request):
     """
-    This function is used to login teacher.
+    This function is used to login evaluator.
     """
+    
     try:
         if request.method == 'POST':
             employee_id = request.POST.get('employee_id')
@@ -150,46 +371,99 @@ def login_teacher(request):
     
     except Exception as e:
         return JsonResponse({
-            'message' : 'Something went wrong',
+            'message' : f'Something went wrong : {e}'
             }, status=500)
     
     return JsonResponse({
-        'message' : 'Invalid request',
+        'message' : 'Invalid request method',
         }, status=400)
+
+
+@csrf_exempt
+def evaluator_forms(request):
+    
+    return JsonResponse({
+        'message' : 'Not yet implemented'
+    }, status=400)
+    
     
 @csrf_exempt
-def teacher_dashboard(request ):
-    """
-    This function is used to render teacher home.
-    """
+def evaluator_records(request):
     
+    return JsonResponse({
+        'message' : 'Not yet implemented'
+    }, status=400)
+    
+    
+@csrf_exempt
+def evaluator_summary(request):
+    
+    return JsonResponse({
+        'message' : 'Not yet implemented'
+    }, status=400)  
+
+
+@csrf_exempt
+def evaluator_profile(request):
     try:
-        if request.method == 'GET':  
-            
+        if request.method == 'GET':
             user = models.People.objects.filter(employee_id=request.user.username).first()
-            
+            # TODO : IDENTIFY IF THE USER IS EVALUATOR OR NOT
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
-                }, status=400)
-            
-            feeds = {
-                
-            }
-            posts = models.Post.objects.all().order_by('-created_at')
-            for post in posts:
-                comments = models.Comment.objects.filter(post_id=post.id).order_by('-created_at')
-                feeds[post.id] = {
-                    "post" : post.get_post(),
-                    "comments" : [comment.get_comment() for comment in comments]
-                }
+                    }, status=400)
             
             return JsonResponse({
-                'feeds' : feeds,
-                'user' : user.get_information()
-            },status=200)
+                'evaluator' : user.get_information(),
+                }, status=200)
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}'
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request method',
+        }, status=400)
+
+
+# ================================= Teacher Views =============================== #
+@csrf_exempt
+def login_teacher(request):
+    """
+    This function is used to login teacher.
+    """
+    try:
+        if request.method == 'POST':
+            employee_id = request.POST.get('employee_id')
+            password = request.POST.get('password')
+            
+            if not employee_id or not password:
+                return JsonResponse({
+                    'message' : 'Please provide employee_id and password',
+                    }, status=400)
+            
+            user = models.People.objects.filter(employee_id=employee_id, password=password).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'Invalid employee_id or password',
+                    }, status=400)
+            
+            # TODO : CHECK IF THE USER IS TEACHER OR NOT
             
             
+            user_authenticated = authenticate(request, username=employee_id, password=password)
+            if not user_authenticated:
+                return JsonResponse({
+                    'message' : 'Invalid employee_id or password',
+                    }, status=400)
+            
+            login(request, user_authenticated)
+            return JsonResponse({
+                'message' : 'Login successful'
+                }, status=200)
+    
     except Exception as e:
         return JsonResponse({
             'message' : 'Something went wrong',
@@ -199,13 +473,14 @@ def teacher_dashboard(request ):
         'message' : 'Invalid request',
         }, status=400)
 
-
 @csrf_exempt
 def teacher_evaluation(request ):
     try:
         if request.method == 'GET': 
             
             user = models.People.objects.filter(employee_id=request.user.username).first()
+            
+            # TODO : CHECK IF THE USER IS TEACHER OR NOT
             
             # Fetch filtered data
             ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1')  # Apply your filters here
@@ -242,6 +517,7 @@ def teacher_forms(request ):
             
             user = models.People.objects.filter(employee_id=request.user.username).first()
             
+            # TODO : CHECK IF THE USER IS TEACHER OR NOT
             
             return JsonResponse({
                 'user' : user.get_information(),
@@ -260,11 +536,13 @@ def teacher_forms(request ):
 
 
 @csrf_exempt
-def teacher_report(request ):
-    try : 
+def teacher_kba_breakdown(request ):
+    try:
         if request.method == 'GET':
             
             user = models.People.objects.filter(employee_id=request.user.username).first()
+            
+            # TODO : CHECK IF THE USER IS TEACHER OR NOT
             
             # 1. title and scores for KBA BREAKDOWN
             attachments = models.RPMSAttachment.objects.filter(employee_id=user.employee_id)
@@ -285,7 +563,29 @@ def teacher_report(request ):
             total_scores['Overall'] = overall_scores
             
             
+            return JsonResponse({
+                'kba_breakdown' : total_scores,
+            },status=200)
+        
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+@csrf_exempt
+def teacher_recommendations(request ):
+    try:
+        if request.method == 'GET':
             
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            
+            # TODO : CHECK IF THE USER IS TEACHER OR NOT
             # 2. rule based classifier for Promotion
             """
                 ---------------RECOMMENDATION CHART PERCENTAGE-------------
@@ -342,6 +642,31 @@ def teacher_report(request ):
             }
             
             
+            
+            return JsonResponse({
+                'recommendation' : recommendation,
+            },status=200)
+        
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+    
+
+
+@csrf_exempt
+def teacher_performance(request ):
+    try:
+        if request.method == 'GET':
+            
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            
+            # TODO : CHECK IF THE USER IS TEACHER OR NOT
             # 3. date of submission and score Performance tru year
             """
             {
@@ -370,7 +695,36 @@ def teacher_report(request ):
             for year in performances:
                 performances[year]['Total'] = sum(performances[year]['Scores'])
             
-            # Add the current percentage added from the past year to the current year
+            # TODO : Add the current percentage added from the past year to the current year
+            
+            
+            
+            return JsonResponse({
+                'performance' : performances,
+            },status=200)
+        
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+    
+
+@csrf_exempt
+def teacher_swot(request ):
+    try : 
+        if request.method == 'GET':
+            
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            
+            # TODO : CHECK IF THE USER IS TEACHER OR NOT
+            
+            
+            
          
             # 4. generated text SWOT from COTForm 
             cot_form = models.COTForm.objects.filter(employee_id=user.employee_id).first()
@@ -387,10 +741,6 @@ def teacher_report(request ):
             
             
             return JsonResponse({
-                'user' : user.get_information(),
-                'kba_breakdown' : total_scores,
-                'recommendation' : recommendation,
-                'performance' : performances,
                 'swot' : generated_swot
             },status=200)
     
@@ -411,6 +761,8 @@ def teacher_profile(request ):
             
             user = models.People.objects.filter(employee_id=request.user.username).first()
             
+            # TODO : CHECK IF THE USER IS TEACHER OR NOT
+            
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
@@ -424,33 +776,7 @@ def teacher_profile(request ):
             return JsonResponse({
                 'message' : f'Something went wrong : {e}',
                 }, status=500)
-        
-
-    elif request.method == 'POST':
-
-        try:
-            educations = request.POST.get('educations')
-            if not educations:
-                return JsonResponse({
-                    'message' : 'Please provide educations',
-                }, status=400)
-                
-            
-            user = models.People.objects.filter(employee_id=request.user.username).first()
-            if not user:
-                return JsonResponse({
-                    'message' : 'User not found',
-                }, status=400)
-            
-            user.update_educations(educations)
-            return JsonResponse({
-                'message' : 'Educations updated successfully',
-            }, status=200)
-        
-        except Exception as e:
-            return JsonResponse({
-                'message' : f'Something went wrong : {e}',
-                }, status=500)
+    
         
         
     return JsonResponse({
@@ -458,22 +784,7 @@ def teacher_profile(request ):
         }, status=400)
 
 
-@csrf_exempt
-def teacher_logout(request ):
-    try:
-        if request.method == 'POST':
-            logout(request)
-            return JsonResponse({
-                'message' : 'Logout successful'
-                }, status=200)
-    except Exception as e:
-        return JsonResponse({
-            'message' : f'Something went wrong : {e}',
-            }, status=500)
 
-    return JsonResponse({
-        'message' : 'Invalid request',
-        }, status=400)
 
 
 
