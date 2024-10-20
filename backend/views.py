@@ -373,12 +373,12 @@ def teacher_report(request ):
             generated_swot = {
                 
             }
-            if cot_form:
-                swot = cot_form.generatePromtTemplate()
-                generated_swot["Strengths"] = my_utils.generate_text(swot["strengths"])
-                generated_swot["Weaknesses"] = my_utils.generate_text(swot["weaknesses"])
-                generated_swot["Opportunities"] = my_utils.generate_text(swot["opportunities"])
-                generated_swot["Threats"] = my_utils.generate_text(swot["threats"])
+            # if cot_form:
+            #     swot = cot_form.generatePromtTemplate()
+            #     generated_swot["Strengths"] = my_utils.generate_text(swot["strengths"])
+            #     generated_swot["Weaknesses"] = my_utils.generate_text(swot["weaknesses"])
+            #     generated_swot["Opportunities"] = my_utils.generate_text(swot["opportunities"])
+            #     generated_swot["Threats"] = my_utils.generate_text(swot["threats"])
             
             
             

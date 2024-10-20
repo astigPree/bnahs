@@ -45,7 +45,7 @@ class School(models.Model):
     # number of forms answered / evaluation submision rate
     
     is_accepted = models.BooleanField(default=False) # Is the school accepted
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     def __str__(self):
         return f"{self.name} - {self.school_id} - {self.email_address} - {self.contact_number}"

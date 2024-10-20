@@ -3,18 +3,18 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from datetime import datetime
 
-from transformers import AutoModelForCausalLM, AutoTokenizer
+# from transformers import AutoModelForCausalLM, AutoTokenizer
 
-# Load the model and tokenizer
-model_name = "EleutherAI/gpt-neox-20b"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForCausalLM.from_pretrained(model_name)
+# # Load the model and tokenizer
+# model_name = "EleutherAI/gpt-neox-20b"
+# tokenizer = AutoTokenizer.from_pretrained(model_name)
+# model = AutoModelForCausalLM.from_pretrained(model_name)
 
-def generate_text(input_text):
-    inputs = tokenizer(input_text, return_tensors="pt")
-    outputs = model.generate(inputs['input_ids'], max_length=200)
-    generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    return generated_text
+# def generate_text(input_text):
+#     inputs = tokenizer(input_text, return_tensors="pt")
+#     outputs = model.generate(inputs['input_ids'], max_length=200)
+#     generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+#     return generated_text
 
 
 
