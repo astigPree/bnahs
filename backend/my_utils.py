@@ -3,6 +3,21 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from datetime import datetime
 
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+# Load the model and tokenizer
+model_name = "EleutherAI/gpt-neox-20b"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name)
+
+def generate_text(input_text):
+    inputs = tokenizer(input_text, return_tensors="pt")
+    outputs = model.generate(inputs['input_ids'], max_length=200)
+    generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    return generated_text
+
+
+
 def send_verification_email(user_email, verification_code , template , masbate_locker_email , subject):
     subject = subject
     from_email = masbate_locker_email
@@ -27,3 +42,19 @@ def parse_date_string(date_string):
     except ValueError:
         print(f"Error: The date format of '{date_string}' is incorrect.")
         return None
+
+
+
+def classify_ipcrf_score(score):
+    if 4.5 <= score <= 5.0:
+        return 'Promotion'
+    elif 3.5 <= score < 4.5:
+        return 'Retention'
+    elif 2.5 <= score < 3.5:
+        return 'Retention'
+    elif 1.5 <= score < 2.5:
+        return 'Termination'
+    else:
+        return 'Termination'
+
+
