@@ -18,46 +18,6 @@ from uuid import uuid4
 # Create your views here.
 
 # ================================= General Views =============================== #
-@csrf_exempt
-def register_school(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        school_id = request.POST.get('school_id')
-        school_name = request.POST.get('school_name')
-        school_address = request.POST.get('school_address')
-        school_type = request.POST.get('school_type')
-        contact_number = request.POST.get('contact_number')
-        email_address = request.POST.get('email_address')
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
-        school_logo = request.FILES.get('school_logo')
-
-        if password != confirm_password:
-            return JsonResponse({'status': 'error', 'message': 'Passwords do not match'}, status=400)
-
-        school = models.School.objects.create(
-            name=name,
-            school_id=school_id,
-            school_name=school_name,
-            school_address=school_address,
-            school_type=school_type,
-            contact_number=contact_number,
-            email_address=email_address,
-            password=password,
-            school_logo=school_logo
-        )
-        
-        school.action_id = str(uuid4())
-        school.save()
-        
-
-        return JsonResponse({
-            'status': 'success',
-            'message': 'Check your email for verification link in order to activate your account',
-        })
-
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
-
 
 @csrf_exempt
 def get_feeds(request):
@@ -75,22 +35,17 @@ def get_feeds(request):
                     'message' : 'User not found',
                 }, status=400)
             
-            feeds = {
-                
-            }
-            notifications = [] # Based on the replied and new post or mentions
-            posts = models.Post.objects.all().order_by('-created_at')
+            feeds = {}
+            posts = models.Post.objects.filter(post_owner=user.school_action_id).order_by('-created_at')
             for post in posts:
-                comments = models.Comment.objects.filter(post_id=post.id).order_by('-created_at')
-                feeds[post.id] = {
+                comments = models.Comment.objects.filter(post_id=post.post_id).order_by('-created_at')
+                feeds[post.post_id] = {
                     "post" : post.get_post(),
                     "comments" : [comment.get_comment() for comment in comments]
                 }
             
             return JsonResponse({
-                'feeds' : feeds,
-                'user' : user.get_information(),
-                'notifications' : notifications
+                'feeds' : feeds
             },status=200)
             
             
@@ -102,7 +57,6 @@ def get_feeds(request):
     return JsonResponse({
         'message' : 'Invalid request',
         }, status=400)
-
 
 @csrf_exempt
 def get_notifications(request):
@@ -272,11 +226,170 @@ def people_logout(request ):
         }, status=400)
 
 
+
+@csrf_exempt
+def register_school(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        school_id = request.POST.get('school_id')
+        school_name = request.POST.get('school_name')
+        school_address = request.POST.get('school_address')
+        school_type = request.POST.get('school_type')
+        contact_number = request.POST.get('contact_number')
+        email_address = request.POST.get('email_address')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+        school_logo = request.FILES.get('school_logo')
+
+        if password != confirm_password:
+            return JsonResponse({'status': 'error', 'message': 'Passwords do not match'}, status=400)
+
+        school = models.School.objects.create(
+            name=name,
+            school_id=school_id,
+            school_name=school_name,
+            school_address=school_address,
+            school_type=school_type,
+            contact_number=contact_number,
+            email_address=email_address,
+            password=password,
+            school_logo=school_logo
+        )
+        
+        school.action_id = str(uuid4())
+        school.save()
+        
+
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Check your email for verification link in order to activate your account',
+        })
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+
+
+
 # ================================= Admin Views ============================== # 
+@csrf_exempt
+def login_admin(request):
+    try:
+        if request.method == 'POST':
+            employee_id = request.POST.get('employee_id')
+            password = request.POST.get('password')
+            
+            if not employee_id or not password:
+                return JsonResponse({
+                    'message' : 'Please provide employee_id and password',
+                    }, status=400)
+            
+            user = models.MainAdmin.objects.filter(employee_id=employee_id, password=password).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'Invalid employee_id or password',
+                    }, status=400)
+            
+            user_authenticated = authenticate(request, username=employee_id, password=password)
+            if not user_authenticated:
+                return JsonResponse({
+                    'message' : 'Invalid employee_id or password',
+                    }, status=400)
+            
+            login(request, user_authenticated)
+            return JsonResponse({
+                'message' : 'Login successful',
+                }, status=200)
+            
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+@csrf_exempt
+def verify_school(request):
+    try:
+        if request.method == 'POST':
+            
+            user = models.MainAdmin.objects.filter(employee_id=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+                
+            
+            school_id = request.POST.get('school_id')
+            if not school_id:
+                return JsonResponse({
+                    'message' : 'Please provide school_id',
+                }, status=400)
+            
+            school = models.School.objects.filter(school_id=school_id).first()
+            if not school:
+                return JsonResponse({
+                    'message' : 'School not found',
+                }, status=400)
+            
+            
+            # TODO : SEND GENERATED EMPLOYEE ID AND PASSWORD TO GMAIL OF THE SCHOOL
+            
+            
+            return JsonResponse({
+                'message' : 'School verified successfully',
+            }, status=200)
+            
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+
+@csrf_exempt
+def get_all_school(request):
+    try:
+        if request.method == 'GET':
+            
+            user = models.MainAdmin.objects.filter(employee_id=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+                
+            
+            schools = models.School.objects.all()
+            if not schools:
+                return JsonResponse({
+                    'message' : 'School not found',
+                }, status=400)
+            
+            return JsonResponse({
+                'schools' : [school.get_school_information() for school in schools],
+            }, status=200)
+            
+        
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
 
 
 # ================================= School Views ============================== # 
-
 
 @csrf_exempt
 def register_people(request):
@@ -332,6 +445,217 @@ def register_people(request):
         return JsonResponse({'status': 'error', 'message': f'Something went wrong : {e}'}, status=500)
     
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+@csrf_exempt
+def login_school(request):
+    try:
+        if request.method == 'POST':
+            school_id = request.POST.get('employee_id')
+            password = request.POST.get('password')
+            
+            if not school_id or not password:
+                return JsonResponse({
+                    'message' : 'Please provide school_id and password',
+                    }, status=400)
+            
+            user = models.People.objects.filter(school_id=school_id, password=password).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'Invalid school_id or password',
+                    }, status=400)
+            
+            user_authenticated = authenticate(request, username=school_id, password=password)
+            if not user_authenticated:
+                return JsonResponse({
+                    'message' : 'Invalid school_id or password',
+                    }, status=400)
+            
+            login(request, user_authenticated)
+            return JsonResponse({
+                'message' : 'Login successful'
+                }, status=200)
+    
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Something went wrong : {e}'
+            }, status=500)
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+
+@csrf_exempt
+def get_school_feeds(request):
+    try:
+        if request.method == 'GET':
+            user = models.School.objects.filter(school_id=request.user.username).first()
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            feeds = {}
+            posts = models.Post.objects.filter(school_action_id=user.action_id).order_by('-created_at')
+            for post in posts:
+                comments = models.Comment.objects.filter(post_id=post.post_id).order_by('-created_at')
+                feeds[post.post_id] = {
+                    "post" : post.get_post(),
+                    "comments" : [comment.get_comment() for comment in comments]
+                }
+            
+            
+            
+                
+            return JsonResponse({
+                'feeds' : feeds
+            },status=200)
+        
+        
+        
+        
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Something went wrong : {e}'
+            }, status=500)
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+
+@csrf_exempt
+def get_school_notifications(request):
+    
+    return JsonResponse({
+        'message' : 'Not yet implemented'
+    },status=400)
+
+
+@csrf_exempt
+def school_post(request):
+    try:
+        if request.method == 'POST':
+            
+            
+            content = request.POST.get('content')
+            content_file = request.FILES.get('content_file')
+            
+            if not content:
+                return JsonResponse({
+                    'message' : 'Please provide content',
+                    }, status=400)
+            
+                
+            
+            user = models.School.objects.filter(school_id=request.user.username).first()
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+                
+                
+            # TODO : CHECK THE LOGIC
+            post = models.Post.objects.create(
+                post_owner=user.action_id,
+                content=content,
+                content_file=content_file if content_file else ''
+            )
+            
+            return JsonResponse({
+                'message' : 'Post created successfully'
+            },status=200)
+        
+        
+        
+        
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Something went wrong : {e}'
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request method'
+    },status=400)
+
+
+@csrf_exempt
+def get_all_school_faculty(request):
+    try:
+        if request.method == 'GET':
+            
+            user = models.School.objects.filter(school_id=request.user.username).first()
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            people = models.People.objects.filter(school_id=user.school_id).all()
+            
+            return JsonResponse({
+                'people' : [person.get_person() for person in people] + [user.get_school_information()]
+            },status=200)
+    
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Something went wrong : {e}'
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request method'
+    },status=400)
+
+
+@csrf_exempt
+def search_school_faculty(request):
+    try:
+        if request.method == 'POST':
+            query = request.POST.get('query')
+            
+            if not query:
+                return JsonResponse({
+                    'message' : 'Please provide query',
+                    }, status=400)
+            
+            user = models.School.objects.filter(school_id=request.user.username).first()
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            
+            
+                        
+            people_by_id = models.People.objects.filter( school_id=user.school_id, employee_id=query) # Search by employee id
+            people_by_name = models.People.objects.filter(first_name=query, school_id=user.school_id) # Search by first name
+            people_by_last_name = models.People.objects.filter(last_name=query, school_id=user.school_id) # Search by last name
+            people_by_middle_name = models.People.objects.filter(middle_name=query, school_id=user.school_id) # Search by middle name
+            
+            people : list[models.People] = people_by_id + people_by_name + people_by_last_name + people_by_middle_name
+            people_information = [person.get_information() for person in people]
+            if query in user.school_id:
+                people_information.append(user.get_school_information())
+            
+            return JsonResponse({
+                'people' : people_information
+            },status=200)
+            
+            
+    
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Something went wrong : {e}'
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request method'
+    },status=400)
+
 
 
 

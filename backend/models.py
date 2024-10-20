@@ -65,14 +65,14 @@ class School(models.Model):
             'school_type' : self.school_type,
             'contact_number' : self.contact_number,
             'email_address' : self.email_address,
-            'password' : self.password,
-            'confirm_password' : self.confirm_password,
             'school_logo' : ''
         }
         
         if self.school_logo:
             if self.school_logo.url:
                 school['school_logo'] = self.school_logo.url
+    
+        return school
         
         
     
@@ -123,6 +123,8 @@ class People(models.Model):
     password = models.CharField(max_length=255, blank=True, default='')
     confirm_password = models.CharField(max_length=255, blank=True, default='')
     
+    
+    school_action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
     action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
     
     educations = models.JSONField(default=list, blank=True)
@@ -153,8 +155,6 @@ class People(models.Model):
             'job_ended' : self.job_ended,
             'grade_level' : self.grade_level,
             'department' : self.department,
-            'password' : self.password,
-            'confirm_password' : self.confirm_password,
         }
     
     
@@ -167,11 +167,21 @@ class People(models.Model):
 class Post(models.Model):
     post_owner = models.CharField(max_length=255, blank=True, default='') # Action ID of owner of post
     title = models.CharField(max_length=255, blank=True, default='')
-    content = models.TextField(blank=True, default='')
+    content = models.TextField(blank=True, default='') # Content of post
+    content_file = models.FileField(upload_to='uploads/', default='', blank=True, null=True) # File uploaded by user
     created_at = models.DateTimeField(auto_now_add=True)
+    post_id = models.CharField(max_length=255, blank=True, default='') # Generated id by system to identify post
     liked = models.JSONField(default=list, blank=True)
     """
         liked = [
+            action_id,
+            action_id,
+        ]
+    """
+    
+    commented = models.JSONField(default=list, blank=True)
+    """
+        commented = [
             action_id,
             action_id,
         ]
@@ -194,7 +204,7 @@ class Post(models.Model):
 class Comment(models.Model):
     content = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
-    post_id = models.IntegerField(default=0) # Action ID of post where comment is posted
+    post_id = models.IntegerField(default=0) # post_id of post where comment is posted
     comment_owner = models.CharField(max_length=255, blank=True, default='') # Action ID of owner of comment
     attachment = models.FileField(upload_to='comment/', blank=True, default='')
     
