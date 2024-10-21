@@ -542,6 +542,8 @@ class IPCRFForm(models.Model):
         ))
     created_at = models.DateTimeField(auto_now_add=True)
     
+    is_checked = models.BooleanField(default=False)
+    
     
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.created_at}"
@@ -728,6 +730,8 @@ class COTForm(models.Model):
     
     """
     
+    
+    is_checked = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.created_at}"
@@ -906,6 +910,8 @@ class RPMSAttachment(models.Model):
         }
     
     """
+    
+    is_checked = models.BooleanField(default=False)
     
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.created_at}"

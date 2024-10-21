@@ -370,7 +370,11 @@ def add_school(request):
                 return JsonResponse({
                     'message' : 'User not found',
                 }, status=400)
-                
+            
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
             
             school_id = request.POST.get('school_id')
             if not school_id:
@@ -423,7 +427,11 @@ def get_school_inbox(request):
                 return JsonResponse({
                     'message' : 'User not found',
                 }, status=400)
-                
+            
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
             
             school = models.School.objects.all().order_by('-created_at')
             if not school:
@@ -456,7 +464,11 @@ def get_all_schools(request):
                 return JsonResponse({
                     'message' : 'User not found',
                 }, status=400)
-                
+            
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
             
             schools = models.School.objects.all()
             if not schools:
@@ -488,7 +500,11 @@ def get_search_schools(request):
                 return JsonResponse({
                     'message' : 'User not found',
                 }, status=400)
-                
+            
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
             
             query = request.POST.get('query')
             if not query:
@@ -527,16 +543,16 @@ def get_total_number_of_schools(request):
                 return JsonResponse({
                     'message' : 'User not found',
                 }, status=400)
-            
 
-            schools = models.School.objects.all()
-            if not schools:
+            if user.role != 'ADMIN':
                 return JsonResponse({
-                    'message' : 'School not found',
+                    'message' : 'User is not an admin',
                 }, status=400)
 
+            schools = models.School.objects.all()
+
             return JsonResponse({
-                'total_schools' : schools.count(),
+                'total_schools' : schools.count() if schools else 0,
             }, status=200)
             
 
@@ -549,6 +565,85 @@ def get_total_number_of_schools(request):
         'message' : 'Invalid request',
         }, status=400) 
     
+
+@csrf_exempt
+def get_total_number_of_teachers(request):
+    try:
+        if request.method == 'GET':
+
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+
+            teachers = models.People.objects.filter(role='Teacher')
+            
+            return JsonResponse({
+                'total_teachers' :  teachers.count() if teachers else 0,
+            }, status=200)
+            
+
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+@csrf_exempt
+def number_of_evaluation_conducted(request):
+    try:
+        if request.method == 'GET':
+
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+
+            ipcrf_forms = models.IPCRFForm.objects.all()
+            cot_forms = models.COTForm.objects.all()
+            rpms_attachments = models.RPMSAttachment.objects.all()
+            total = 0
+            if ipcrf_forms:
+                total += ipcrf_forms.count()
+            if cot_forms:
+                total += cot_forms.count()
+            if rpms_attachments:
+                total += rpms_attachments.count()
+            
+            return JsonResponse({
+                'total_ipcrf_forms' : ipcrf_forms.count() if ipcrf_forms else 0,
+                'total_cot_forms' : cot_forms.count() if cot_forms else 0,
+                'total_rpms_attachments' : rpms_attachments.count() if rpms_attachments else 0,
+                'total_evaluation_conducted' : total,
+            }, status=200)
+            
+
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+            
+
 
 # ================================= School Views ============================== # 
 
