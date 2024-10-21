@@ -32,7 +32,7 @@ class MainAdmin(models.Model):
     username = models.CharField(max_length=255, blank=True, default='')
     password = models.CharField(max_length=255, blank=True, default='')
     
-    
+    role = models.CharField(max_length=10, blank=True, default='ADMIN')
     action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
     
 #     # total school

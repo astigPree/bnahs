@@ -21,6 +21,7 @@ urlpatterns = [
     path('admin/schools/search/', views.get_search_schools), # WORKING
     path('admin/schools/inbox/', views.get_school_inbox),  # WORKING
     
+    
     # ============== School Path ================
     path('login_school/', views.login_school), # WORKING
     path('school/register/people/', views.register_people), # WORKING

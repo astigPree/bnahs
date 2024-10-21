@@ -517,6 +517,37 @@ def get_search_schools(request):
         }, status=400)
     
 
+@csrf_exempt
+def get_total_number_of_schools(request):
+    try:
+        if request.method == 'GET':
+
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+
+            schools = models.School.objects.all()
+            if not schools:
+                return JsonResponse({
+                    'message' : 'School not found',
+                }, status=400)
+
+            return JsonResponse({
+                'total_schools' : schools.count(),
+            }, status=200)
+            
+
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400) 
     
 
 # ================================= School Views ============================== # 
