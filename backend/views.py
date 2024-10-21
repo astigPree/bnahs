@@ -533,6 +533,49 @@ def get_search_schools(request):
     return JsonResponse({
         'message' : 'Invalid request',
         }, status=400)
+
+@csrf_exempt
+def get_search_schools_by_location(request):
+    try:
+        if request.method == 'POST':
+
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+
+            query = request.POST.get('query')
+            if not query:
+                return JsonResponse({
+                    'message' : 'Please provide query',
+                }, status=400)
+
+            schools = models.School.objects.filter(school_address__icontains=query)
+            if not schools:
+                return JsonResponse({
+                    'message' : 'School not found',
+                }, status=400)
+
+            return JsonResponse({
+                'schools' : [school.get_school_information() for school in schools],
+            }, status=200)
+            
+
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
     
 
 @csrf_exempt
@@ -764,52 +807,56 @@ def create_rating_sheet(request):
                     'message' : 'Content is required',
                 }, status=400)
             
-            """
-                {
-                    "Welcome Page" : "Welcome Page",
-                    "Observer" : "Evaluator Name",
-                    "Teacher Observed" : "Evaluated Name",
-                    "Subject" : "Subject",
-                    "Grade Level" : "Grade 7",
-                    "Date : "September 05, 2023", !Save date after submiting,
-                    "Quarter": "1st Quarter",
-                    "Questions" : {
-                        "1" : {
-                            "Objective" : "Applied knowledge of content within and across curriculum teaching areas. *",
-                            "Selected" : "7" !Selected rate
-                        },
-                        "2" : {
-                            "Objective" : "Applied knowledge of content within and across curriculum teaching areas. *",
-                            "Selected" : "7" !Selected rate, kung "NO" means its "3"
-                        }
-                    },
-                    "Comments" : ""
-                    
-                }
-            
-            """    
 
-            # TODO : ASK HOW TO SEPARATE IT!
+            # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND TEACHER
             # Checking if the data is exist before saving
             content : dict = json.loads(content)
             
             welcome_page = content['Welcome Page']
             observer = content['Observer']
             teacher_observed = content['Teacher Observed']
-            subject = content['Subject'] # TODO : ASK HOW TO SEPARATE IT!
-            grade_level = content['Grade Level'] # TODO : ASK HOW TO SEPARATE IT!
+            taught = content['Subject & Grade Level'] 
             date = content['Date']
             questions = content['Questions']
             quarter = content['Quarter']
             comments = content['Comments']
             
-            for question_id, questions in questions.items():
+            for _, questions in questions.items():
                 objective = questions['Objective']
                 selected = questions['Selected']
             
             
+            search_observer = models.People.objects.filter(fullname_icontains=observer).first()
+            if not search_observer:
+                search_observer = models.People.objects.filter(employee_id=observer).first()
+                if not search_observer:
+                    return JsonResponse({
+                        'message' : 'Observer not found',
+                    }, status=400)
+                
+            search_teacher = models.People.objects.filter(fullname_icontains=teacher_observed).first()
+            if not search_teacher:
+                search_teacher = models.People.objects.filter(employee_id=teacher_observed).first()
+                if not search_teacher:
+                    return JsonResponse({
+                        'message' : 'Teacher observed not found',
+                    }, status=400)
+                
+            
+            school = models.School.objects.filter(school_id=search_observer.school_id).first()
+            if not school:
+                return JsonResponse({
+                    'message' : 'School not found',
+                }, status=400)
             
             
+            cot_form = models.COTForm.objects.create(
+                school_id = school.school_id,
+                employee_id = search_observer.employee_id,
+                evaluated_id = search_teacher.employee_id,
+                content = content
+            )
+            cot_form.save()
             
 
             return JsonResponse({
@@ -825,6 +872,8 @@ def create_rating_sheet(request):
     return JsonResponse({
         'message' : 'Invalid request',
         }, status=400) 
+
+
 
 
 

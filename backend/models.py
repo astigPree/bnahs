@@ -712,10 +712,9 @@ class COTForm(models.Model):
     """
         {
             "Welcome Page" : "Welcome Page",
-            "Observer" : "Evaluator Name",
-            "Teacher Observed" : "Evaluated Name",
-            "Subject" : "Subject",
-            "Grade Level" : "Grade 7",
+            "Observer" : "Evaluator Name / Evaluator ID",
+            "Teacher Observed" : "Evaluated Name / Evaluated ID",
+            "Subject & Grade Level" : "Subject & Grade 7",
             "Date : "September 05, 2023", !Save date after submiting,
             "Quarter": "1st Quarter",
             "Questions" : {

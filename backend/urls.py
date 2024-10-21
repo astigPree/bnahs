@@ -19,6 +19,7 @@ urlpatterns = [
     path('admin/schools/add/', views.add_school), # WORKING
     path('admin/schools/', views.get_all_schools), # WORKING
     path('admin/schools/search/', views.get_search_schools), # WORKING
+    path('admin/schools/search/location/', views.get_search_schools_by_location),
     path('admin/schools/inbox/', views.get_school_inbox),  # WORKING
     
     path('admin/schools/count/', views.get_total_number_of_schools),
@@ -27,6 +28,7 @@ urlpatterns = [
     path('admin/school/teacher/evaluation/pending/count/', views.number_of_pending_evaluation),
     
     path('admin/school/reject/', views.reject_school),
+    path('admin/school/evaluator/create/cot/', views.create_rating_sheet),
     
     # ============== School Path ================
     path('login_school/', views.login_school), # WORKING
