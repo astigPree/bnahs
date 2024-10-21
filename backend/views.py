@@ -12,6 +12,9 @@ from django.db.models import Count
 
 from . import models, my_utils
 
+
+import secrets
+import string
 from itertools import groupby
 from uuid import uuid4
 from threading import Thread
@@ -329,7 +332,7 @@ def login_admin(request):
                     'message' : 'Please provide employee_id and password',
                     }, status=400)
             
-            user = models.MainAdmin.objects.filter(employee_id=employee_id, password=password).first()
+            user = models.MainAdmin.objects.filter(username=employee_id, password=password).first()
             if not user:
                 return JsonResponse({
                     'message' : 'Invalid employee_id or password',
@@ -362,7 +365,7 @@ def add_school(request):
     try:
         if request.method == 'POST':
             
-            user = models.MainAdmin.objects.filter(employee_id=request.user.username).first()
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
@@ -381,9 +384,15 @@ def add_school(request):
                     'message' : 'School not found',
                 }, status=400)
             
+
+            user = User.objects.create(
+                username=school.email_address,
+                password=make_password(school.password),
+            )
             
-            # TODO : SEND GENERATED EMPLOYEE ID AND PASSWORD TO GMAIL OF THE SCHOOL
-            
+            Thread(target=my_utils.send_account_info_email, args=(
+                school.email_address, school.email_address, school.password , 'account.html' , settings.EMAIL_HOST_USER, 'School Registration'
+                )).start()
             
             return JsonResponse({
                 'message' : 'School verified successfully',
@@ -566,15 +575,15 @@ def register_people(request):
 def login_school(request):
     try:
         if request.method == 'POST':
-            school_id = request.POST.get('employee_id')
+            email = request.POST.get('employee_id')
             password = request.POST.get('password')
             
-            if not school_id or not password:
+            if not email or not password:
                 return JsonResponse({
                     'message' : 'Please provide school_id and password',
                     }, status=400)
             
-            user = models.People.objects.filter(school_id=school_id, password=password).first()
+            user = models.School.objects.filter(email=email, password=password).first()
             if not user:
                 return JsonResponse({
                     'message' : 'Invalid school_id or password',

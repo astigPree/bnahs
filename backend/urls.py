@@ -16,8 +16,8 @@ urlpatterns = [
     
     # ============ Admin Path ================
     path('login_admin/', views.login_admin),
+    path('admin/schools/add/', views.add_school),
     path('admin/schools/', views.get_all_schools),
-    
     
     # ============== School Path ================
     path('login_school/', views.login_school),

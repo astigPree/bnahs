@@ -35,6 +35,20 @@ def send_verification_email(user_email, verification_code , template , masbate_l
     email.send()
 
 
+def send_account_info_email(user_email, username, password, template, from_email, subject):
+    # Render the HTML template
+    html_content = render_to_string(template, {
+        'username': username,
+        'password': password,
+    })
+    text_content = strip_tags(html_content)  # Create a plain text version
+
+    # Create the email
+    email = EmailMultiAlternatives(subject, text_content, from_email, [user_email])
+    email.attach_alternative(html_content, "text/html")
+    email.send()
+
+
 def parse_date_string(date_string):
     try:
         parsed_date = datetime.strptime(date_string, "%B %d, %Y")
