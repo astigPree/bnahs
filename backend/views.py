@@ -20,6 +20,46 @@ from uuid import uuid4
 # ================================= General Views =============================== #
 
 @csrf_exempt
+def create_main_admin(request):
+    """
+        This function only create a a Main Admin, so it must be activated once
+    """
+    try:
+        user = models.MainAdmin.objects.all().first()
+        
+        
+        if user:
+            return JsonResponse({
+                'message' : 'Main admin already created',
+                'employee_id': user.username,
+                'password' : user.password
+            }, status=400)
+            
+        admin = models.MainAdmin.objects.create(
+            username = 'admin',
+            password = 'admin',
+        )
+        
+        user = User.objects.create(
+            username=admin.username,
+            password=make_password(admin.password),
+        )
+        
+        return JsonResponse({
+            'message' : 'Main admin created',
+            'employee_id': 'admin',
+            'password' : 'admin'
+        }, status=200)
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : 'Something went wrong',
+            }, status=500)
+    
+    
+
+
+@csrf_exempt
 def get_feeds(request):
     """
     This function is used to get the People feeds.

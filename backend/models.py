@@ -820,8 +820,8 @@ class RPMSFolder(models.Model):
 class RPMSClassWork(models.Model):
     """_summary_
 
-    A class to represent a classwork created by Head Adminstrator. 
-    This where the RPMS Attachement is uploaded.
+        A class to represent a classwork created by Head Adminstrator. 
+        This where the RPMS Attachement is uploaded.
     
  
     """

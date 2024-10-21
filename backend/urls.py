@@ -4,6 +4,9 @@ from . import views
 
 urlpatterns = [
     
+    # ============= Temporary Path ================
+    path('create/admin/', views.create_main_admin),
+    
     # ============= General Path ================
     path('user/feeds/', views.get_feeds),
     path('user/notifications/', views.get_notifications),
