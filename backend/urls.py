@@ -22,6 +22,8 @@ urlpatterns = [
     path('admin/schools/inbox/', views.get_school_inbox),  # WORKING
     
     path('admin/schools/count/', views.get_total_number_of_schools),
+    path('admin/school/teacher/count/', views.get_total_number_of_teachers),
+    path('admin/school/evaluated/count/', views.number_of_evaluation_conducted),
     
     # ============== School Path ================
     path('login_school/', views.login_school), # WORKING

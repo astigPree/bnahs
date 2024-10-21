@@ -601,6 +601,7 @@ def get_total_number_of_teachers(request):
 
 @csrf_exempt
 def number_of_evaluation_conducted(request):
+    # TODO : DOUBLE CHECK IF IM CORRECT ON THE DATA 
     try:
         if request.method == 'GET':
 
@@ -614,23 +615,11 @@ def number_of_evaluation_conducted(request):
                 return JsonResponse({
                     'message' : 'User is not an admin',
                 }, status=400)
-
-            ipcrf_forms = models.IPCRFForm.objects.all()
-            cot_forms = models.COTForm.objects.all()
-            rpms_attachments = models.RPMSAttachment.objects.all()
-            total = 0
-            if ipcrf_forms:
-                total += ipcrf_forms.count()
-            if cot_forms:
-                total += cot_forms.count()
-            if rpms_attachments:
-                total += rpms_attachments.count()
+            
+            teachers = models.People.objects.filter(role='Teacher' , is_evaluated=True)
             
             return JsonResponse({
-                'total_ipcrf_forms' : ipcrf_forms.count() if ipcrf_forms else 0,
-                'total_cot_forms' : cot_forms.count() if cot_forms else 0,
-                'total_rpms_attachments' : rpms_attachments.count() if rpms_attachments else 0,
-                'total_evaluation_conducted' : total,
+                'total_evaluation_conducted' : teachers.count() if teachers else 0,
             }, status=200)
             
 
@@ -643,6 +632,38 @@ def number_of_evaluation_conducted(request):
         'message' : 'Invalid request',
         }, status=400)
             
+
+@csrf_exempt
+def number_of_pending_evaluation(request):
+    try:
+        if request.method == 'GET':
+
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+                
+            teachers = models.People.objects.filter(role='Teacher', is_evaluated=False)
+
+            return JsonResponse({
+                'total_pending_evaluation' : teachers.count() if teachers else 0,
+            }, status=200)
+            
+
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
 
 
 # ================================= School Views ============================== # 
