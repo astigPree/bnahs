@@ -644,6 +644,28 @@ def login_school(request):
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
+@csrf_exempt
+def get_school_information(request):
+    try:
+        if request.method == 'GET':
+            user = models.School.objects.filter(email_address=request.user.username).first()
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            return JsonResponse({
+                'school' : user.get_school_information()
+            },status=200)
+        
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Something went wrong : {e}'
+            }, status=500)
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
 @csrf_exempt
 def get_school_feeds(request):

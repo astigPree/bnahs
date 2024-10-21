@@ -28,6 +28,7 @@ urlpatterns = [
     path('school/post/', views.school_post), # WORKING
     path('school/faculties/', views.get_all_school_faculty), 
     path('school/faculties/search/', views.search_school_faculty),
+    path('school/profile/', views.get_school_information), # WORKING
     
     # ============== Evaluator Path ================
     path('login_evaluator/', views.login_evaluator),
@@ -35,8 +36,8 @@ urlpatterns = [
     path('evaluator/update_education/', views.people_update_education),
     
     # =============== Teacher Path ================
-    path('login_teacher/', views.login_teacher),
-    path('teacher/evaluation/', views.teacher_evaluation),
+    path('login_teacher/', views.login_teacher), # WORKING
+    path('teacher/evaluation/', views.teacher_evaluation), 
     path('teacher/form/', views.teacher_forms),
     path('teacher/kba/', views.teacher_kba_breakdown),
     path('teacher/recommendations/', views.teacher_recommendations),

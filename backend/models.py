@@ -77,7 +77,8 @@ class School(models.Model):
             'contact_number' : self.contact_number,
             'email_address' : self.email_address,
             'school_logo' : '',
-            'is_accepted' : self.is_accepted
+            'is_accepted' : self.is_accepted,
+            'is_verified' : self.is_verified,
         }
         
         if self.school_logo:
