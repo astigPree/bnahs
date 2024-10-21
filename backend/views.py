@@ -302,13 +302,16 @@ def register_school(request):
         
         verification = models.VerificationLink.generate_link(email_address)
         
-        Thread(target=my_utils.send_verification_email, args=(email_address, )).start()
+        # verification_code , template , masbate_locker_email , subject
+        Thread(target=my_utils.send_verification_email, args=(
+            email_address, verification , 'verification_link.html', settings.EMAIL_HOST_USER, 'School Registration'
+        )).start()
         
 
         return JsonResponse({
             'status': 'success',
             'message': 'Check your email for verification link in order to activate your account',
-        })
+        },status=200)
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
@@ -321,7 +324,7 @@ def verify_school(request, token):
                 'message' : 'Please provide token',
                 }, status=400)
         
-        verification = models.VerificationLink.objects.filter(token=token).first()
+        verification = models.VerificationLink.objects.filter(verification_link=token).first()
         if not verification:
             return JsonResponse({
                 'message' : 'Invalid token',

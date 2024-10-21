@@ -21,7 +21,7 @@ class VerificationLink(models.Model):
         link_key = generate_link_key()
         cls.objects.create(email=email, verification_link=link_key)
         
-        return f"{settings.FRONTEND_URL}/verify/{link_key}"
+        return f"{settings.MY_HOST}api/register/school/verifications/{link_key}"
     
     def is_expired(self, expire_in_minutes=30):
         return self.created_at < (timezone.now() - timezone.timedelta(minutes=expire_in_minutes))

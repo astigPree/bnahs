@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-h4n&*x5w1v87vt3ok^ry^(-n#vt33fjm37i&lz68$ghko865hm
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-MY_HOST = '127.0.0.1'  # Set your preferred host
+MY_HOST = 'http://127.0.0.1:8000/'  # Set your preferred host
 # MY_HOST = 'https://bnahs.pythonanywhere.com/'
 
 ALLOWED_HOSTS = ['*']
@@ -193,6 +193,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'vincelance62@gmail.com' # Email address
 EMAIL_HOST_PASSWORD = 'azfjtketimfequnm' # Generated email password appp 'azfj tket imfe qunm'
-
-
 
