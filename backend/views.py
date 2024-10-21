@@ -14,6 +14,7 @@ from . import models, my_utils
 
 from itertools import groupby
 from uuid import uuid4
+from threading import Thread
 
 # Create your views here.
 
@@ -55,7 +56,6 @@ def create_main_admin(request):
         return JsonResponse({
             'message' : 'Something went wrong',
             }, status=500)
-    
     
 
 
@@ -136,6 +136,8 @@ def get_notifications(request):
     return JsonResponse({
         'message' : 'Invalid request',
         }, status=400)
+    
+    
     
 @csrf_exempt
 def people_update_education(request ):
@@ -266,7 +268,6 @@ def people_logout(request ):
         }, status=400)
 
 
-
 @csrf_exempt
 def register_school(request):
     if request.method == 'POST':
@@ -299,6 +300,11 @@ def register_school(request):
         school.action_id = str(uuid4())
         school.save()
         
+        verification = models.VerificationLink.generate_link(email_address)
+        
+        
+        Thread(target=my_utils.send_verification_email, args=(email_address, )).start()
+        
 
         return JsonResponse({
             'status': 'success',
@@ -307,7 +313,45 @@ def register_school(request):
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
-
+@csrf_exempt
+def verify_school(request, token):
+    try:
+        
+        if not token:
+            return JsonResponse({
+                'message' : 'Please provide token',
+                }, status=400)
+        
+        verification = models.VerificationLink.objects.filter(token=token).first()
+        if not verification:
+            return JsonResponse({
+                'message' : 'Invalid token',
+                }, status=400)
+        
+        if verification.is_expired():
+            return JsonResponse({
+                'message' : 'Token expired',
+                }, status=400)
+        
+        
+        school = models.School.objects.filter(email_address=verification.email).first()
+        if not school:
+            return JsonResponse({
+                'message' : 'School not found',
+                }, status=400)
+        
+        school.is_verified = True
+        school.save()
+        verification.delete()
+        
+        return JsonResponse({
+            'message' : 'School verified successfully, Wait for admin approval',
+            }, status=200)
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
 
 
 # ================================= Admin Views ============================== # 
@@ -352,7 +396,7 @@ def login_admin(request):
 
 
 @csrf_exempt
-def verify_school(request):
+def add_school(request):
     try:
         if request.method == 'POST':
             

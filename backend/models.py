@@ -1,6 +1,8 @@
 from django.db import models 
-import uuid
+from django.conf import settings
+from django.utils import timezone
 
+import uuid
 # Create your models here.
 
 def generate_link_key():
@@ -17,7 +19,13 @@ class VerificationLink(models.Model):
     @classmethod
     def generate_link(cls, email):
         link_key = generate_link_key()
-        return cls.objects.create(email=email, verification_link=link_key)
+        cls.objects.create(email=email, verification_link=link_key)
+        
+        return f"{settings.FRONTEND_URL}/verify/{link_key}"
+    
+    def is_expired(self, expire_in_minutes=30):
+        return self.created_at < (timezone.now() - timezone.timedelta(minutes=expire_in_minutes))
+
     
 
 class MainAdmin(models.Model):
@@ -31,6 +39,8 @@ class MainAdmin(models.Model):
 #     # total teacher
 #     # number of forms answered
 
+    def __str__(self):
+        return f"{self.username} - {self.password}"
 
 class School(models.Model):
     
@@ -47,7 +57,8 @@ class School(models.Model):
     
     # number of forms answered / evaluation submision rate
     
-    is_accepted = models.BooleanField(default=False) # Is the school accepted
+    is_verified = models.BooleanField(default=False) # Is the school verified or click the link
+    is_accepted = models.BooleanField(default=False) # Is the school accepted or added by admin
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
@@ -75,7 +86,7 @@ class School(models.Model):
     
         return school
         
-        
+
     
 
 class People(models.Model):

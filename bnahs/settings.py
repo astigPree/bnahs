@@ -69,7 +69,9 @@ ROOT_URLCONF = 'bnahs.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'templates',
+            ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -159,8 +161,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_ALLOW_ALL = True 
 CORS_ALLOWED_ORIGINS = [
     'https://bnahs.pythonanywhere.com',
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
+    "http://localhost:8000", # For development purposes
+    "http://127.0.0.1:8000", # For development purposes
 ]
 
 CORS_ALLOW_CREDENTIALS = True
