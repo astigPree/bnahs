@@ -876,8 +876,6 @@ def create_rating_sheet(request):
 
 
 
-
-
 # ================================= School Views ============================== # 
 
 @csrf_exempt
@@ -1087,8 +1085,7 @@ def school_post(request):
                     'message' : 'Please provide content',
                     }, status=400)
             
-                
-            # TODO : CHECK THE LOGIC
+            
             post = models.Post.objects.create(
                 post_owner=user.action_id,
                 content=content,
@@ -1101,7 +1098,8 @@ def school_post(request):
             return JsonResponse({
                 'message' : 'Post created successfully'
             },status=200)
-        
+
+            
         
         
         
@@ -1128,10 +1126,11 @@ def get_all_school_faculty(request):
                     'message' : 'User not found',
                     }, status=400)
             
-            people = models.People.objects.filter(school_id=user.school_id).all()
+            people = models.People.objects.filter(school_id=user.school_id).all().order_by('-created_at')
+            people_informations = [person.get_information() for person in people]
             
             return JsonResponse({
-                'people' : [person.get_information() for person in people] + [user.get_school_information()]
+                'people' : people_informations.append(user.get_school_information())
             },status=200)
     
     except Exception as e:
@@ -1164,17 +1163,9 @@ def search_school_faculty(request):
                     }, status=400)
             
             
+            people = models.People.objects.filter(fullname__icontains=query , school_id=user.school_id).all()
             
-                        
-            people_by_id = models.People.objects.filter( school_id=user.school_id, employee_id=query) # Search by employee id
-            people_by_name = models.People.objects.filter(first_name=query, school_id=user.school_id) # Search by first name
-            people_by_last_name = models.People.objects.filter(last_name=query, school_id=user.school_id) # Search by last name
-            people_by_middle_name = models.People.objects.filter(middle_name=query, school_id=user.school_id) # Search by middle name
-            
-            people : list[models.People] = people_by_id + people_by_name + people_by_last_name + people_by_middle_name
             people_information = [person.get_information() for person in people]
-            if query in user.school_id:
-                people_information.append(user.get_school_information())
             
             return JsonResponse({
                 'people' : people_information
@@ -1191,6 +1182,48 @@ def search_school_faculty(request):
     return JsonResponse({
         'message' : 'Invalid request method'
     },status=400)
+
+
+@csrf_exempt
+def get_search_school_faculty_for_mentioning(request):
+    try:
+        if request.method == 'POST':
+            query = request.POST.get('query')
+
+            if not query:
+                return JsonResponse({
+                    'message' : 'Please provide query',
+                    }, status=400)
+
+            user = models.School.objects.filter(school_id=request.user.username).first()
+
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+                
+            
+            search_people = models.People.objects.filter(school_id=user.school_id, fullname__icontains=query) # Search by name
+            if not search_people:
+                return JsonResponse({
+                    'people' : [],
+                },status=200)
+            
+            return JsonResponse({
+                'people' : [person.get_name_and_id() for person in search_people],
+            },status=200)
+                
+
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Something went wrong : {e}'
+            }, status=500)
+
+    return JsonResponse({
+        'message' : 'Invalid request method'
+    },status=400) 
+
 
 
 @csrf_exempt

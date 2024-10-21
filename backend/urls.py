@@ -39,6 +39,8 @@ urlpatterns = [
     path('school/faculties/search/', views.search_school_faculty),
     path('school/profile/', views.get_school_information), # WORKING
     
+    path('school/faculties/mention/', views.get_search_school_faculty_for_mentioning),
+    
     # ============== Evaluator Path ================
     path('login_evaluator/', views.login_evaluator), # WORKING
     path('evaluator/update_profile/', views.people_update_profile),

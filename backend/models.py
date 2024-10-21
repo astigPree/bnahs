@@ -152,6 +152,8 @@ class People(models.Model):
     """
     
     is_evaluated = models.BooleanField(default=False) # Is the person evaluated or not
+    is_deactivated = models.BooleanField(default=False) # Is the person deactivated or not
+    
     
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -182,6 +184,12 @@ class People(models.Model):
         self.save()
     
 
+    def get_name_and_id(self):
+        return {
+            'name' : f"{self.first_name} {self.middle_name} {self.last_name}",
+            'id' : self.employee_id,
+        }
+    
 
 class Post(models.Model):
     post_owner = models.CharField(max_length=255, blank=True, default='') # Action ID of owner of post
@@ -205,6 +213,15 @@ class Post(models.Model):
             action_id,
         ]
     """
+    
+    mentions = models.JSONField(default=list, blank=True)
+    """
+        mentions = [
+            action_id,
+            action_id,
+        ]
+    """
+    
     
     def __str__(self):
         return f"{self.post_owner} - {self.title}"
