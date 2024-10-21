@@ -728,7 +728,7 @@ def get_all_school_faculty(request):
             people = models.People.objects.filter(school_id=user.school_id).all()
             
             return JsonResponse({
-                'people' : [person.get_person() for person in people] + [user.get_school_information()]
+                'people' : [person.get_information() for person in people] + [user.get_school_information()]
             },status=200)
     
     except Exception as e:
