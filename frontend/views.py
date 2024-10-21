@@ -3,10 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
 
-
-from ..backend import models
-
-
+from backend import models
 
 
 # Create your views here.
