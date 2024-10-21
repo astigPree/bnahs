@@ -30,6 +30,10 @@ urlpatterns = [
     path('admin/school/reject/', views.reject_school),
     path('admin/school/evaluator/create/cot/', views.create_rating_sheet),
     
+    path('admin/forms/rpms/folders/create/', views.create_rpms_folder),
+    path('admin/forms/rpms/folders/', views.get_all_rpms_folders),
+    path('admin/forms/rpms/classworks/', views.get_rpms_classworks),
+    
     # ============== School Path ================
     path('login_school/', views.login_school), # WORKING
     path('school/register/people/', views.register_people), # WORKING

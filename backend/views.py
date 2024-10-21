@@ -276,6 +276,97 @@ def people_logout(request ):
 
 
 @csrf_exempt
+def get_people_all_rpms_folders(request):
+    try:
+        if request.method == 'POST':
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+                
+
+            rpms_folders = models.RPMSFolder.objects.all()
+            if not rpms_folders:
+                return JsonResponse({
+                    'message' : 'No rpms folders found',
+                }, status=400)
+            
+            return JsonResponse({
+                'rpms_folders' : [
+                    rpms_folder.get_rpms_folder_information() for rpms_folder in rpms_folders
+                ]
+            }, status=200)
+            
+
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+@csrf_exempt
+def get_people_rpms_classworks(request):
+    try:
+        if request.method == 'POST':
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+                
+            
+            rpms_folder_id = request.POST.get('rpms_folder_id')
+            if not rpms_folder_id:
+                return JsonResponse({
+                    'message' : 'RPMS folder id is required',
+                }, status=400)
+
+            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id).first()
+            if not rpms_folder:
+                return JsonResponse({
+                    'message' : 'RPMS folder not found',
+                }, status=400)
+                
+            rpms_classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpms_folder_id)
+            if not rpms_classworks:
+                return JsonResponse({
+                    'message' : 'RPMS classworks not found',
+                }, status=400)
+            
+            
+            return JsonResponse({
+                'message' : 'RPMS classworks found successfully',
+                'rpms_classworks' : [rpms_classwork.get_rpms_classwork_information() for rpms_classwork in rpms_classworks],
+            }, status=200)
+                
+                
+                
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+    
+
+
+@csrf_exempt
 def register_school(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -876,8 +967,155 @@ def create_rating_sheet(request):
         }, status=400) 
 
 
+@csrf_exempt
+def create_rpms_folder(request):
+    try:
+        if request.method == 'POST':
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
 
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+            
+            
+            folder_name = request.POST.get('folder_name')
+            rpms_folder_school_year = request.POST.get('school_year')
+            
+            if not folder_name:
+                return JsonResponse({
+                    'message' : 'Folder name is required',
+                }, status=400)
+            
+            
+            if not rpms_folder_school_year:
+                return JsonResponse({
+                    'message' : 'School year is required',
+                }, status=400)
+            
+            
+            rpms_folder = models.RPMSFolder.objects.create(
+                rpms_folder_name = folder_name,
+                rpms_folder_school_year = rpms_folder_school_year
+            )
+            rpms_folder.rpms_folder_id = str(uuid4())
+            rpms_folder.save()
 
+            
+            return JsonResponse({
+                'message' : 'RPMS folder created successfully',
+                'rpms_name' : rpms_folder.rpms_folder_name,
+                'rpms_school_year' : rpms_folder.rpms_folder_school_year,
+            }, status=200)
+            
+            
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+@csrf_exempt
+def get_all_rpms_folders(request):
+    try:
+        if request.method == 'POST':
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+                
+
+            rpms_folders = models.RPMSFolder.objects.all()
+            if not rpms_folders:
+                return JsonResponse({
+                    'message' : 'No rpms folders found',
+                }, status=400)
+            
+            return JsonResponse({
+                'rpms_folders' : [
+                    rpms_folder.get_rpms_folder_information() for rpms_folder in rpms_folders
+                ]
+            }, status=200)
+            
+
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+@csrf_exempt
+def get_rpms_classworks(request):
+    try:
+        if request.method == 'POST':
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+                
+            
+            rpms_folder_id = request.POST.get('rpms_folder_id')
+            if not rpms_folder_id:
+                return JsonResponse({
+                    'message' : 'RPMS folder id is required',
+                }, status=400)
+
+            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id).first()
+            if not rpms_folder:
+                return JsonResponse({
+                    'message' : 'RPMS folder not found',
+                }, status=400)
+                
+            rpms_classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpms_folder_id)
+            if not rpms_classworks:
+                return JsonResponse({
+                    'message' : 'RPMS classworks not found',
+                }, status=400)
+            
+            
+            return JsonResponse({
+                'message' : 'RPMS classworks found successfully',
+                'rpms_classworks' : [rpms_classwork.get_rpms_classwork_information() for rpms_classwork in rpms_classworks],
+            }, status=200)
+                
+                
+                
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+    
+    
+
+    
+    
+    
 # ================================= School Views ============================== # 
 
 @csrf_exempt
@@ -1231,7 +1469,6 @@ def get_number_of_school_faculty_not_evaluated(request):
     },status=400) 
     
     
-    
 
 @csrf_exempt
 def search_school_faculty(request):
@@ -1314,132 +1551,8 @@ def get_search_school_faculty_for_mentioning(request):
     },status=400) 
 
 
-@csrf_exempt
-def create_COTForm(request):
-    try:
-        if request.method == 'POST':
-            
-            user = models.School.objects.filter(school_id=request.user.username).first()
-            
-            if not user:
-                return JsonResponse({
-                    'message' : 'User not found',
-                    }, status=400)
-            
-            
-            # TODO : ASK HOW THE DATA SEND TO BACKEND
-            
-            
-            return JsonResponse({
-                'message' : 'COTForm created successfully'
-            },status=200)
-        
-        
-        
-    except Exception as e:
-        return JsonResponse({
-            'status': 'error',
-            'message': f'Something went wrong : {e}'
-            }, status=500)
-    
-    return JsonResponse({
-        'message' : 'Invalid request method'
-    },status=400)
-    
-
-@csrf_exempt
-def create_IPCRFForm(request):
-    try:
-        if request.method == 'POST':
-            
-            user = models.School.objects.filter(school_id=request.user.username).first()
-            
-            if not user:
-                return JsonResponse({
-                    'message' : 'User not found',
-                    }, status=400)
-            
-            
-            # TODO : ASK HOW THE DATA SEND TO BACKEND
-            
-            
-            return JsonResponse({
-                'message' : 'IPCRF created successfully'
-            },status=200)
-        
-        
-        
-    except Exception as e:
-        return JsonResponse({
-            'status': 'error',
-            'message': f'Something went wrong : {e}'
-            }, status=500)
-    
-    return JsonResponse({
-        'message' : 'Invalid request method'
-    },status=400)
 
 
-@csrf_exempt
-def create_RPMSFolder(request):
-    try:
-        if request.method == 'POST':
-            
-            user = models.School.objects.filter(school_id=request.user.username).first()
-            
-            if not user:
-                return JsonResponse({
-                    'message' : 'User not found',
-                    }, status=400)
-            
-            
-            # TODO : ASK HOW THE DATA SEND TO BACKEND
-            
-            
-            return JsonResponse({
-                'message' : 'RPMSFolder created successfully'
-            },status=200)
-    
-    except Exception as e:
-        return JsonResponse({
-            'status': 'error',
-            'message': f'Something went wrong : {e}'
-            }, status=500)
-    
-    return JsonResponse({
-        'message' : 'Invalid request method'
-    },status=400)
-
-
-@csrf_exempt
-def create_RPMSClassWork(request):
-    try:
-        if request.method == 'POST':
-            
-            user = models.School.objects.filter(school_id=request.user.username).first()
-            
-            if not user:
-                return JsonResponse({
-                    'message' : 'User not found',
-                    }, status=400)
-            
-            
-            # TODO : ASK HOW THE DATA SEND TO BACKEND
-            
-            
-            return JsonResponse({
-                'message' : 'RPMSClassWork created successfully'
-            },status=200)
-    
-    except Exception as e:
-        return JsonResponse({
-            'status': 'error',
-            'message': f'Something went wrong : {e}'
-            }, status=500)
-    
-    return JsonResponse({
-        'message' : 'Invalid request method'
-    }, status=400)
 
 
 

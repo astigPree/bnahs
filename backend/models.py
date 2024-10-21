@@ -930,14 +930,28 @@ class RPMSFolder(models.Model):
     Args:
         models (_type_): _description_
     """
-    school_id = models.CharField(max_length=255, blank=True, default='')
-    employee_id = models.CharField(max_length=255, blank=True, default='')
-    created_at = models.DateTimeField(auto_now_add=True)
-    rpms_folder_id = models.CharField(max_length=255, blank=True, default='')
+    school_id = models.CharField(max_length=255, blank=True, default='') # I don't know where to use it, but just stay there
+    employee_id = models.CharField(max_length=255, blank=True, default='') # I don't know where to use it, but just stay there
     
+    
+    rpms_folder_name = models.CharField(max_length=255, blank=True, default='') # Name of the folder
+    rpms_folder_school_year = models.CharField(max_length=255, blank=True, default='') # School Year of the folder
+    
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    rpms_folder_id = models.CharField(max_length=255, blank=True, default='') # Unique ID of the folder
     
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.created_at}"
+    
+    
+    def get_rpms_folder_information(self):
+        data =  {  
+            'rpms_folder_name' : self.rpms_folder_name,
+            'rpms_folder_school_year' : self.rpms_folder_school_year,
+            'rpms_folder_id' : self.rpms_folder_id
+        }
+        return data
     
 
 class RPMSClassWork(models.Model):
@@ -950,8 +964,9 @@ class RPMSClassWork(models.Model):
     """
     
     
-    school_id = models.CharField(max_length=255, blank=True, default='')
-    employee_id = models.CharField(max_length=255, blank=True, default='')
+    school_id = models.CharField(max_length=255, blank=True, default='') # I don't know where to use it, but just stay there
+    employee_id = models.CharField(max_length=255, blank=True, default='') # I don't know where to use it, but just stay there
+    
     created_at = models.DateTimeField(auto_now_add=True)
     rpms_folder_id = models.CharField(max_length=255, blank=True, default='')
     class_work_id = models.CharField(max_length=255, blank=True, default='') # id of the class work
@@ -985,6 +1000,19 @@ class RPMSClassWork(models.Model):
             "Comment" : " "
         }
     """
+
+    def __str__(self):
+        return f"{self.school_id} - {self.employee_id} - {self.created_at}"
+
+    def get_rpms_classwork_information(self):
+        return {
+            'rpms_folder_id' : self.rpms_folder_id,
+            'class_work_id' : self.class_work_id,
+            'title' : self.title,
+            'objectives' : self.objectives,
+            'created_at' : self.created_at
+        }
+
 
 
 class RPMSAttachment(models.Model):
