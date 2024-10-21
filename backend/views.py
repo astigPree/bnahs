@@ -302,7 +302,6 @@ def register_school(request):
         
         verification = models.VerificationLink.generate_link(email_address)
         
-        
         Thread(target=my_utils.send_verification_email, args=(email_address, )).start()
         
 
