@@ -986,6 +986,11 @@ def login_evaluator(request):
                 return JsonResponse({
                     'message' : 'Invalid employee_id or password',
                     }, status=400)
+                
+            if user.role != 'Evaluator':
+                return JsonResponse({
+                    'message' : 'Invalid employee_id or password',
+                    }, status=400)
             
             user_authenticated = authenticate(request, username=employee_id, password=password)
             if not user_authenticated:
@@ -1109,7 +1114,15 @@ def teacher_evaluation(request ):
             
             user = models.People.objects.filter(employee_id=request.user.username).first()
             
-            # TODO : CHECK IF THE USER IS TEACHER OR NOT
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            if user.role != 'Teacher':
+                return JsonResponse({
+                    'message' : 'User is not a teacher',
+                    }, status=400)
             
             # Fetch filtered data
             ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1')  # Apply your filters here
@@ -1146,8 +1159,16 @@ def teacher_forms(request ):
             
             user = models.People.objects.filter(employee_id=request.user.username).first()
             
-            # TODO : CHECK IF THE USER IS TEACHER OR NOT
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
             
+            if user.role != 'Teacher':
+                return JsonResponse({
+                    'message' : 'User is not a teacher',
+                    }, status=400)
+             
             return JsonResponse({
                 'user' : user.get_information(),
                 'position' : user.position,
@@ -1171,7 +1192,16 @@ def teacher_kba_breakdown(request ):
             
             user = models.People.objects.filter(employee_id=request.user.username).first()
             
-            # TODO : CHECK IF THE USER IS TEACHER OR NOT
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            if user.role != 'Teacher':
+                return JsonResponse({
+                    'message' : 'User is not a teacher',
+                    }, status=400)
+             
             
             # 1. title and scores for KBA BREAKDOWN
             attachments = models.RPMSAttachment.objects.filter(employee_id=user.employee_id)
@@ -1186,7 +1216,7 @@ def teacher_kba_breakdown(request ):
             total_scores = {}
             overall_scores = 0
             for group in grouped_attachments:
-                score = sum([attachment.getScore() for attachment in grouped_attachments[group]])
+                score = sum([attachment.getTotalScores() for attachment in grouped_attachments[group]])
                 total_scores[group] = score
                 overall_scores += score
             total_scores['Overall'] = overall_scores
@@ -1214,7 +1244,16 @@ def teacher_recommendations(request ):
             
             user = models.People.objects.filter(employee_id=request.user.username).first()
             
-            # TODO : CHECK IF THE USER IS TEACHER OR NOT
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            if user.role != 'Teacher':
+                return JsonResponse({
+                    'message' : 'User is not a teacher',
+                    }, status=400)
+             
             # 2. rule based classifier for Promotion
             """
                 ---------------RECOMMENDATION CHART PERCENTAGE-------------
@@ -1319,7 +1358,7 @@ def teacher_performance(request ):
                 if year not in performances:
                     performances[year] = {}
                     performances[year]['Scores'] = []
-                performances[year]['Scores'].append( attachment.getTotalScore())
+                performances[year]['Scores'].append( attachment.getEvaluatorPart1Scores())
             
             for year in performances:
                 performances[year]['Total'] = sum(performances[year]['Scores'])
@@ -1350,15 +1389,24 @@ def teacher_swot(request ):
             
             user = models.People.objects.filter(employee_id=request.user.username).first()
             
-            # TODO : CHECK IF THE USER IS TEACHER OR NOT
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
             
-            
+            if user.role != 'Teacher':
+                return JsonResponse({
+                    'message' : 'User is not a teacher',
+                    }, status=400)
             
          
             # 4. generated text SWOT from COTForm 
-            cot_form = models.COTForm.objects.filter(employee_id=user.employee_id).first()
+            # cot_form = models.COTForm.objects.filter(employee_id=user.employee_id).first()
             generated_swot = {
-                
+                'Strengths': '',
+                'Weaknesses': '',
+                'Opportunities': '',
+                'Threats': ''
             }
             # if cot_form:
             #     swot = cot_form.generatePromtTemplate()
@@ -1390,7 +1438,11 @@ def teacher_profile(request ):
             
             user = models.People.objects.filter(employee_id=request.user.username).first()
             
-            # TODO : CHECK IF THE USER IS TEACHER OR NOT
+            if 'Teacher' != user.role:
+                return JsonResponse({
+                    'message' : 'User not found',
+                },status=400)
+            
             
             if not user:
                 return JsonResponse({

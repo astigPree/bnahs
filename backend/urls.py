@@ -19,7 +19,7 @@ urlpatterns = [
     path('admin/schools/add/', views.add_school), # WORKING
     path('admin/schools/', views.get_all_schools), # WORKING
     path('admin/schools/search/', views.get_search_schools), # WORKING
-    path('admin/schools/inbox/', views.get_school_inbox),
+    path('admin/schools/inbox/', views.get_school_inbox),  # WORKING
     
     # ============== School Path ================
     path('login_school/', views.login_school), # WORKING
@@ -31,21 +31,22 @@ urlpatterns = [
     path('school/profile/', views.get_school_information), # WORKING
     
     # ============== Evaluator Path ================
-    path('login_evaluator/', views.login_evaluator),
+    path('login_evaluator/', views.login_evaluator), # WORKING
     path('evaluator/update_profile/', views.people_update_profile),
     path('evaluator/update_education/', views.people_update_education),
+    path('evaluator/profile/', views.evaluator_profile),
     
     # =============== Teacher Path ================
     path('login_teacher/', views.login_teacher), # WORKING
     path('teacher/evaluation/', views.teacher_evaluation), 
-    path('teacher/form/', views.teacher_forms),
-    path('teacher/kba/', views.teacher_kba_breakdown),
-    path('teacher/recommendations/', views.teacher_recommendations),
-    path('teacher/performance/', views.teacher_performance),
+    path('teacher/form/', views.teacher_forms), # WORKING
+    path('teacher/kba/', views.teacher_kba_breakdown), # NEED TO TEST
+    path('teacher/recommendations/', views.teacher_recommendations), # NEED TO TEST 
+    path('teacher/performance/', views.teacher_performance), # NEED TO TEST
     path('teacher/swot/', views.teacher_swot),
     path('teacher/profile/', views.teacher_profile),
     path('teacher/update_education/', views.people_update_education),
-    path('teacher/update_profile/', views.people_update_profile),
+    path('teacher/update_profile/', views.people_update_profile), 
     
 ]
 
