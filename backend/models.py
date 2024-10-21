@@ -137,6 +137,7 @@ class People(models.Model):
     confirm_password = models.CharField(max_length=255, blank=True, default='')
     
     
+    fullname = models.CharField(max_length=255, blank=True, default='') 
     school_action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
     action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
     
@@ -155,6 +156,10 @@ class People(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
+    def save(self, *args, **kwargs):
+        self.fullname = f"{self.first_name} {self.middle_name} {self.last_name}"
+        super().save(*args, **kwargs)
+    
     def get_information(self):
         return {
             'role' : self.role,
@@ -700,20 +705,19 @@ class COTForm(models.Model):
     status = models.CharField(max_length=255, blank=True, default='Pending',
         choices=(
          ('Pending', 'Pending'),
-         ('Approved', 'Approved'),
-         ('Rejected', 'Rejected'),
-         ('Cancelled', 'Cancelled'),
          ('Completed', 'Completed'),
         ))
     
     content = models.JSONField(default=dict, blank=True)
     """
         {
+            "Welcome Page" : "Welcome Page",
             "Observer" : "Evaluator Name",
             "Teacher Observed" : "Evaluated Name",
             "Subject" : "Subject",
             "Grade Level" : "Grade 7",
             "Date : "September 05, 2023", !Save date after submiting,
+            "Quarter": "1st Quarter",
             "Questions" : {
                 "1" : {
                     "Objective" : "Applied knowledge of content within and across curriculum teaching areas. *",
@@ -727,7 +731,6 @@ class COTForm(models.Model):
             "Comments" : ""
             
         }
-    
     
     """
     

@@ -18,6 +18,8 @@ import string
 from itertools import groupby
 from uuid import uuid4
 from threading import Thread
+import json
+
 
 # Create your views here.
 
@@ -470,7 +472,7 @@ def get_all_schools(request):
                     'message' : 'User is not an admin',
                 }, status=400)
             
-            schools = models.School.objects.all()
+            schools = models.School.objects.all().order_by('-created_at')
             if not schools:
                 return JsonResponse({
                     'message' : 'School not found',
@@ -664,6 +666,167 @@ def number_of_pending_evaluation(request):
     return JsonResponse({
         'message' : 'Invalid request',
         }, status=400)
+
+
+@csrf_exempt
+def evaluation_submission_rate(request):
+    return JsonResponse({
+        'message' : 'Not yet implemented',
+    }, status=400)
+    
+@csrf_exempt
+def all_teacher_recommendations(request):
+    return JsonResponse({
+        'message' : 'Not yet implemented',
+    }, status=400)
+
+
+@csrf_exempt
+def all_teacher_tenure(request):
+    return JsonResponse({
+        'message' : 'Not yet implemented',
+    }, status=400)
+    
+    
+@csrf_exempt
+def distribution_ratings(request):
+    return JsonResponse({
+        'message' : 'Not yet implemented',
+    }, status=400)
+
+
+@csrf_exempt
+def reject_school(request):
+    try:
+        if request.method == 'POST':
+            
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+            
+            school_id = request.POST.get('school_id')
+            if not school_id:
+                return JsonResponse({
+                    'message' : 'School id is required',
+                }, status=400)
+            
+            rejected_school = models.School.objects.filter(id=school_id).first()
+            if not rejected_school:
+                return JsonResponse({
+                    'message' : 'School not found',
+                }, status=400)
+                
+            rejected_school.is_accepted = False
+            schools = models.School.objects.filter(is_accepted=True).order_by('-created_at')
+
+            return JsonResponse({
+                'message' : 'School rejected successfully',
+                'schools' : [school.get_school_information() for school in schools],
+            }, status=200)
+            
+
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400) 
+
+
+@csrf_exempt
+def create_rating_sheet(request):
+    try:
+        if request.method == 'POST':
+
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+            
+            content = request.POST.get('content')
+            if not content:
+                return JsonResponse({
+                    'message' : 'Content is required',
+                }, status=400)
+            
+            """
+                {
+                    "Welcome Page" : "Welcome Page",
+                    "Observer" : "Evaluator Name",
+                    "Teacher Observed" : "Evaluated Name",
+                    "Subject" : "Subject",
+                    "Grade Level" : "Grade 7",
+                    "Date : "September 05, 2023", !Save date after submiting,
+                    "Quarter": "1st Quarter",
+                    "Questions" : {
+                        "1" : {
+                            "Objective" : "Applied knowledge of content within and across curriculum teaching areas. *",
+                            "Selected" : "7" !Selected rate
+                        },
+                        "2" : {
+                            "Objective" : "Applied knowledge of content within and across curriculum teaching areas. *",
+                            "Selected" : "7" !Selected rate, kung "NO" means its "3"
+                        }
+                    },
+                    "Comments" : ""
+                    
+                }
+            
+            """    
+
+            # TODO : ASK HOW TO SEPARATE IT!
+            # Checking if the data is exist before saving
+            content : dict = json.loads(content)
+            
+            welcome_page = content['Welcome Page']
+            observer = content['Observer']
+            teacher_observed = content['Teacher Observed']
+            subject = content['Subject'] # TODO : ASK HOW TO SEPARATE IT!
+            grade_level = content['Grade Level'] # TODO : ASK HOW TO SEPARATE IT!
+            date = content['Date']
+            questions = content['Questions']
+            quarter = content['Quarter']
+            comments = content['Comments']
+            
+            for question_id, questions in questions.items():
+                objective = questions['Objective']
+                selected = questions['Selected']
+            
+            
+            
+            
+            
+
+            return JsonResponse({
+                'message' : 'Rating sheet created successfully',
+            }, status=200)
+            
+
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400) 
+
+
 
 
 # ================================= School Views ============================== # 

@@ -23,7 +23,10 @@ urlpatterns = [
     
     path('admin/schools/count/', views.get_total_number_of_schools),
     path('admin/school/teacher/count/', views.get_total_number_of_teachers),
-    path('admin/school/evaluated/count/', views.number_of_evaluation_conducted),
+    path('admin/school/teacher/evaluated/count/', views.number_of_evaluation_conducted),
+    path('admin/school/teacher/evaluation/pending/count/', views.number_of_pending_evaluation),
+    
+    path('admin/school/reject/', views.reject_school),
     
     # ============== School Path ================
     path('login_school/', views.login_school), # WORKING
