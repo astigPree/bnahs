@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/schools/inbox/', views.get_school_inbox),  # WORKING
     
     path('admin/schools/count/', views.get_total_number_of_schools),
-    path('admin/school/teacher/count/', views.get_total_number_of_teachers),
+    path('admin/school/teacher/count/', views.get_total_number_of_teachers_in_all_school),
     path('admin/school/teacher/evaluated/count/', views.number_of_evaluation_conducted),
     path('admin/school/teacher/evaluation/pending/count/', views.number_of_pending_evaluation),
     
@@ -40,6 +40,9 @@ urlpatterns = [
     path('school/profile/', views.get_school_information), # WORKING
     
     path('school/faculties/mention/', views.get_search_school_faculty_for_mentioning),
+    path('school/faculties/count/', views.get_number_of_school_faculty),
+    path('school/faculties/evaluated/count/', views.get_number_of_school_faculty_evaluated),
+    path('school/faculties/evaluated/pending/count/', views.get_number_of_school_faculty_not_evaluated),
     
     # ============== Evaluator Path ================
     path('login_evaluator/', views.login_evaluator), # WORKING

@@ -79,6 +79,7 @@ class School(models.Model):
             'school_logo' : '',
             'is_accepted' : self.is_accepted,
             'is_verified' : self.is_verified,
+            'role' : 'School Admin'
         }
         
         if self.school_logo:
@@ -184,10 +185,10 @@ class People(models.Model):
         self.save()
     
 
-    def get_name_and_id(self):
+    def get_name_and_action_id(self):
         return {
             'name' : f"{self.first_name} {self.middle_name} {self.last_name}",
-            'id' : self.employee_id,
+            'id' : self.action_id,
         }
     
 
@@ -227,14 +228,29 @@ class Post(models.Model):
         return f"{self.post_owner} - {self.title}"
     
     
-    def get_post(self):
-        return {
+    def get_post(self, action_id = None):
+        data = {
             'post_owner' : self.post_owner,
             'title' : self.title,
             'content' : self.content,
             'created_at' : self.created_at,
-            'liked' : self.liked
+            'number_of_likes' : 0,
+            'liked' : False,
+            'commented' : False,
         }
+        
+        if self.liked:
+            data['number_of_likes'] = len(self.liked)
+        
+        if action_id:
+            if action_id in self.liked:
+                data['liked'] = True
+            if action_id in self.commented:
+                data['commented'] = True
+        
+        return data
+        
+        
     
 
 class Comment(models.Model):
@@ -256,20 +272,23 @@ class Comment(models.Model):
     def __str__(self):
         return f"{self.comment_owner} - {self.post_id}"
     
-    def get_comment(self):
+    def get_comment(self , action_id = None):
         data = {
             'content' : self.content,
             'created_at' : self.created_at,
             'post_id' : self.post_id,
             'comment_owner' : self.comment_owner,
             'replied_to' : self.replied_to,
-            'is_seen' : self.is_seen,
-            'attachment' : '',
+            'attachment' : ''
         }
         
         if self.attachment or self.attachment != "":
             data['attachment'] = self.attachment.url
-            
+        
+        if action_id:
+            if action_id in self.is_seen:
+                data['is_seen'] = True 
+        
         return data
     
     

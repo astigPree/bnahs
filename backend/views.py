@@ -80,12 +80,14 @@ def get_feeds(request):
                     'message' : 'User not found',
                 }, status=400)
             
+            
+            
             feeds = {}
             posts = models.Post.objects.filter(post_owner=user.school_action_id).order_by('-created_at')
             for post in posts:
                 comments = models.Comment.objects.filter(post_id=post.post_id).order_by('-created_at')
                 feeds[post.post_id] = {
-                    "post" : post.get_post(),
+                    "post" : post.get_post(action_id=user.action_id),
                     "comments" : [comment.get_comment() for comment in comments]
                 }
             
@@ -612,7 +614,7 @@ def get_total_number_of_schools(request):
     
 
 @csrf_exempt
-def get_total_number_of_teachers(request):
+def get_total_number_of_teachers_in_all_school(request):
     try:
         if request.method == 'GET':
 
@@ -1145,6 +1147,93 @@ def get_all_school_faculty(request):
 
 
 @csrf_exempt
+def get_number_of_school_faculty(request):
+    try:
+        if request.method == 'GET':
+
+            user = models.School.objects.filter(school_id=request.user.username).first()
+
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+
+            people = models.People.objects.filter(school_id=user.school_id, role="Teacher")
+
+            return JsonResponse({
+                'number_of_school_faculty' : len(people)
+            },status=200)
+
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Something went wrong : {e}'
+            }, status=500)
+
+    return JsonResponse({
+        'message' : 'Invalid request method'
+    },status=400)
+
+
+@csrf_exempt
+def get_number_of_school_faculty_evaluated(request):
+    try:
+        if request.method == 'GET':
+            user = models.School.objects.filter(school_id=request.user.username).first()
+
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+
+            people = models.People.objects.filter(school_id=user.school_id, role="Teacher", is_evaluated=True)
+
+            return JsonResponse({
+                'number_of_school_faculty_evaluated' : len(people)
+            },status=200)
+
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Something went wrong : {e}'
+            }, status=500)
+
+    return JsonResponse({
+        'message' : 'Invalid request method'
+    },status=400) 
+
+
+@csrf_exempt
+def get_number_of_school_faculty_not_evaluated(request):
+    try:
+        if request.method == 'GET':
+            user = models.School.objects.filter(school_id=request.user.username).first()
+
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+
+            people = models.People.objects.filter(school_id=user.school_id, role="Teacher", is_evaluated=False)
+
+            return JsonResponse({
+                'number_of_school_faculty_evaluated' : len(people)
+            },status=200)
+
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Something went wrong : {e}'
+            }, status=500)
+
+    return JsonResponse({
+        'message' : 'Invalid request method'
+    },status=400) 
+    
+    
+    
+
+@csrf_exempt
 def search_school_faculty(request):
     try:
         if request.method == 'POST':
@@ -1210,7 +1299,7 @@ def get_search_school_faculty_for_mentioning(request):
                 },status=200)
             
             return JsonResponse({
-                'people' : [person.get_name_and_id() for person in search_people],
+                'people' : [person.get_name_and_action_id() for person in search_people],
             },status=200)
                 
 
@@ -1223,7 +1312,6 @@ def get_search_school_faculty_for_mentioning(request):
     return JsonResponse({
         'message' : 'Invalid request method'
     },status=400) 
-
 
 
 @csrf_exempt
@@ -1321,7 +1409,6 @@ def create_RPMSFolder(request):
     return JsonResponse({
         'message' : 'Invalid request method'
     },status=400)
-
 
 
 @csrf_exempt
