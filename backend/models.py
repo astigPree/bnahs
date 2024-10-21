@@ -216,7 +216,7 @@ class Post(models.Model):
 class Comment(models.Model):
     content = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
-    post_id = models.IntegerField(default=0) # post_id of post where comment is posted
+    post_id = models.CharField(max_length=255, blank=True, default='') # post_id of post where comment is posted
     comment_owner = models.CharField(max_length=255, blank=True, default='') # Action ID of owner of comment
     attachment = models.FileField(upload_to='comment/', blank=True, default='')
     

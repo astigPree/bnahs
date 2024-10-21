@@ -10,21 +10,23 @@ urlpatterns = [
     # ============= General Path ================
     path('user/feeds/', views.get_feeds),
     path('user/notifications/', views.get_notifications),
-    path('user/logout/', views.people_logout),
+    path('user/logout/', views.people_logout), # WORKING
     
-    path('register/school/', views.register_school),
+    path('register/school/', views.register_school), # WORKING
     
     # ============ Admin Path ================
-    path('login_admin/', views.login_admin),
-    path('admin/schools/add/', views.add_school),
-    path('admin/schools/', views.get_all_schools),
+    path('login_admin/', views.login_admin), # WORKING
+    path('admin/schools/add/', views.add_school), # WORKING
+    path('admin/schools/', views.get_all_schools), # WORKING
+    path('admin/schools/search/', views.get_search_schools), # WORKING
+    path('admin/schools/inbox/', views.get_school_inbox),
     
     # ============== School Path ================
-    path('login_school/', views.login_school),
-    path('school/register/people/', views.register_people),
-    path('school/feeds/', views.get_school_feeds),
-    path('school/post/', views.school_post),
-    path('school/faculties/', views.get_all_school_faculty),
+    path('login_school/', views.login_school), # WORKING
+    path('school/register/people/', views.register_people), # WORKING
+    path('school/feeds/', views.get_school_feeds), # WORKING
+    path('school/post/', views.school_post), # WORKING
+    path('school/faculties/', views.get_all_school_faculty), 
     path('school/faculties/search/', views.search_school_faculty),
     
     # ============== Evaluator Path ================

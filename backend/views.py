@@ -110,7 +110,7 @@ def get_notifications(request):
     try:
         if request.method == 'GET':  
             
-            user = models.People.objects.filter(employee_id=request.user.username).first()
+            user = models.People.objects.filter(username=request.user.username).first()
             
             if not user:
                 return JsonResponse({
@@ -385,10 +385,15 @@ def add_school(request):
                 }, status=400)
             
 
+            school.is_accepted = True
+            school.action_id = str(uuid4())
+            school.save()
+            
             user = User.objects.create(
                 username=school.email_address,
                 password=make_password(school.password),
             )
+            
             
             Thread(target=my_utils.send_account_info_email, args=(
                 school.email_address, school.email_address, school.password , 'account.html' , settings.EMAIL_HOST_USER, 'School Registration'
@@ -413,7 +418,7 @@ def get_school_inbox(request):
     try:
         if request.method == 'GET':
             
-            user = models.MainAdmin.objects.filter(employee_id=request.user.username).first()
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
@@ -446,7 +451,7 @@ def get_all_schools(request):
     try:
         if request.method == 'GET':
             
-            user = models.MainAdmin.objects.filter(employee_id=request.user.username).first()
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
@@ -478,7 +483,7 @@ def get_search_schools(request):
     try:
         if request.method == 'POST':
             
-            user = models.MainAdmin.objects.filter(employee_id=request.user.username).first()
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
@@ -491,7 +496,7 @@ def get_search_schools(request):
                     'message' : 'Please provide query',
                 }, status=400)
             
-            schools = models.School.objects.filter(name__icontains=query)
+            schools = models.School.objects.filter(school_name__icontains=query)
             if not schools:
                 return JsonResponse({
                     'message' : 'School not found',
@@ -521,6 +526,14 @@ def register_people(request):
     try:
         # TODO : CHECK IF THE SCHOOL ADMIN IS LOGIN
         if request.method == 'POST':
+            
+            school_user = models.School.objects.filter(email_address=request.user.username).first()
+            if not school_user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            
             role = request.POST.get('role')
             school_id = request.POST.get('school_id')
             employee_id = request.POST.get('employee_id')
@@ -557,6 +570,7 @@ def register_people(request):
             )
             
             people.action_id = str(uuid4())
+            people.school_id = school_user.school_id
             people.save()
 
             user = User.objects.create(
@@ -564,7 +578,7 @@ def register_people(request):
                 password=make_password(password)
             )
 
-            return JsonResponse({'status': 'success', 'message': 'User and People record created successfully'})
+            return JsonResponse({'status': 'success', 'message': 'Faculty record created successfully'})
 
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': f'Something went wrong : {e}'}, status=500)
@@ -583,13 +597,13 @@ def login_school(request):
                     'message' : 'Please provide school_id and password',
                     }, status=400)
             
-            user = models.School.objects.filter(email=email, password=password).first()
+            user = models.School.objects.filter(email_address=email, password=password).first()
             if not user:
                 return JsonResponse({
                     'message' : 'Invalid school_id or password',
                     }, status=400)
             
-            user_authenticated = authenticate(request, username=school_id, password=password)
+            user_authenticated = authenticate(request, username=email, password=password)
             if not user_authenticated:
                 return JsonResponse({
                     'message' : 'Invalid school_id or password',
@@ -613,7 +627,7 @@ def login_school(request):
 def get_school_feeds(request):
     try:
         if request.method == 'GET':
-            user = models.School.objects.filter(school_id=request.user.username).first()
+            user = models.School.objects.filter(email_address=request.user.username).first()
             
             if not user:
                 return JsonResponse({
@@ -621,23 +635,17 @@ def get_school_feeds(request):
                     }, status=400)
             
             feeds = {}
-            posts = models.Post.objects.filter(school_action_id=user.action_id).order_by('-created_at')
+            posts = models.Post.objects.filter(post_owner=user.action_id).order_by('-created_at')
             for post in posts:
                 comments = models.Comment.objects.filter(post_id=post.post_id).order_by('-created_at')
                 feeds[post.post_id] = {
                     "post" : post.get_post(),
                     "comments" : [comment.get_comment() for comment in comments]
                 }
-            
-            
-            
                 
             return JsonResponse({
                 'feeds' : feeds
             },status=200)
-        
-        
-        
         
     except Exception as e:
         return JsonResponse({
@@ -661,6 +669,12 @@ def school_post(request):
     try:
         if request.method == 'POST':
             
+            user = models.School.objects.filter(email_address=request.user.username).first()
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
             
             content = request.POST.get('content')
             content_file = request.FILES.get('content_file')
@@ -671,21 +685,15 @@ def school_post(request):
                     }, status=400)
             
                 
-            
-            user = models.School.objects.filter(school_id=request.user.username).first()
-            
-            if not user:
-                return JsonResponse({
-                    'message' : 'User not found',
-                    }, status=400)
-                
-                
             # TODO : CHECK THE LOGIC
             post = models.Post.objects.create(
                 post_owner=user.action_id,
                 content=content,
                 content_file=content_file if content_file else ''
             )
+            
+            post.post_id = str(uuid4())
+            post.save()
             
             return JsonResponse({
                 'message' : 'Post created successfully'
