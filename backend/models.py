@@ -330,61 +330,131 @@ class IPCRFForm(models.Model):
     
     # PART 1 DATA
     {
-        
-        "1" : {
-            "Question" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
-            "QUALITY" : {
-                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "Rate" : "5"
-            },
-            "EFFICIENCY" : {
-                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "Rate" : "1"
-            },
-            "TIMELINES" : {
-                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "Rate" : "0"
+        "INSTRUCTIONS" : {
+            "1" : {
+                "KRA" : "Content Knowledge and Pedagogy",
+                "OBJECTIVES" : {
+                    "1" : {
+                        "Number" : "1",
+                        "Section Number" : "1.1.1",
+                        "Content" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
+                    },
+                    "2" : {
+                        "Number" : "1",
+                        "Section Number" : "1.1.1",
+                        "Content" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
+                    }
+                },
+                "COI/NCOI" : {
+                    "1" : {
+                        "Content" : "COI"
+                    },
+                    "2" : {
+                        "Content" : "NCOI"
+                    },
+                },
+                "Weight" : {
+                    "1" : {
+                        "Content" : "7%"
+                    },
+                    "2" : {
+                        "Content" : "7%"
+                    },
+                },
+            }, 
+            "2" : {
+                "KRA" : "Content Knowledge and Pedagogy",
+                "OBJECTIVES" : {
+                    "1" : {
+                        "Number" : "1",
+                        "Section Number" : "1.1.1",
+                        "Content" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
+                    },
+                    "2" : {
+                        "Number" : "1",
+                        "Section Number" : "1.1.1",
+                        "Content" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
+                    }
+                },
+                "COI/NCOI" : {
+                    "1" : {
+                        "Content" : "COI"
+                    },
+                    "2" : {
+                        "Content" : "NCOI"
+                    },
+                },
+                "Weight" : {
+                    "1" : {
+                        "Content" : "7%"
+                    },
+                    "2" : {
+                        "Content" : "7%"
+                    },
+                },
             }
         },
-        "2" : {
-            "Question" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
-            "QUALITY" : {
-                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "Rate" : "0"
+        
+        
+        "FORM" : {
+            
+            "1" : {
+                "Question" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
+                "QUALITY" : {
+                    "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "Rate" : "5"
+                },
+                "EFFICIENCY" : {
+                    "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "Rate" : "1"
+                },
+                "TIMELINES" : {
+                    "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "Rate" : "0"
+                }
             },
-            "EFFICIENCY" : {
-                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "Rate" : "0"
-            },
-            "TIMELINES" : {
-                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "Rate" : "0"
+            "2" : {
+                "Question" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
+                "QUALITY" : {
+                    "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "Rate" : "0"
+                },
+                "EFFICIENCY" : {
+                    "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "Rate" : "0"
+                },
+                "TIMELINES" : {
+                    "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "Rate" : "0"
+                }
             }
+            
         }
+        
         
         
     }
@@ -403,9 +473,7 @@ class IPCRFForm(models.Model):
                 "3" : "Sets personal goals and direction, needs and development.",
                 "4" : "Sets personal goals and direction, needs and development.",
                 "5" : "Sets personal goals and direction, needs and development.",
-                "Selected" : [
-                    "1" , "2", "3"
-                ]
+                "Selected" : []
             },
             "2" : {
                 "Title" : "Professionalism and Ethics",
@@ -891,7 +959,23 @@ class RPMSClassWork(models.Model):
     objectives = models.JSONField(default=dict, blank=True)
     """
         {
-            "Instructions" : "<p>Hello World</p>"
+            "Instructions" : {
+                "Title" : "KRA 1: Content Knowledge and Pedagogy",
+                "Owner" : "John Doe",
+                "Points" : "28 points" ,
+                "Objectives" : {
+                    "1" : {
+                        "Main Title" : "7% | Objective 1 (Applied knowledge of content within and across curriculum teaching areas)",
+                        "Title" : "Means of Verification (MOV)",
+                        "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s"
+                    },
+                    "2" : {
+                        "Main Title" : "7% | Objective 1 (Applied knowledge of content within and across curriculum teaching areas)",
+                        "Title" : "Means of Verification (MOV)",
+                        "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s"
+                    }
+                }
+            },
             "Objectives" : {
                 "1" : {
                     "Content" : "Established safe and secure learning environments to enhance learning through the consistent implementation of policies",
