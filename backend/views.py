@@ -603,6 +603,19 @@ def login_school(request):
                     'message' : 'Invalid school_id or password',
                     }, status=400)
             
+            
+            if not user.is_verified:
+                return JsonResponse({
+                    'message' : 'School not verified',
+                    }, status=400)
+            
+            if not user.is_accepted:
+                return JsonResponse({
+                    'message' : 'School not accepted, Wait for admin approval',
+                    }, status=400)
+            
+            
+            
             user_authenticated = authenticate(request, username=email, password=password)
             if not user_authenticated:
                 return JsonResponse({
