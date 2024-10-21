@@ -13,7 +13,6 @@ urlpatterns = [
     path('user/logout/', views.people_logout),
     
     path('register/school/', views.register_school),
-    path('register/school/verifications/<str:token>/', views.verify_school),
     
     # ============ Admin Path ================
     path('login_admin/', views.login_admin),
