@@ -446,18 +446,47 @@ def create_ipcrf_form_proficient( school : models.School , teacher : models.Peop
                 "Rate" : "0"
             },
             "TIMELINES" : {
-                "1" : "fdsfsdf",
-                "2" : "fdsfsdf",
-                "3" : "fdsfsdf",
-                "4" : "fdsfsdf",
-                "5" : "fdsfsdf",
+                "1" : "No acceptable evidence was shown",
+                "2" : "Only one (1) of the submitted MOVs was accomplished within the prescribed RPMS Phase",
+                "3" : "Two (2) of the submitted MOVs were accomplished within the prescribed RPMS Phase",
+                "4" : "Three (3) of the submitted MOVs were accomplished within the prescribed RPMS Phase",
+                "5" : "All four (4) submitted MOVs were accomplished within the prescribed RPMS Phase",
+                "Rate" : "0"
+            }
+        }
+    }
+    
+    domains['PLUS FACTOR'] = {
+        "15" : {
+            "Question" : "Performed various related works/activities that contribute to the teaching learning process",
+            "QUALITY" : {
+                "1" : "No acceptable evidence was shown",
+                "2" : "Performed at least (1) related work/activity that contributed to the teaching-learning process within the class as evidenced by the submitted MOV.",
+                "3" : "Performed at least (1) related work/activity that contributed to the teaching-learning process within the learning area/department as evidenced by the submitted MOV.",
+                "4" : "Performed at least (1) related work/activity that contributed to the teaching-learning process within the school/Community Learning Center (CLC) as evidenced by the submitted MOV.",
+                "5" : "Performed at least (1) related work/activity that contributed to the teaching-learning process beyond the school/Community Learning Center (CLC) as evidenced by the submitted MOV.",
+                "Rate" : "0"
+            },
+            "EFFICIENCY" : {
+                "1" : "No acceptable evidence was shown",
+                "2" : "Submitted MOV that shows considerable overlap with, hence significantly affecting the performance of the actual teaching-learning process.",
+                "3" : "Submitted MOV that shows reasonable interlap with the actual teaching-learning process, as evidenced by the annotation provided.",
+                "4" : "Submitted MOVs that details the perceived positive contribution to the teaching-learning process, as evidenced by the annotation provided.",
+                "5" : "Submitted MOVs that details the achieved positive contribution to the teaching-learning process, as evidenced by the annotation provided.",
+                "Rate" : "0"
+            },
+            "TIMELINES" : {
+                "1" : "No acceptable evidence was shown",
+                "2" : "Submitted MOVs were distributed across 1 quarters",
+                "3" : "Submitted MOVs were distributed across 2 quarters",
+                "4" : "Submitted MOVs were distributed across 3 quarters",
+                "5" : "Submitted MOVs were distributed across 4 quarters",
                 "Rate" : "0"
             }
         },
-
     }
     
-    ipcrf_form_part_1.content_for_teacher = None
+    ipcrf_form_part_1.content_for_teacher = domains
 
 
 
