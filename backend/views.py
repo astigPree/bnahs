@@ -904,37 +904,55 @@ def create_rating_sheet(request):
             # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND TEACHER
             # Checking if the data is exist before saving
             content : dict = json.loads(content)
-            
-            welcome_page = content['Welcome Page']
-            observer = content['Observer']
-            teacher_observed = content['Teacher Observed']
+            # Matatangap na data sa front end
+            """
+                {
+                    "COT Type" : "Proficient", ! Used to identify what rating type of form
+                    "Observer ID" : "Evaluator ID",
+                    "Observer Name" : "Evaluator Name", ! Pwede blanko pagpasa
+                    "Teacher Name" : "Evaluated Name", ! Pwede blanko pagpasa
+                    "Teacher ID" : "Evaluated ID",
+                    "Subject & Grade Level" : "Subject & Grade 7",
+                    "Date : "September 05, 2023", 
+                    "Quarter": "1st Quarter"
+                }
+            """
+            cot_type = content['COT Type']
+            observer = content['Observer ID']
+            teacher_observed = content['Teacher ID']
             taught = content['Subject & Grade Level'] 
             date = content['Date']
-            questions = content['Questions']
             quarter = content['Quarter']
-            comments = content['Comments']
             
-            for _, questions in questions.items():
-                objective = questions['Objective']
-                selected = questions['Selected']
-            
-            
-            search_observer = models.People.objects.filter(fullname_icontains=observer).first()
+            # Check for evaluator
+            search_observer = models.People.objects.filter(employee_id=observer, role='Evaluator').first()
             if not search_observer:
-                search_observer = models.People.objects.filter(employee_id=observer).first()
-                if not search_observer:
+                return JsonResponse({
+                    'message' : 'Observer not found',
+                }, status=400)
+            
+            if cot_type == 'Proficient':
+                if not my_utils.is_proficient_faculty(search_observer):
                     return JsonResponse({
-                        'message' : 'Observer not found',
+                        'message' : 'Observer is not a proficient faculty',
                     }, status=400)
-                
-            search_teacher = models.People.objects.filter(fullname_icontains=teacher_observed).first()
+            elif cot_type == 'Highly Proficient':
+                if not my_utils.is_highly_proficient_faculty(search_observer):
+                    return JsonResponse({
+                        'message' : 'Observer is not a highly proficient faculty',
+                    }, status=400)
+            else :
+                return JsonResponse({
+                    'message' : 'COT type not found',
+                }, status=400)
+            
+            
+            search_teacher = models.People.objects.filter(employee_id=teacher_observed , role='Teacher').first()
             if not search_teacher:
-                search_teacher = models.People.objects.filter(employee_id=teacher_observed).first()
-                if not search_teacher:
-                    return JsonResponse({
-                        'message' : 'Teacher observed not found',
-                    }, status=400)
-                
+                return JsonResponse({
+                    'message' : 'Teacher observed not found',
+                }, status=400)
+            
             
             school = models.School.objects.filter(school_id=search_observer.school_id).first()
             if not school:
@@ -943,13 +961,14 @@ def create_rating_sheet(request):
                 }, status=400)
             
             
-            cot_form = models.COTForm.objects.create(
-                school_id = school.school_id,
-                employee_id = search_observer.employee_id,
-                evaluated_id = search_teacher.employee_id,
-                content = content
+            my_utils.create_cot_form(
+                school=school, 
+                observer=search_observer, 
+                teacher_observed=search_teacher, 
+                subject=taught, 
+                cot_date=date, 
+                quarter=quarter
             )
-            cot_form.save()
             
 
             return JsonResponse({
@@ -1039,10 +1058,6 @@ def get_all_rpms_folders(request):
                 
 
             rpms_folders = models.RPMSFolder.objects.all()
-            if not rpms_folders:
-                return JsonResponse({
-                    'message' : 'No rpms folders found',
-                }, status=400)
             
             return JsonResponse({
                 'rpms_folders' : [
@@ -1089,10 +1104,6 @@ def get_rpms_classworks(request):
                 }, status=400)
                 
             rpms_classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpms_folder_id)
-            if not rpms_classworks:
-                return JsonResponse({
-                    'message' : 'RPMS classworks not found',
-                }, status=400)
             
             
             return JsonResponse({
@@ -1111,8 +1122,33 @@ def get_rpms_classworks(request):
         'message' : 'Invalid request',
         }, status=400)
     
-    
 
+@csrf_exempt
+def create_ipcrf_form(request):
+    try:
+        
+        if request.method == 'POST':
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+                
+            
+        
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
     
     
     
@@ -1210,15 +1246,15 @@ def login_school(request):
                     }, status=400)
             
             
-            if not user.is_verified:
-                return JsonResponse({
-                    'message' : 'School not verified',
-                    }, status=400)
+            # if not user.is_verified:
+            #     return JsonResponse({
+            #         'message' : 'School not verified',
+            #         }, status=400)
             
-            if not user.is_accepted:
-                return JsonResponse({
-                    'message' : 'School not accepted, Wait for admin approval',
-                    }, status=400)
+            # if not user.is_accepted:
+            #     return JsonResponse({
+            #         'message' : 'School not accepted, Wait for admin approval',
+            #         }, status=400)
             
             
             

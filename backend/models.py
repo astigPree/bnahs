@@ -90,7 +90,6 @@ class School(models.Model):
         
 
     
-
 class People(models.Model):
     role = models.CharField(max_length=255, choices=(
         ('Evaluator', 'Evaluator'), 
@@ -192,11 +191,10 @@ class People(models.Model):
         }
     
 
+
 class Post(models.Model):
     post_owner = models.CharField(max_length=255, blank=True, default='') # Action ID of owner of post
-    title = models.CharField(max_length=255, blank=True, default='')
     content = models.TextField(blank=True, default='') # Content of post
-    content_file = models.FileField(upload_to='uploads/', default='', blank=True, null=True) # File uploaded by user
     created_at = models.DateTimeField(auto_now_add=True)
     post_id = models.CharField(max_length=255, blank=True, default='') # Generated id by system to identify post
     liked = models.JSONField(default=list, blank=True)
@@ -231,7 +229,6 @@ class Post(models.Model):
     def get_post(self, action_id = None):
         data = {
             'post_owner' : self.post_owner,
-            'title' : self.title,
             'content' : self.content,
             'created_at' : self.created_at,
             'number_of_likes' : 0,
@@ -250,7 +247,20 @@ class Post(models.Model):
         
         return data
         
-        
+           
+
+class PostAttachment(models.Model):
+    ppst_owner = models.CharField(max_length=255, blank=True, default='')
+    post_id = models.CharField(max_length=255, blank=True, default='')
+    attachment = models.FileField(upload_to='uploads/', default='', blank=True, null=True)
+    
+    def __str__(self):
+        return f"{self.post_id} - {self.attachment}"
+
+    def get_attachment(self):
+        return {
+            'attachment' : self.attachment.url if self.attachment else '',
+        }
     
 
 class Comment(models.Model):
@@ -258,8 +268,7 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     post_id = models.CharField(max_length=255, blank=True, default='') # post_id of post where comment is posted
     comment_owner = models.CharField(max_length=255, blank=True, default='') # Action ID of owner of comment
-    attachment = models.FileField(upload_to='comment/', blank=True, default='')
-    
+
     replied_to = models.CharField(max_length=255, blank=True, default='') # Action ID where comment is replied
     is_seen = models.JSONField(default=list, blank=True)
     """
@@ -310,7 +319,6 @@ class Comment(models.Model):
         return ( True, action_id in self.is_seen)
 
 
-
 class IPCRFForm(models.Model):
     """
         Form for the teacher to fill out
@@ -330,132 +338,60 @@ class IPCRFForm(models.Model):
     
     # PART 1 DATA
     {
-        "INSTRUCTIONS" : {
-            "1" : {
-                "KRA" : "Content Knowledge and Pedagogy",
-                "OBJECTIVES" : {
-                    "1" : {
-                        "Number" : "1",
-                        "Section Number" : "1.1.1",
-                        "Content" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
-                    },
-                    "2" : {
-                        "Number" : "1",
-                        "Section Number" : "1.1.1",
-                        "Content" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
-                    }
-                },
-                "COI/NCOI" : {
-                    "1" : {
-                        "Content" : "COI"
-                    },
-                    "2" : {
-                        "Content" : "NCOI"
-                    },
-                },
-                "Weight" : {
-                    "1" : {
-                        "Content" : "7%"
-                    },
-                    "2" : {
-                        "Content" : "7%"
-                    },
-                },
-            }, 
-            "2" : {
-                "KRA" : "Content Knowledge and Pedagogy",
-                "OBJECTIVES" : {
-                    "1" : {
-                        "Number" : "1",
-                        "Section Number" : "1.1.1",
-                        "Content" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
-                    },
-                    "2" : {
-                        "Number" : "1",
-                        "Section Number" : "1.1.1",
-                        "Content" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
-                    }
-                },
-                "COI/NCOI" : {
-                    "1" : {
-                        "Content" : "COI"
-                    },
-                    "2" : {
-                        "Content" : "NCOI"
-                    },
-                },
-                "Weight" : {
-                    "1" : {
-                        "Content" : "7%"
-                    },
-                    "2" : {
-                        "Content" : "7%"
-                    },
-                },
+        "1" : {
+            "Question" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
+            "QUALITY" : {
+                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "Rate" : "5"
+            },
+            "EFFICIENCY" : {
+                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "Rate" : "1"
+            },
+            "TIMELINES" : {
+                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "Rate" : "0"
             }
         },
-        
-        
-        "FORM" : {
-            
-            "1" : {
-                "Question" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
-                "QUALITY" : {
-                    "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "Rate" : "5"
-                },
-                "EFFICIENCY" : {
-                    "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "Rate" : "1"
-                },
-                "TIMELINES" : {
-                    "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "Rate" : "0"
-                }
+        "2" : {
+            "Question" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
+            "QUALITY" : {
+                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "Rate" : "0"
             },
-            "2" : {
-                "Question" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
-                "QUALITY" : {
-                    "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "Rate" : "0"
-                },
-                "EFFICIENCY" : {
-                    "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "Rate" : "0"
-                },
-                "TIMELINES" : {
-                    "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                    "Rate" : "0"
-                }
+            "EFFICIENCY" : {
+                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "Rate" : "0"
+            },
+            "TIMELINES" : {
+                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                "Rate" : "0"
             }
-            
         }
-        
-        
         
     }
     
@@ -796,7 +732,7 @@ class IPCRFForm(models.Model):
         return data
     
     
-    
+
 class COTForm(models.Model):
     """
         Form for evaluator to evaluate a teacher
@@ -815,9 +751,10 @@ class COTForm(models.Model):
     content = models.JSONField(default=dict, blank=True)
     """
         {
-            "Welcome Page" : "Welcome Page",
-            "Observer" : "Evaluator Name / Evaluator ID",
-            "Teacher Observed" : "Evaluated Name / Evaluated ID",
+            "Observer ID" : "Evaluator ID",
+            "Observer Name" : "Evaluator Name",
+            "Teacher Name" : "Evaluated Name",
+            "Teacher ID" : "Evaluated ID",
             "Subject & Grade Level" : "Subject & Grade 7",
             "Date : "September 05, 2023", !Save date after submiting,
             "Quarter": "1st Quarter",
@@ -832,9 +769,7 @@ class COTForm(models.Model):
                 }
             },
             "Comments" : ""
-            
         }
-    
     """
     
     
@@ -936,7 +871,7 @@ class RPMSFolder(models.Model):
     
     rpms_folder_name = models.CharField(max_length=255, blank=True, default='') # Name of the folder
     rpms_folder_school_year = models.CharField(max_length=255, blank=True, default='') # School Year of the folder
-    
+    is_for_teacher_proficient = models.BooleanField(default=False) # If True, the folder is for teacher proffecient
     
     created_at = models.DateTimeField(auto_now_add=True)
     rpms_folder_id = models.CharField(max_length=255, blank=True, default='') # Unique ID of the folder
@@ -959,24 +894,25 @@ class RPMSClassWork(models.Model):
 
         A class to represent a classwork created by Head Adminstrator. 
         This where the RPMS Attachement is uploaded.
-    
- 
     """
-    
-    
     school_id = models.CharField(max_length=255, blank=True, default='') # I don't know where to use it, but just stay there
     employee_id = models.CharField(max_length=255, blank=True, default='') # I don't know where to use it, but just stay there
     
     created_at = models.DateTimeField(auto_now_add=True)
+    
     rpms_folder_id = models.CharField(max_length=255, blank=True, default='')
     class_work_id = models.CharField(max_length=255, blank=True, default='') # id of the class work
+    
+
     title = models.CharField(max_length=255, blank=True, default='')
     objectives = models.JSONField(default=dict, blank=True)
     """
         {
             "Instructions" : {
                 "Title" : "KRA 1: Content Knowledge and Pedagogy",
-                "Owner" : "John Doe",
+                "Owner" : "School Admin",
+                "Date" : "dsfsdf",
+                "Time" : "6:01 PM",
                 "Points" : "28 points" ,
                 "Objectives" : {
                     "1" : {
@@ -1014,14 +950,12 @@ class RPMSClassWork(models.Model):
         }
 
 
-
 class RPMSAttachment(models.Model):
     """
         A class to represent a attachment in the RPMS Classwork.
         This is uploaded to the RPMS Classwork.
     
     """
-    
     
     school_id = models.CharField(max_length=255, blank=True, default='')
     employee_id = models.CharField(max_length=255, blank=True, default='')
@@ -1052,14 +986,15 @@ class RPMSAttachment(models.Model):
         {
             "1" : {
                 "Content" : "KRA 1: Content Knowledge and Pedagogy",
-                "Score" : "5"
+                "Score" : "5",
+                "Maximum Score" : "7",
             },
             "2" : {
                 "Content" : "KRA 1: Content Knowledge and Pedagogy",
                 "Score" : "5"
+                "Maximum Score" : "7",
             }
         }
-    
     """
     
     is_checked = models.BooleanField(default=False)
@@ -1110,6 +1045,8 @@ class RPMSAttachment(models.Model):
                 if subkey == 'Score':
                     total += int(subvalue)
         return total
+
+
 
 # 1. title and scores for KBA BREAKDOWN
 # 2. rule based classifier for Promotion
