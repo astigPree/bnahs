@@ -28,13 +28,17 @@ urlpatterns = [
     path('admin/school/teacher/evaluation/pending/count/', views.number_of_pending_evaluation),
     
     path('admin/school/reject/', views.reject_school),
+    
     path('admin/school/evaluator/create/cot/', views.create_rating_sheet),
+    path('admin/school/evaluator/update/cot/', views.update_rating_sheet),
     
     path('admin/forms/rpms/folders/create/', views.create_rpms_folder),
     path('admin/forms/rpms/folders/', views.get_all_rpms_folders),
     path('admin/forms/rpms/classworks/', views.get_rpms_classworks),
     
     path('admin/forms/ipcrf/create/', views.create_ipcrf_form),
+    path('admin/forms/ipcrf/count/', views.get_number_of_ipcrf_forms),
+    
     
     # ============== School Path ================
     path('login_school/', views.login_school), # WORKING

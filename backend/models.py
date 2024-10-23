@@ -773,7 +773,7 @@ class COTForm(models.Model):
         }
     """
     
-    
+    cot_form_id = models.CharField(max_length=255, blank=True, default='') # ID of COT
     is_checked = models.BooleanField(default=False)
 
     def __str__(self):
