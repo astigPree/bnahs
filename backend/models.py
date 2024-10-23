@@ -589,6 +589,7 @@ class IPCRFForm(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     
     is_checked = models.BooleanField(default=False)
+    connection_to_other = models.CharField(max_length=255, blank=True, default='') # Generate a random ID, used for identifying parts (1,2,3)
     
     
     def __str__(self):

@@ -34,6 +34,8 @@ urlpatterns = [
     path('admin/forms/rpms/folders/', views.get_all_rpms_folders),
     path('admin/forms/rpms/classworks/', views.get_rpms_classworks),
     
+    path('admin/forms/ipcrf/create/', views.create_ipcrf_form),
+    
     # ============== School Path ================
     path('login_school/', views.login_school), # WORKING
     path('school/register/people/', views.register_people), # WORKING

@@ -1139,7 +1139,36 @@ def create_ipcrf_form(request):
                     'message' : 'User is not an admin',
                 }, status=400)
                 
+            # TODO: NAKALIMUTAN KO YUNG SA DEVELOPEMEN PLANS 
+            position = request.POST.get('position') # Check what position does the admin want to create for (Proficient or Highly Proficient)
+            if not position:
+                return JsonResponse({
+                    'message' : 'Position is required',
+                }, status=400)
             
+            schools = models.School.objects.filter(is_accepted=True)
+            for school in schools:
+                if position == 'Proficient':
+                    teachers = models.People.objects.filter(
+                        role='Teacher', 
+                        school_id=school.school_id, 
+                        position__in=my_utils.position['Proficient']
+                    )
+                    for teacher in teachers:
+                        my_utils.create_ipcrf_form_proficient(school=school, teacher=teacher)
+                    
+                elif position == "Highly Proficient":
+                    teachers = models.People.objects.filter(
+                        role='Teacher', 
+                        school_id=school.school_id, 
+                        position__in=my_utils.position['Highly Proficient']
+                    )
+                    for teacher in teachers:
+                        my_utils.create_ipcrf_form_highly_proficient(school=school, teacher=teacher)
+                    
+            return JsonResponse({
+                'message' : 'IPCRF form created successfully',
+            }, status=200)
         
     except Exception as e:
         return JsonResponse({
@@ -1149,6 +1178,48 @@ def create_ipcrf_form(request):
     return JsonResponse({
         'message' : 'Invalid request',
         }, status=400)
+    
+@csrf_exempt
+def get_number_of_ipcrf_forms(request):
+    try:
+        if request.method == 'POST':
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+            
+            number_of_ipcrf_forms = models.IPCRFForm.objects.all().count()
+            number_of_iprcf_forms_checked = models.IPCRFForm.objects.filter(is_checked=True).count()
+            number_of_ipcrf_forms_not_checked = models.IPCRFForm.objects.filter(is_checked=False).count()
+            
+                
+            return JsonResponse({
+                'message' : 'Number of ipcrf forms found successfully',
+                'number_of_ipcrf_forms' : number_of_ipcrf_forms,
+                'number_of_iprcf_forms_checked' : number_of_iprcf_forms_checked,
+                'number_of_ipcrf_forms_not_checked' : number_of_ipcrf_forms_not_checked
+                
+            }, status=200)
+        
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+        
+
+    
+    
+    
     
     
     
