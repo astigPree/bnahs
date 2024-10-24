@@ -884,7 +884,7 @@ def teacher_turn_in_rpms_work(request):
                 file=rpms_attachment
             )
             
-            attachment.title = classwork.objectives['Instructions']['Title']
+            attachment.title = classwork.title
             attachment.grade = classwork.get_grade()
             attachment.attachment_id = str(uuid4())
             attachment.save()
@@ -931,6 +931,7 @@ def teacher_submit_rpms_work(request):
             
             return JsonResponse({
                     'classwork' : [attachment.get_information() for attachment in attachments],
+                    'completed' : attachments.count() == 6 if attachments else False
                 },status=200)
             
             

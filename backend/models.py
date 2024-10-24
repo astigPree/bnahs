@@ -905,14 +905,7 @@ class RPMSAttachment(models.Model):
         }
     """
     
-    is_checked = models.BooleanField(default=False)
-    attachment_type = models.CharField(max_length=255, blank=True, default='', choices=(
-        ('KRA 1', 'KRA 1'),
-        ('KRA 2', 'KRA 2'),
-        ('KRA 3', 'KRA 3'),
-        ('KRA 4', 'KRA 4'),
-        ('PLUS FACTOR', 'PLUS FACTOR')
-    ))
+    is_checked = models.BooleanField(default=False) 
     
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.created_at}"
