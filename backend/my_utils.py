@@ -4,6 +4,7 @@ from django.utils.html import strip_tags
 from django.templatetags.static import static
 
 
+from django.utils import timezone
 from datetime import datetime
 
 from uuid import uuid4
@@ -63,11 +64,13 @@ def send_account_info_email(user_email, username, password, template, from_email
 
 def parse_date_string(date_string):
     try:
-        parsed_date = datetime.strptime(date_string, "%B %d, %Y")
+        naive_datetime = datetime.strptime(date_string, "%B %d, %Y")
+        parsed_date = timezone.make_aware(naive_datetime, timezone.get_current_timezone())
         return parsed_date
     except ValueError:
         print(f"Error: The date format of '{date_string}' is incorrect.")
         return None
+
 
 
 
@@ -784,9 +787,6 @@ def update_ipcrf_form_part_3_by_teacher(
     part_2 = models.IPCRFForm.objects.filter(connection_to_other=ipcrf_form.connection_to_other, form_type='PART 2').first()
     part_2.is_checked = True
     part_2.save()
-
-
-
 
 # kra_1.objectives = {
 #         "Instructions" : {

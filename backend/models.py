@@ -26,170 +26,9 @@ class VerificationLink(models.Model):
     def is_expired(self, expire_in_minutes=30):
         return self.created_at < (timezone.now() - timezone.timedelta(minutes=expire_in_minutes))
 
-    
 
-class MainAdmin(models.Model):
-    username = models.CharField(max_length=255, blank=True, default='')
-    password = models.CharField(max_length=255, blank=True, default='')
-    
-    role = models.CharField(max_length=10, blank=True, default='ADMIN')
-    action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
-    
-#     # total school
-#     # total teacher
-#     # number of forms answered
 
-    def __str__(self):
-        return f"{self.username} - {self.password}"
 
-class School(models.Model):
-    
-    name = models.CharField(max_length=255 , blank=True, default='')
-    school_id = models.CharField(max_length=255, blank=True, default='')
-    school_name = models.CharField(max_length=255, blank=True, default='')
-    school_address = models.CharField(max_length=255, blank=True, default='')
-    school_type = models.CharField(max_length=255, choices=(('Urban', 'Urban'), ('Rural', 'Rural')) , blank=True, default='')
-    contact_number = models.CharField(max_length=255, blank=True, default='')
-    email_address = models.CharField(max_length=255, blank=True, default='')
-    password = models.CharField(max_length=255, blank=True, default='')
-    confirm_password = models.CharField(max_length=255, blank=True, default='')
-    school_logo = models.ImageField(upload_to='school_logo', blank=True, null=True)
-    
-    # number of forms answered / evaluation submision rate
-    
-    is_verified = models.BooleanField(default=False) # Is the school verified or click the link
-    is_accepted = models.BooleanField(default=False) # Is the school accepted or added by admin
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-
-    action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
-
-    def __str__(self):
-        return f"{self.name} - {self.school_id} - {self.email_address} - {self.contact_number}"
-    
-    def get_school_information(self):
-        
-        school = {
-            'name' : self.name,
-            'school_id' : self.school_id,
-            'school_name' : self.school_name,
-            'school_address' : self.school_address,
-            'school_type' : self.school_type,
-            'contact_number' : self.contact_number,
-            'email_address' : self.email_address,
-            'school_logo' : '',
-            'is_accepted' : self.is_accepted,
-            'is_verified' : self.is_verified,
-            'role' : 'School Admin'
-        }
-        
-        if self.school_logo:
-            if self.school_logo.url:
-                school['school_logo'] = self.school_logo.url
-    
-        return school
-        
-
-    
-class People(models.Model):
-    role = models.CharField(max_length=255, choices=(
-        ('Evaluator', 'Evaluator'), 
-        ('Teacher', 'Teacher')) , 
-    blank=True, default='') # What the person does
-    school_id = models.CharField(max_length=255, blank=True, default='') # Where school the person belongs
-    
-    # ratings = models.IntegerField(default=0)
-    # recomendation
-    # work_start = models.DateTimeField(blank=True, null=True)
-    # work_end = models.DateTimeField(blank=True, null=True)
-    
-    employee_id = models.CharField(max_length=255, blank=True, default='')
-    first_name = models.CharField(max_length=255, blank=True, default='')
-    middle_name = models.CharField(max_length=255, blank=True, default='')
-    last_name = models.CharField(max_length=255, blank=True, default='')
-    email_address = models.CharField(max_length=255, blank=True, default='')
-    position = models.CharField(max_length=255, blank=True, default='',
-        choices=(
-            ('Teacher I', 'Teacher I'), 
-            ('Teacher II', 'Teacher II'), 
-            ('Teacher III', 'Teacher III'), 
-            ('Master Teacher I', 'Master Teacher I'),
-            ('Master Teacher II', 'Master Teacher II'),
-            ('Master Teacher III', 'Master Teacher III'),
-            ('Master Teacher IV', 'Master Teacher IV'),
-            ))
-    job_started = models.DateTimeField(blank=True, null=True)
-    job_ended = models.DateTimeField(blank=True, null=True)
-    
-    grade_level = models.CharField(max_length=255, blank=True, default='',
-            choices=(
-                ('Junior High School', 'Junior High School'),
-                ('Senior High School', 'Senior High School'),
-            )
-                                   )
-    department = models.CharField(max_length=255, blank=True, default='',
-            choices=(
-                ('Science', 'Science'),
-                ('Filipino', 'Filipino'),
-                ('Mathematics', 'Mathematics'),
-                ('English', 'English'),
-            ))
-    password = models.CharField(max_length=255, blank=True, default='')
-    confirm_password = models.CharField(max_length=255, blank=True, default='')
-    
-    
-    fullname = models.CharField(max_length=255, blank=True, default='') 
-    school_action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
-    action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
-    
-    educations = models.JSONField(default=list, blank=True)
-    """
-        educations = [
-            {
-                'degree' : '',
-                'university' : ''
-            }
-        ]
-    """
-    
-    is_evaluated = models.BooleanField(default=False) # Is the person evaluated or not
-    is_deactivated = models.BooleanField(default=False) # Is the person deactivated or not
-    
-    
-    def __str__(self):
-        return f"{self.first_name} {self.last_name}"
-
-    def save(self, *args, **kwargs):
-        self.fullname = f"{self.first_name} {self.middle_name} {self.last_name}"
-        super().save(*args, **kwargs)
-    
-    def get_information(self):
-        return {
-            'role' : self.role,
-            'school_id' : self.school_id,
-            'employee_id' : self.employee_id,
-            'first_name' : self.first_name,
-            'middle_name' : self.middle_name,
-            'last_name' : self.last_name,
-            'email_address' : self.email_address,
-            'position' : self.position,
-            'job_started' : self.job_started,
-            'job_ended' : self.job_ended,
-            'grade_level' : self.grade_level,
-            'department' : self.department,
-        }
-    
-    
-    def update_educations(self, data):
-        self.educations = data
-        self.save()
-    
-
-    def get_name_and_action_id(self):
-        return {
-            'name' : f"{self.first_name} {self.middle_name} {self.last_name}",
-            'id' : self.action_id,
-        }
-    
 
 
 class Post(models.Model):
@@ -1009,7 +848,7 @@ class RPMSAttachment(models.Model):
          ('Completed', 'Completed'),
         ))
     
-    
+    title = models.CharField(max_length=255, blank=True, default='') # Name of classwork
     file = models.FileField(upload_to='rpms_attachments')
     grade : dict[str, dict] = models.JSONField(default=dict, blank=True)
     """
@@ -1076,6 +915,192 @@ class RPMSAttachment(models.Model):
                     total += int(subvalue)
         return total
 
+
+    
+
+class MainAdmin(models.Model):
+    username = models.CharField(max_length=255, blank=True, default='')
+    password = models.CharField(max_length=255, blank=True, default='')
+    
+    role = models.CharField(max_length=10, blank=True, default='ADMIN')
+    action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
+    
+#     # total school
+#     # total teacher
+#     # number of forms answered
+
+    def __str__(self):
+        return f"{self.username} - {self.password}"
+
+class School(models.Model):
+    
+    name = models.CharField(max_length=255 , blank=True, default='')
+    school_id = models.CharField(max_length=255, blank=True, default='')
+    school_name = models.CharField(max_length=255, blank=True, default='')
+    school_address = models.CharField(max_length=255, blank=True, default='')
+    school_type = models.CharField(max_length=255, choices=(('Urban', 'Urban'), ('Rural', 'Rural')) , blank=True, default='')
+    contact_number = models.CharField(max_length=255, blank=True, default='')
+    email_address = models.CharField(max_length=255, blank=True, default='')
+    password = models.CharField(max_length=255, blank=True, default='')
+    confirm_password = models.CharField(max_length=255, blank=True, default='')
+    school_logo = models.ImageField(upload_to='school_logo', blank=True, null=True)
+    
+    # number of forms answered / evaluation submision rate
+    
+    is_verified = models.BooleanField(default=False) # Is the school verified or click the link
+    is_accepted = models.BooleanField(default=False) # Is the school accepted or added by admin
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+
+    action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
+
+    def __str__(self):
+        return f"{self.name} - {self.school_id} - {self.email_address} - {self.contact_number}"
+    
+    def get_school_information(self):
+        
+        school = {
+            'name' : self.name,
+            'school_id' : self.school_id,
+            'school_name' : self.school_name,
+            'school_address' : self.school_address,
+            'school_type' : self.school_type,
+            'contact_number' : self.contact_number,
+            'email_address' : self.email_address,
+            'school_logo' : '',
+            'is_accepted' : self.is_accepted,
+            'is_verified' : self.is_verified,
+            'role' : 'School Admin'
+        }
+        
+        if self.school_logo:
+            if self.school_logo.url:
+                school['school_logo'] = self.school_logo.url
+    
+        return school
+        
+
+    
+class People(models.Model):
+    role = models.CharField(max_length=255, choices=(
+        ('Evaluator', 'Evaluator'), 
+        ('Teacher', 'Teacher')) , 
+    blank=True, default='') # What the person does
+    school_id = models.CharField(max_length=255, blank=True, default='') # Where school the person belongs
+    
+    # ratings = models.IntegerField(default=0)
+    # recomendation
+    # work_start = models.DateTimeField(blank=True, null=True)
+    # work_end = models.DateTimeField(blank=True, null=True)
+    
+    employee_id = models.CharField(max_length=255, blank=True, default='')
+    first_name = models.CharField(max_length=255, blank=True, default='')
+    middle_name = models.CharField(max_length=255, blank=True, default='')
+    last_name = models.CharField(max_length=255, blank=True, default='')
+    email_address = models.CharField(max_length=255, blank=True, default='')
+    position = models.CharField(max_length=255, blank=True, default='',
+        choices=(
+            ('Teacher I', 'Teacher I'), 
+            ('Teacher II', 'Teacher II'), 
+            ('Teacher III', 'Teacher III'), 
+            ('Master Teacher I', 'Master Teacher I'),
+            ('Master Teacher II', 'Master Teacher II'),
+            ('Master Teacher III', 'Master Teacher III'),
+            ('Master Teacher IV', 'Master Teacher IV'),
+            ))
+    job_started = models.DateTimeField(blank=True, null=True)
+    job_ended = models.DateTimeField(blank=True, null=True)
+    
+    grade_level = models.CharField(max_length=255, blank=True, default='',
+            choices=(
+                ('Junior High School', 'Junior High School'),
+                ('Senior High School', 'Senior High School'),
+            )
+                                   )
+    department = models.CharField(max_length=255, blank=True, default='',
+            choices=(
+                ('Science', 'Science'),
+                ('Filipino', 'Filipino'),
+                ('Mathematics', 'Mathematics'),
+                ('English', 'English'),
+            ))
+    password = models.CharField(max_length=255, blank=True, default='')
+    confirm_password = models.CharField(max_length=255, blank=True, default='')
+    
+    
+    fullname = models.CharField(max_length=255, blank=True, default='') 
+    school_action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
+    action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
+    
+    educations = models.JSONField(default=list, blank=True)
+    """
+        educations = [
+            {
+                'degree' : '',
+                'university' : ''
+            }
+        ]
+    """
+    
+    
+    is_evaluated = models.BooleanField(default=False) # Is the person evaluated or not
+    is_deactivated = models.BooleanField(default=False) # Is the person deactivated or not
+    
+    
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+    def save(self, *args, **kwargs):
+        self.fullname = f"{self.first_name} {self.middle_name} {self.last_name}"
+        super().save(*args, **kwargs)
+    
+    def get_information(self):
+        return {
+            'role' : self.role,
+            'school_id' : self.school_id,
+            'employee_id' : self.employee_id,
+            'first_name' : self.first_name,
+            'middle_name' : self.middle_name,
+            'last_name' : self.last_name,
+            'email_address' : self.email_address,
+            'position' : self.position,
+            'job_started' : self.job_started,
+            'job_ended' : self.job_ended,
+            'grade_level' : self.grade_level,
+            'department' : self.department,
+        }
+    
+    
+    def update_educations(self, data):
+        self.educations = data
+        self.save()
+    
+
+    def get_name_and_action_id(self):
+        return {
+            'name' : f"{self.first_name} {self.middle_name} {self.last_name}",
+            'id' : self.action_id,
+        }
+    
+    
+    def get_form_status(self):
+        data = {}
+        
+        part_1 = IPCRFForm.objects.filter(employee_id=self.employee_id, form_type='PART 1').first()
+        part_2 = IPCRFForm.objects.filter(employee_id=self.employee_id, form_type='PART 2').first()
+        part_3 = IPCRFForm.objects.filter(employee_id=self.employee_id, form_type='PART 3').first()
+        
+        data['part_1'] = part_1.is_checked
+        data['part_2'] = part_2.is_checked
+        data['part_3'] = part_3.is_checked
+        
+        attachments = RPMSAttachment.objects.filter(employee_id=self.employee_id)
+        for attachment in attachments:
+            data[attachment.title] = attachment.is_checked
+        
+        data['evaluated'] = self.is_evaluated
+        
+        return data
+        
 
 
 # 1. title and scores for KBA BREAKDOWN

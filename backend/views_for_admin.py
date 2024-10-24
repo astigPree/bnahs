@@ -281,6 +281,7 @@ def get_search_schools_by_location(request):
 
     
 
+# DASHBOARD 
 @csrf_exempt
 def get_total_number_of_schools(request):
     try:
@@ -297,10 +298,14 @@ def get_total_number_of_schools(request):
                     'message' : 'User is not an admin',
                 }, status=400)
 
-            schools = models.School.objects.all()
+            all_schools = models.School.objects.all()
+            accepted = all_schools.filter(is_accepted=True)
+            not_accepted = all_schools.filter(is_accepted=False)
 
             return JsonResponse({
-                'total_schools' : schools.count() if schools else 0,
+                'total_schools' : all_schools.count() if all_schools else 0,
+                'total_accepted_schools' : accepted.count() if accepted else 0,
+                'total_not_accepted_schools' : not_accepted.count() if not_accepted else 0
             }, status=200)
             
 
@@ -314,6 +319,7 @@ def get_total_number_of_schools(request):
         }, status=400) 
     
 
+# DASHBOARD
 @csrf_exempt
 def get_total_number_of_teachers_in_all_school(request):
     try:
@@ -347,6 +353,7 @@ def get_total_number_of_teachers_in_all_school(request):
         }, status=400)
 
 
+# DASHBOARD
 @csrf_exempt
 def number_of_evaluation_conducted(request):
     # TODO : DOUBLE CHECK IF IM CORRECT ON THE DATA 
@@ -381,6 +388,7 @@ def number_of_evaluation_conducted(request):
         }, status=400)
             
 
+# DASHBOARD
 @csrf_exempt
 def number_of_pending_evaluation(request):
     try:
@@ -416,10 +424,47 @@ def number_of_pending_evaluation(request):
 
 @csrf_exempt
 def evaluation_submission_rate(request):
-    return JsonResponse({
-        'message' : 'Not yet implemented',
-    }, status=400)
+    # Get the number of evaluated teacher each school
+    try:
+        if request.method == 'GET':
+            
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+            
+            data = {}
+            schools = models.School.objects.filter(is_accepted=True)
+            for school in schools:
+                data[school.name] = {}
+                data[school.name]['teachers'] = models.People.objects.filter(school_id=school.school_id, role='Teacher').count()
+                data[school.name]['evaluated'] = models.People.objects.filter(school_id=school.school_id, role='Teacher', is_evaluated=True).count()
+                data[school.name]['pending'] = models.People.objects.filter(school_id=school.school_id, role='Teacher', is_evaluated=False).count()
+            
+            
+            
+            return JsonResponse({
+                'data' : data
+            }, status=200)
     
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+        
+        
+        
+        
 @csrf_exempt
 def all_teacher_recommendations(request):
     return JsonResponse({

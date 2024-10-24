@@ -59,6 +59,8 @@ def register_people(request):
             if employee_id in models.People.objects.values_list('employee_id', flat=True):
                 return JsonResponse({'status': 'error', 'message': 'Employee ID already exists'}, status=400)
 
+            if not my_utils.parse_date_string(job_started):
+                return JsonResponse({'status': 'error', 'message': 'Invalid date format', 'example': 'August 20, 2024'}, status=400)
                     
             people = People.objects.create(
                 role=role,
@@ -76,14 +78,9 @@ def register_people(request):
             
             people.action_id = str(uuid4())
             people.school_id = school_user.school_id
-            
-            error = "None"
-            try:
-                job_started_date = my_utils.parse_date_string(job_started)
-                people.job_started = job_started_date
-            except Exception as e:
-                error = str(e)  # Log the error or handle it appropriately
-            
+        
+            job_started_date = my_utils.parse_date_string(job_started)
+            people.job_started = job_started_date
             
             people.save()
 
@@ -92,7 +89,7 @@ def register_people(request):
                 password=make_password(password)
             )
 
-            return JsonResponse({'status': 'success', 'message': 'Faculty record created successfully' , 'error': error}, status=200)
+            return JsonResponse({'status': 'success', 'message': 'Faculty record created successfully' }, status=200)
 
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': f'Something went wrong : {e}'}, status=500)
