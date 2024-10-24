@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import People, Post, Comment , IPCRFForm , COTForm , RPMSFolder , RPMSClassWork , RPMSAttachment, School, MainAdmin
+from .models import VerificationLink, People, Post, Comment , IPCRFForm , COTForm , RPMSFolder , RPMSClassWork , RPMSAttachment, School, MainAdmin
 
 # Register your models here.
 
-
+admin.site.register(VerificationLink)
 admin.site.register(MainAdmin)
 admin.site.register(School)
 
