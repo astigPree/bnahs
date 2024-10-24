@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'corsheaders', 
     
     'backend.apps.BackendConfig',
-    'frontend.apps.FrontendConfig'
+    'frontend.apps.FrontendConfig',
+    
 ]
 
 MIDDLEWARE = [

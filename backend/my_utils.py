@@ -1,6 +1,9 @@
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.templatetags.static import static
+
+
 from datetime import datetime
 
 from uuid import uuid4
@@ -34,6 +37,7 @@ def send_verification_email(user_email, verification_code , template , masbate_l
     # Render the HTML template
     html_content = render_to_string(template, {
         'verification_code': verification_code,
+        'deped_logo' : static('logo.png')
     })
     text_content = strip_tags(html_content)  # Create a plain text version
 
@@ -676,4 +680,265 @@ def create_ipcrf_form_proficient( school : models.School , teacher : models.Peop
     
 
 def create_ipcrf_form_highly_proficient(school : models.School , teacher : models.People ):
+    pass
+
+
+
+# kra_1.objectives = {
+#         "Instructions" : {
+#             "Title" : "fsdfsdf",
+#             "Owner" : "School Admin",
+#             "Date" : "dsfsdf",
+#             "Time" : "6:01 PM",
+#             "Points" : "28 points" ,
+#             "Objectives" : {
+#                 "1" : {
+#                     "Main Title" : "sfsdfdsf",
+#                     "Title" : "dfsddf",
+#                     "Bullet" : "dfsddsf"
+#                 },
+#                 "2" : {
+#                     "Main Title" : "dsfsdfs",
+#                     "Title" : "sdfsdfa",
+#                     "Bullet" : "sdfsdfsd"
+#                 }
+#             }
+#         },
+#         "Objectives" : {
+#             "1" : {
+#                 "Content" : "sdfsafds",
+#                 "Score" : "5"
+#             }
+#         },
+#         "Comment" : " "
+#     }
+
+
+
+def create_rpms_class_works_for_proficient(rpms_folder_id : str):
+    # Create KRA 1
+    kra_1 = models.RPMSClassWork.objects.create(
+        rpms_folder_id = rpms_folder_id,
+        title = 'KRA 1: Content Knowledge and Pedagogy',
+    )
+    kra_1.class_work_id = str(uuid4())
+    
+    kra_1.objectives = {
+        "Instructions" : {
+            "Title" : "KRA 1: Content Knowledge and Pedagogy", 
+            "Date" : "", # Added when published
+            "Time" : "", # Added when published
+            "Points" : "28 points" ,
+            "Objectives" : {
+                "1" : {
+                    "Main Title" : "7% | Objective 1 (Applied knowledge of content within and across curriculum teaching areas)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s "
+                },
+                "2" : {
+                    "Main Title" : "7% | Objective 2 (Used a range of teaching strategies that enhance learner achievement in literacy and numeracy skills.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s "
+                },
+                "3" : {
+                    "Main Title" : "7% | Objective 3 (Applied a range of teaching strategies to develop critical and creative thinking, as well as other higher-order thinking skills.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s "
+                },
+                "4" : {
+                    "Main Title" : "7% | Objective 4 (Displayed proficient use of Mother Tongue, Filipino, and English to facilitate teaching and learning.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s"
+                }
+            }
+        },
+        "Comment" : " "
+    }
+    
+    kra_1.save()
+    
+    # Create KRA 2
+    kra_2 = models.RPMSClassWork.objects.create(
+        rpms_folder_id = rpms_folder_id,
+        title = 'dsfdsfds',
+    )
+    kra_2.class_work_id = str(uuid4())
+    
+    
+    kra_2.objectives = {
+        "Instructions" : {
+            "Title" : "KRA 2: Learning Environment and Diversity of Learners", 
+            "Date" : "", # Added when published
+            "Time" : "", # Added when published
+            "Points" : "28 points" ,
+            "Objectives" : {
+                "1" : {
+                    "Main Title" : "7% | Objective 5 (Established safe and secure learning environments to enhance learning through the consistent implementation of policies, guidelines and procedures.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter -observer agreement form/s "
+                },
+                "2" : {
+                    "Main Title" : "7% | Objective 6 (Maintained learning environments that promote fairness, respect and care to encourage learning.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter -observer agreement form/s "
+                },
+                "3" : {
+                    "Main Title" : "7% | Objective 7 (Established a learner-centered culture by using teaching strategies that respond to their linguistic, cultural, socio-economic and religious backgrounds.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter -observer agreement form/s "
+                },
+                "4" : {
+                    "Main Title" : "7% | Objective 8 (Adapted and used culturally appropriate teaching strategies to address the needs of learners from indigenous groups. )",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter -observer agreement form/s"
+                }
+            }
+        },
+        "Comment" : " "
+    }
+    
+    kra_2.save()
+    
+    
+    # Create KRA 3
+    kra_3 = models.RPMSClassWork.objects.create(
+        rpms_folder_id = rpms_folder_id,
+        title = 'KRA 3: Curriculum and Planning',
+    )
+    
+    kra_3.class_work_id = str(uuid4())
+    kra_3.objectives = {
+        "Instructions" : {
+            "Title" : "KRA 3: Curriculum and Planning", 
+            "Date" : "", # Added when published
+            "Time" : "", # Added when published
+            "Points" : "21 points" ,
+            "Objectives" : {
+                "1" : {
+                    "Main Title" : "7% | Objective 9 (Set achievable and appropriate learning outcomes that are aligned with learning competencies.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "At least one (1) lesson plan (e.g., DLP, DLL, WHLP, WLP, WLL, Lesson Exemplars, and the likes) or one lesson from a self-learning module, developed by the ratee* and used in instruction, with achievable and appropriate learning outcomes that are aligned with the learning competencies as shown in any one (1) of the following:",
+                    "Sub Bullet 1" : "lecture/discussion",
+                    "Sub Bullet 2" : "activity/activity sheet",
+                    "Sub Bullet 3" : "performance task",
+                    "Sub Bullet 4" : "rubric for assessing performance using criteria that appropriately describe the target output",
+                },
+                "2" : {
+                    "Main Title" : "7% | Objective 10 (Used strategies for providing timely, accurate and constructive feedback to improve learner performance.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter -observer agreement form/s",
+                },
+                "3" : {
+                    "Main Title" : "7% | Objective 11 (Utilized assessment data to inform the modification of teaching and learning practices and programs..)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "A list of identified least /most mastered skills based on the frequency of errors /correct responses with any one (1) of the following supporting MOVs",
+                    "Sub Bullet 1" : "accomplishment report for remedial / enhancement activities (e.g., remedial sessions, Summer Reading Camp, Phil-IRI-based reading program)",
+                    "Sub Bullet 2" : "intervention material used for remediation / reinforcement / enhancement",
+                    "Sub Bullet 3" : "lesson plan/activity log for remediation / enhancement utilizing of assessment data to modify teaching and learning practices or programs",
+                },
+            }
+        },
+        "Comment" : " "
+    }
+    
+    kra_3.save()
+    
+    
+    
+    # Create KRA 4
+    kra_4 = models.RPMSClassWork.objects.create(
+        rpms_folder_id = rpms_folder_id,
+        title = 'KRA 4:  Curriculum and Planning & Assessment and Reporting',
+    )
+    
+    kra_4.class_work_id = str(uuid4())
+    
+    kra_4.objectives = {
+        "Instructions" : {
+            "Title" : "KRA 4:  Curriculum and Planning & Assessment and Reporting",
+            "Date" : "",
+            "Time" : "",
+            "Points" : "21 points" ,
+            "Objectives" : {
+                "1" : {
+                    "Main Title" : "7% | Objective 12 (Build relationships with parents/ guardians and the wider school community to facilitate involvement in the educative process. )",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Any one (1) of the following:",
+                    "Sub Bullet 1" : {
+                            "Title" : "Proof of participation in any activity highlighting the objective, such as, but not limited the following:",
+                            "Bullet 1" : "Receipt form/monitoring form during distribution of learning materials, etc.",
+                            "Bullet 2" : "Commitment form to stakeholders, developed advocacy materials, certificate of participation that shows parents'/stakeholders' engagement signed by the school head, etc.",
+                            "Bullet 3" : "Home visitation forms",
+                            "Bullet 4" : "Any equivalent ALS form/document that highlights the objective",
+                            "Bullet 5" : "Others (please specify and provide annotations)",
+                        },
+                    "Sub Bullet 2" : "Parent-teacher log or proof of other stakeholders meeting (e.g., one-on-one parent-teacher learner conference log; attendance sheet with minutes of online or face-to-face meeting; proof of involvement in the learners'/parents' orientation, etc.)",
+                    "Sub Bullet 3" : "Any form of communication to parents/stakeholders (e.g., notice of meeting; screenshot of chat/text message/communication with parent/guardian)"
+                },
+                "2" : {
+                    "Main Title" : "7% | Objective 13 (Participated in professional networks to share knowledge and to enhance practice )",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet 1" : "Certificate of completion in a course/training",
+                    "Bullet 2" : "sdfsCertificate of participation in a webinar, retooling, upskilling, and other training/ seminar/ workshop with proof of implementationdfsd",
+                    "Bullet 3" : "Certificate of recognition/ speakership in a webinar and other training/ seminar/ workshop",
+                    "Bullet 4" : "Any proof of participation to a benchmarking activity",
+                    "Bullet 5" : "Any proof of participation in school LAC sessions (online/face-to-face) certified by the LAC Coordinator",
+                    "Bullet 6" : "Others (please specify and provide annotations)",
+                },
+                "3" : {
+                    "Main Title" : "7% | Objective 14 (Developed a personal improvement plan based on reflection of one s practice and ongoing professional learning)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet 1" : "Certification from the ICT Coordinator / School Head / Focal Person in charge of e-SAT",
+                    "Bullet 2" : "IPCRF-DP",
+                    "Bullet 3" : "Mid-year Review Form (MRF)",
+                    "Bullet 4" : "Updated IPCRF-DP from Phase II"
+                }
+            }
+        }, 
+        "Comment" : " "
+
+    }
+    
+    kra_4.save()
+    
+    # Create PLUS FACTOR
+    plus_factor = models.RPMSClassWork.objects.create(
+        rpms_folder_id = rpms_folder_id,
+        title = 'PLUS FACTOR',
+    )
+    
+    plus_factor.class_work_id = str(uuid4())
+    
+    plus_factor.objectives ={
+        "Instructions" : {
+            "Title" : "PLUS FACTOR",
+            "Owner" : "School Admin",
+            "Date" : "",
+            "Time" : "",
+            "Points" : "2 points" ,
+            "Objectives" : {
+                "1" : {
+                    "Main Title" : "2% | Objective 15 (Performed various related works / activities that contribute to the teaching- learning process.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Any one (1) of the following:",
+                    "Sub Bullet 1" : "committee involvement;",
+                    "Sub Bullet 2" : "involvement as module/learning material writer/ validator;",
+                    "Sub Bullet 3" : "involvement as a resource person/speaker/learning facilitator in the RO/SDO/school-initiated TV/radio-based instruction;",
+                    "Sub Bullet 4" : "book or journal authorship/co-authorship/ contributorship;",
+                    "Sub Bullet 5" : "advisorship/coordinatorship/chairpersonship",
+                    "Sub Bullet 6" : "participation in demonstration teaching;",
+                    "Sub Bullet 7" : "participation as research presenter in a forum/ conference;",
+                    "Sub Bullet 8" : "mentorship of pre-service/in-service teachers",
+                    "Sub Bullet 9" : "conducted research within the rating period;",
+                    "Sub Bullet 10" : "Others (please specify) with annotation on how it contributed to the teaching-learning process."
+                },
+            }
+        },
+        "Comment" : " "
+        
+    }
+    
+    plus_factor.save()
+    
+def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str):
     pass

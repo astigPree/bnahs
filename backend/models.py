@@ -874,6 +874,8 @@ class RPMSFolder(models.Model):
     rpms_folder_school_year = models.CharField(max_length=255, blank=True, default='') # School Year of the folder
     is_for_teacher_proficient = models.BooleanField(default=False) # If True, the folder is for teacher proffecient
     
+    background_image = models.ImageField(upload_to='rpms_folders/', blank=True, null=True) # Background image of the folder
+    
     created_at = models.DateTimeField(auto_now_add=True)
     rpms_folder_id = models.CharField(max_length=255, blank=True, default='') # Unique ID of the folder
     
@@ -885,8 +887,13 @@ class RPMSFolder(models.Model):
         data =  {  
             'rpms_folder_name' : self.rpms_folder_name,
             'rpms_folder_school_year' : self.rpms_folder_school_year,
-            'rpms_folder_id' : self.rpms_folder_id
+            'rpms_folder_id' : self.rpms_folder_id,
+            'rpms_folder_background' : '' 
         }
+        
+        if self.background_image is not None:
+            data['rpms_folder_background'] = self.background_image.url
+        
         return data
     
 
@@ -904,14 +911,14 @@ class RPMSClassWork(models.Model):
     rpms_folder_id = models.CharField(max_length=255, blank=True, default='')
     class_work_id = models.CharField(max_length=255, blank=True, default='') # id of the class work
     
-
+    due_date = models.DateTimeField(blank=True, null=True)
+    
     title = models.CharField(max_length=255, blank=True, default='')
     objectives = models.JSONField(default=dict, blank=True)
     """
         {
             "Instructions" : {
-                "Title" : "KRA 1: Content Knowledge and Pedagogy",
-                "Owner" : "School Admin",
+                "Title" : "KRA 1: Content Knowledge and Pedagogy", 
                 "Date" : "dsfsdf",
                 "Time" : "6:01 PM",
                 "Points" : "28 points" ,
@@ -927,13 +934,7 @@ class RPMSClassWork(models.Model):
                         "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s"
                     }
                 }
-            },
-            "Objectives" : {
-                "1" : {
-                    "Content" : "Established safe and secure learning environments to enhance learning through the consistent implementation of policies",
-                    "Score" : "5"
-                }
-            },
+            }
             "Comment" : " "
         }
     """
@@ -947,7 +948,8 @@ class RPMSClassWork(models.Model):
             'class_work_id' : self.class_work_id,
             'title' : self.title,
             'objectives' : self.objectives,
-            'created_at' : self.created_at
+            'published' : self.date_of_published,
+            
         }
 
 

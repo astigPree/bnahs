@@ -402,7 +402,7 @@ def register_school(request):
         
         # verification_code , template , masbate_locker_email , subject
         Thread(target=my_utils.send_verification_email, args=(
-            email_address, verification , 'verification_link.html', settings.EMAIL_HOST_USER, 'School Registration'
+            email_address, verification , 'email-template.html', settings.EMAIL_HOST_USER, 'School Registration'
         )).start()
         
 
@@ -495,7 +495,7 @@ def add_school(request):
             
             
             Thread(target=my_utils.send_account_info_email, args=(
-                school.email_address, school.email_address, school.password , 'account.html' , settings.EMAIL_HOST_USER, 'School Registration'
+                school.email_address, school.email_address, school.password , 'registered-email.html' , settings.EMAIL_HOST_USER, 'School Registration'
                 )).start()
             
             return JsonResponse({
@@ -1100,26 +1100,50 @@ def create_rpms_folder(request):
             
             folder_name = request.POST.get('folder_name')
             rpms_folder_school_year = request.POST.get('school_year')
+            position_rpms = request.POST.get('position_rpms') # (Proficient and Highly Proficient)
             
             if not folder_name:
                 return JsonResponse({
                     'message' : 'Folder name is required',
+                    'folder_name' : folder_name,
                 }, status=400)
             
             
             if not rpms_folder_school_year:
                 return JsonResponse({
                     'message' : 'School year is required',
+                    'school_year' : rpms_folder_school_year,
+                }, status=400)
+                
+            if not position_rpms:
+                return JsonResponse({
+                    'message' : 'Position RPMS is required',
+                    'position_rpms' : position_rpms,
                 }, status=400)
             
+            if position_rpms not in ['Proficient', 'Highly Proficient']:
+                return JsonResponse({
+                    'message' : 'Position RPMS must be Proficient or Highly Proficient',
+                    'position_rpms' : position_rpms,
+                }, status=400)
+            
+            rpms_folder_id = str(uuid4())
             
             rpms_folder = models.RPMSFolder.objects.create(
                 rpms_folder_name = folder_name,
                 rpms_folder_school_year = rpms_folder_school_year
             )
-            rpms_folder.rpms_folder_id = str(uuid4())
+            rpms_folder.rpms_folder_id = rpms_folder_id
+            
+            rpms_folder.is_for_teacher_proficient = True if position_rpms == 'Proficient' else False
+            
             rpms_folder.save()
 
+            # Create a rpms_classwork folder when the folder is created
+            if position_rpms == 'Proficient':
+                my_utils.create_rpms_class_works_for_proficient(rpms_folder_id=rpms_folder_id)
+            elif position_rpms == 'Highly Proficient':
+                my_utils.create_rpms_class_works_for_highly_proficient(rpms_folder_id=rpms_folder_id)
             
             return JsonResponse({
                 'message' : 'RPMS folder created successfully',
@@ -1162,6 +1186,99 @@ def get_all_rpms_folders(request):
             }, status=200)
             
 
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+@csrf_exempt
+def get_rpms_folder_by_id(request):
+    try:
+        if request.method == 'POST':
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+                
+
+            rpms_folder_id = request.POST.get('rpms_folder_id')
+            if not rpms_folder_id:
+                return JsonResponse({
+                    'message' : 'RPMS folder id is required',
+                }, status=400)
+
+            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id).first()
+            if not rpms_folder:
+                return JsonResponse({
+                    'message' : 'RPMS folder not found',
+                }, status=400)
+            
+            return JsonResponse({
+                'rpms_folder' : rpms_folder.get_rpms_folder_information()
+            }, status=200)
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+@csrf_exempt
+def update_rpms_folder_background(request):
+    try:
+        if request.method == 'POST':
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+                
+
+            rpms_folder_id = request.POST.get('rpms_folder_id')
+            if not rpms_folder_id:
+                return JsonResponse({
+                    'message' : 'RPMS folder id is required',
+                }, status=400)
+
+            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id).first()
+            if not rpms_folder:
+                return JsonResponse({
+                    'message' : 'RPMS folder not found',
+                }, status=400)
+
+            background_image = request.FILES.get('background_image')
+            if not background_image:
+                return JsonResponse({
+                    'message' : 'Background image is required',
+                }, status=400)
+
+            rpms_folder.background_image = background_image
+            rpms_folder.save()
+            
+            return JsonResponse({
+                'message' : 'RPMS folder background updated successfully',
+            }, status=200)
+        
     except Exception as e:
         return JsonResponse({
             'message' : f'Something went wrong : {e}',
@@ -1312,6 +1429,7 @@ def get_number_of_ipcrf_forms(request):
         'message' : 'Invalid request',
         }, status=400)
         
+
 
     
     
