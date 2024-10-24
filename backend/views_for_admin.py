@@ -945,7 +945,5 @@ def get_number_of_ipcrf_forms(request):
         }, status=400)
         
 
-
-    
     
     

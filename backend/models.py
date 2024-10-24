@@ -986,13 +986,15 @@ class RPMSAttachment(models.Model):
         ))
     
     attachment_id = models.CharField(max_length=255, blank=True, default='')
-    streams_type = models.CharField(max_length=255, blank=True, default='')
-    """
-        "streams_type" : [
-            "KRA 1: Content Knowledge and Pedagogy", !Title ng RPMSContainer,
-            "KRA 3: Curriculum and Planning",  !Title ng RPMSContainer,
-        ]
-    """
+    streams_type = models.CharField(max_length=255, blank=True, default='', 
+        choices=(
+         ('Pending', 'Pending'),
+         ('Approved', 'Approved'),
+         ('Rejected', 'Rejected'),
+         ('Cancelled', 'Cancelled'),
+         ('Completed', 'Completed'),
+        ))
+    
     
     file = models.FileField(upload_to='rpms_attachments')
     grade = models.JSONField(default=dict, blank=True)

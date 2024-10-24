@@ -880,14 +880,17 @@ def teacher_turn_in_rpms_work(request):
             attachment = models.RPMSAttachment.objects.create(
                 school_id=user.school_id,
                 employee_id=user.employee_id,
-                class_work_id=class_work_id,
+                class_work_id=class_work_id, # IDENTIFIER FOR WHAT TYPE OF CLASSWORK
                 file=rpms_attachment
             )
             
             
-            
             attachment.attachment_id = str(uuid4())
             attachment.save()
+            
+            return JsonResponse({
+                'message' : 'File uploaded successfully',
+            },status=200)
     
     except Exception as e:
         return JsonResponse({
