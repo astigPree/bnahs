@@ -387,6 +387,10 @@ def register_school(request):
 
         if password != confirm_password:
             return JsonResponse({'status': 'error', 'message': 'Passwords do not match'}, status=400)
+        
+        # Check if the already school exist
+        if models.School.objects.filter(email_address=email_address).exists():
+            return JsonResponse({ 'message': 'School already exists'}, status=400)
 
         school = models.School.objects.create(
             name=name,
@@ -397,8 +401,10 @@ def register_school(request):
             contact_number=contact_number,
             email_address=email_address,
             password=password,
-            school_logo=school_logo
         )
+        
+        if school_logo:
+            school.school_logo = school_logo
         
         school.action_id = str(uuid4())
         school.save()
