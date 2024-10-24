@@ -782,7 +782,7 @@ def create_rpms_folder(request):
 @csrf_exempt
 def get_all_rpms_folders(request):
     try:
-        if request.method == 'POST':
+        if request.method == 'GET':
             user = models.MainAdmin.objects.filter(username=request.user.username).first()
             if not user:
                 return JsonResponse({
@@ -955,6 +955,49 @@ def get_rpms_classworks(request):
     
 
 @csrf_exempt
+def get_rpms_classwork_by_id(request):
+    try:
+        if request.method == 'POST':
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+                
+            
+            rpms_classwork_id = request.POST.get('rpms_classwork_id')
+            if not rpms_classwork_id:
+                return JsonResponse({
+                    'message' : 'RPMS classwork id is required',
+                }, status=400)
+
+            rpms_classwork = models.RPMSClassWork.objects.filter(rpms_classwork_id=rpms_classwork_id).first()
+            if not rpms_classwork:
+                return JsonResponse({
+                    'message' : 'RPMS classwork not found',
+                }, status=400)
+                
+            return JsonResponse({
+                'message' : 'RPMS classwork found successfully',
+                'rpms_classwork' : rpms_classwork.get_rpms_classwork_information(),
+            }, status=200)
+                
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400) 
+
+
+@csrf_exempt
 def create_ipcrf_form(request):
     try:
         
@@ -1013,7 +1056,7 @@ def create_ipcrf_form(request):
 @csrf_exempt
 def get_number_of_ipcrf_forms(request):
     try:
-        if request.method == 'POST':
+        if request.method == 'GET':
             user = models.MainAdmin.objects.filter(username=request.user.username).first()
             if not user:
                 return JsonResponse({

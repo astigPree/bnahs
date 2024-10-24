@@ -41,6 +41,7 @@ urlpatterns = [
     path('admin/forms/rpms/folder/change/image/', views.update_rpms_folder_background),
     path('admin/forms/rpms/folders/', views.get_all_rpms_folders),
     path('admin/forms/rpms/classworks/', views.get_rpms_classworks), 
+    path('admin/forms/rpms/classwork/get/', views.get_rpms_classwork_by_id),
     
     path('admin/forms/ipcrf/create/', views.create_ipcrf_form),
     path('admin/forms/ipcrf/count/', views.get_number_of_ipcrf_forms),
