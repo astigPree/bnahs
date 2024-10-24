@@ -430,10 +430,92 @@ def teacher_profile(request ):
         }, status=400)
 
 
+
+
 @csrf_exempt
-def teacher_upload_rpms(request):
+def teacher_get_ipcrf_part_1(request):
     try:
-        pass
+        
+        if request.method == 'GET':
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            
+            if 'Teacher' != user.role:
+                return JsonResponse({
+                    'message' : 'User not found',
+                },status=400)
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            ipcrf = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').first()
+            if not ipcrf:
+                return JsonResponse({
+                    'message' : 'IPCRF Form not found',
+                }, status=400)
+
+            return JsonResponse({
+                'ipcrf' : ipcrf.get_information(),
+            },status=200)
+        
+        
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+    
+    
+@csrf_exempt
+def teacher_update_ipcrf_part_1(request):
+    try:
+        
+        if request.method == 'POST':
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            
+            if 'Teacher' != user.role:
+                return JsonResponse({
+                    'message' : 'User not found',
+                },status=400)
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            """
+                {
+                    'ipcrf_id' : 'ipcrf_id',
+                    'content' : {...} !Content/Checked of IPCRF form from teacher
+                }
+            """
+            
+            connection_to_other = request.POST.get('ipcrf_id')
+            content : dict[str , dict] = json.loads(request.POST.get('content', None))
+            
+            ipcrf = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type='PART 1').first()
+            if not ipcrf:
+                return JsonResponse({
+                    'message' : 'IPCRF Form not found',
+                }, status=400)
+            
+            if not content:
+                return JsonResponse({
+                    'message' : 'Content not found',
+                }, status=400)
+                
+            my_utils.update_iprcf_form_part_1_by_teacher(ipcrf, content)
+            
+            return JsonResponse({
+                'message' : 'IPCRF Form updated successfully',
+                'connection_to_other' : ipcrf.connection_to_other
+            },status=200)
+            
+        
     except Exception as e:
         return JsonResponse({
             'message' : f'Something went wrong : {e}',
@@ -444,6 +526,377 @@ def teacher_upload_rpms(request):
         }, status=400)
 
 
+@csrf_exempt
+def teacher_get_ipcrf_part_2(request):
+    try:
+        
+        if request.method == 'GET':
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            
+            if 'Teacher' != user.role:
+                return JsonResponse({
+                    'message' : 'User not found',
+                },status=400)
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            ipcrf = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 2').first()
+            if not ipcrf:
+                return JsonResponse({
+                    'message' : 'IPCRF Form not found',
+                }, status=400)
+
+            return JsonResponse({
+                'ipcrf' : ipcrf.get_information(),
+            },status=200)
+        
+        
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+    
+
+@csrf_exempt
+def teacher_update_ipcrf_part_2(request):
+    try:
+        
+        if request.method == 'POST':
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            
+            if 'Teacher' != user.role:
+                return JsonResponse({
+                    'message' : 'User not found',
+                },status=400)
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            """
+                {
+                    'ipcrf_id' : 'ipcrf_id',
+                    'content' : {...} !Content/Checked of IPCRF form from teacher
+                }
+            """
+            
+            connection_to_other = request.POST.get('ipcrf_id')
+            content : dict[str , dict] = json.loads(request.POST.get('content', None))
+            
+            ipcrf = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type='PART 2').first()
+            if not ipcrf:
+                return JsonResponse({
+                    'message' : 'IPCRF Form not found',
+                }, status=400)
+            
+            if not content:
+                return JsonResponse({
+                    'message' : 'Content not found',
+                }, status=400)
+                
+            my_utils.update_ipcrf_form_part_2_by_teacher(ipcrf, content)
+            
+            return JsonResponse({
+                'message' : 'IPCRF Form updated successfully',
+                'connection_to_other' : ipcrf.connection_to_other
+            },status=200)
+            
+        
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+@csrf_exempt
+def teacher_get_ipcrf_part_3(request):
+    try:
+        
+        if request.method == 'GET':
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            
+            if 'Teacher' != user.role:
+                return JsonResponse({
+                    'message' : 'User not found',
+                },status=400)
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            ipcrf = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 3').first()
+            if not ipcrf:
+                return JsonResponse({
+                    'message' : 'IPCRF Form not found',
+                }, status=400)
+
+            return JsonResponse({
+                'ipcrf' : ipcrf.get_information(),
+            },status=200)
+        
+        
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+@csrf_exempt
+def teacher_update_ipcrf_part_3(request): 
+    try:
+        
+        if request.method == 'POST':
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            
+            if 'Teacher' != user.role:
+                return JsonResponse({
+                    'message' : 'User not found',
+                },status=400)
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            """
+                {
+                    'ipcrf_id' : 'ipcrf_id',
+                    'content' : {...} !Content/Checked of IPCRF form from teacher
+                }
+            """
+            
+            connection_to_other = request.POST.get('ipcrf_id')
+            content : dict[str , dict] = json.loads(request.POST.get('content', None))
+            
+            ipcrf = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type='PART 3').first()
+            if not ipcrf:
+                return JsonResponse({
+                    'message' : 'IPCRF Form not found',
+                }, status=400)
+            
+            if not content:
+                return JsonResponse({
+                    'message' : 'Content not found',
+                }, status=400)
+                
+            my_utils.update_ipcrf_form_part_3_by_teacher(ipcrf, content)
+            
+            return JsonResponse({
+                'message' : 'IPCRF Form updated successfully',
+                'connection_to_other' : ipcrf.connection_to_other
+            },status=200)
+            
+        
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+
+@csrf_exempt
+def teacher_get_rpms_folders(request):
+    # Used to view all the folder
+    try:
+        
+        if request.method == 'GET':
+            user = models.People.objects.filter(employee_id=request.user.username, role='Teacher').first()
+            
+            if 'Teacher' != user.role:
+                return JsonResponse({
+                    'message' : 'User not found',
+                },status=400)
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            rpms_folders = models.RPMSFolder.objects.filter(
+                employee_id=user.employee_id, 
+                is_for_teacher_proficient=my_utils.is_proficient_faculty(user)
+                )
+            
+            return JsonResponse({
+                'rpms_folders' : [rpms_folder.get_rpms_folder_information() for rpms_folder in rpms_folders],
+            },status=200)
+    
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+    },status=400)
+
+
+@csrf_exempt
+def teacher_get_rpms_folder(request):
+    try:
+        if request.method == 'POST':
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+
+            if 'Teacher' != user.role:
+                return JsonResponse({
+                    'message' : 'User not found',
+                },status=400)
+
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            rpms_folder_id = request.POST.get('rpms_folder_id')
+            if not rpms_folder_id:
+                return JsonResponse({
+                    'message' : 'rpms_folder_id not found',
+                }, status=400)
+            
+            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id).first()
+            if not rpms_folder:
+                return JsonResponse({
+                    'message' : 'RPMS Folder not found',
+                }, status=400)
+                
+            classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpms_folder_id)
+            
+            return JsonResponse({
+                'rpms_folder' : rpms_folder,
+                'rpms_classworks' : [work.get_rpms_classwork_information() for work in classworks]
+            },status=200)
+            
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+    },status=400)
+
+
+@csrf_exempt
+def teacher_get_rpms_work(request):
+    try:
+        
+        if request.method == 'POST':
+            
+            user = models.People.objects.filter(employee_id=request.user.username, role='Teacher').first()
+
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+                
+            class_work_id = request.POST.get('class_work_id')
+            if not class_work_id:
+                return JsonResponse({
+                    'message' : 'class_work_id not found',
+                }, status=400)
+                
+            classwork = models.RPMSClassWork.objects.filter(class_work_id=class_work_id).first()
+            if not classwork:
+                return JsonResponse({
+                    'message' : 'Class Work not found',
+                }, status=400)
+            
+            
+            return JsonResponse({
+                    'classwork' : classwork.get_rpms_classwork_information(),
+                },status=200)
+            
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}'
+        },status=400)
+
+    return JsonResponse({
+        'message' : 'Invalid Request'
+    },status=400)
+
+
+@csrf_exempt
+def teacher_turn_in_rpms_work(request):
+    try:
+        
+        if request.method == 'POST':
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            
+            if 'Teacher' != user.role:
+                return JsonResponse({
+                    'message' : 'User not found',
+                },status=400)
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            class_work_id = request.POST.get('class_work_id')
+            rpms_attachment = request.FILES.get('rpms_attachment')
+            
+            if not class_work_id:
+                return JsonResponse({
+                    'message' : 'class_work_id not found',
+                },status=400)
+            
+            if not rpms_attachment:
+                return JsonResponse({
+                    'message' : 'rpms_attachment not found',
+                },status=400)
+            
+            classwork = models.RPMSClassWork.objects.filter(class_work_id=class_work_id).first()
+            if not classwork:
+                return JsonResponse({
+                    'message' : 'Class Work not found',
+                },status=400)
+
+            
+            attachment = models.RPMSAttachment.objects.create(
+                school_id=user.school_id,
+                employee_id=user.employee_id,
+                class_work_id=class_work_id,
+                file=rpms_attachment
+            )
+            
+            
+            
+            attachment.attachment_id = str(uuid4())
+            attachment.save()
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
 
 
 

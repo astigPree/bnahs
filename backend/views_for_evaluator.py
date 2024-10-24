@@ -297,7 +297,7 @@ def get_iprcf_form_for_evaluator_part_1_of_teacher(request):
         }, status=400)
 
 @csrf_exempt
-def check_teacher_ipcrf_form_part_1(request):
+def check_teacher_ipcrf_form_part_1_by_evaluator(request):
     try:
         
         if request.method == 'POST':
@@ -309,12 +309,24 @@ def check_teacher_ipcrf_form_part_1(request):
                     }, status=400)
             
             # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND TEACHER
-            # TODO : TELL THEM TO ADD IN THE HEADER 'Content-Type': 'application/json'
+            """
+                {
+                    'ipcrf_id' : 'ipcrf_id',
+                    'content' : {...} !Content/Checked of IPCRF form from teacher
+                }
+            """
             
             connection_to_other = request.POST.get('ipcrf_id')
+            content : dict[str , dict] = json.loads(request.POST.get('content', None))
+            
             if not connection_to_other:
                 return JsonResponse({
                    'message' : 'Please provide IPCRF ID',
+                    }, status=400)
+            
+            if not content:
+                return JsonResponse({
+                    'message' : 'Content is required',
                     }, status=400)
             
             part_1 = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type="PART 1").first()
@@ -324,15 +336,25 @@ def check_teacher_ipcrf_form_part_1(request):
                     'message' : 'Invalid IPCRF ID',
                     }, status=400)
             
-            teacher = models.People.objects.filter(employee_id=part_1.employee_id).first()
+            teacher = models.People.objects.filter(employee_id=part_1.employee_id, role='Teacher').first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',
                     }, status=400)
             
+            school = models.School.objects.filter(school_id=teacher.school_id).first()
+            if not school:
+                return JsonResponse({
+                    'message' : 'School not found',
+                    }, status=400)
+                
+            my_utils.update_iprcf_form_part_1_by_teacher(
+                school=school, teacher=teacher, ipcrf_form=part_1, content=content    
+            )
             
-            
-            
+            return JsonResponse({
+                'message' : 'Form updated successfully',
+            },status=200)
             
             
             
@@ -344,7 +366,6 @@ def check_teacher_ipcrf_form_part_1(request):
     return JsonResponse({
         'message' : 'Invalid request',
         }, status=400)
-
 
 
 

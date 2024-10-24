@@ -106,7 +106,7 @@ def create_cot_form(
     
     cot_form.cot_form_id = str(uuid4())
     
-    cot_form.content = {
+    content = {
             "COT Type" : f"{cot_type}",
             "Observer ID" : f"{evaluator.employee_id}",
             "Observer Name" : f"{evaluator.fullname}",
@@ -115,43 +115,86 @@ def create_cot_form(
             "Subject & Grade Level" : f"{subject}",
             "Date" : f"{cot_date}",
             "Quarter": f"{quarter}",
-            "Questions" : {
-                "1" : {
-                    "Objective" : "Modeled effective applications of content knowledge within and across curriculum teaching areas. *",
-                    "Selected" : "0" 
-                },
-                "2" : {
-                    "Objective" : "Developed and applied effective teaching strategies to promote critical and creative thinking, as well as other higher-order thinking skills. *",
-                    "Selected" : "0"
-                },
-                "3" : {
-                    "Objective" : "Modeled and supported colleagues in the proficient use of Mother Tongues, Filipino and English to improve teaching and learning, as well as to developed the learners' pride of their language, heritage and culture. *",
-                    "Selected" : "0"
-                },
-                "4" : {
-                    "Objective" : "Exhibited effective strategies that ensure safe and secure learning environments to enhance learning through the consistent implementation of policies, guidelines and procedures. *",
-                    "Selected" : "0"
-                },
-                "5" : {
-                    "Objective" : "Exhibited effective practices to foster learning environments that promote fairness, respect and care to encourage learning. *",
-                    "Selected" : "0"
-                },
-                "6" : {
-                    "Objective" : "Exhibited a learner-centered culture that promotes success by using effective teaching strategies that respond to their linguistic, cultural, socio-economic and religious backgrounds *",
-                    "Selected" : "0"
-                },
-                "7" : {
-                    "Objective" : "Developed and applied teaching strategies to address effectively the needs of learners from indigenous groups. *",
-                    "Selected" : "0"
-                },
-                "8" : {
-                    "Objective" : "Used effective strategies for providing timely, accurate and constructive feedback to encourage learners to reflect on and improve their own learning.  *",
-                    "Selected" : "0"
-                }
-            },
             "Comments" : ""
         }
 
+    if cot_type == 'Highly Proficient':
+        content["Questions"] = {
+            "1" : {
+                "Objective" : "Modeled effective applications of content knowledge within and across curriculum teaching areas. *",
+                "Selected" : "0" 
+            },
+            "2" : {
+                "Objective" : "Developed and applied effective teaching strategies to promote critical and creative thinking, as well as other higher-order thinking skills. *",
+                "Selected" : "0"
+            },
+            "3" : {
+                "Objective" : "Modeled and supported colleagues in the proficient use of Mother Tongues, Filipino and English to improve teaching and learning, as well as to developed the learners' pride of their language, heritage and culture. *",
+                "Selected" : "0"
+            },
+            "4" : {
+                "Objective" : "Exhibited effective strategies that ensure safe and secure learning environments to enhance learning through the consistent implementation of policies, guidelines and procedures. *",
+                "Selected" : "0"
+            },
+            "5" : {
+                "Objective" : "Exhibited effective practices to foster learning environments that promote fairness, respect and care to encourage learning. *",
+                "Selected" : "0"
+            },
+            "6" : {
+                "Objective" : "Exhibited a learner-centered culture that promotes success by using effective teaching strategies that respond to their linguistic, cultural, socio-economic and religious backgrounds *",
+                "Selected" : "0"
+            },
+            "7" : {
+                "Objective" : "Developed and applied teaching strategies to address effectively the needs of learners from indigenous groups. *",
+                "Selected" : "0"
+            },
+            "8" : {
+                "Objective" : "Used effective strategies for providing timely, accurate and constructive feedback to encourage learners to reflect on and improve their own learning.  *",
+                "Selected" : "0"
+            }
+        },
+    elif cot_type == 'Proficient':
+        content["Questions"] = {
+            "1" : {
+                "Objective" : "Applied knowledge of content within and across curriculum teaching areas. *",
+                "Selected" : "0" 
+            },
+            "2" : {
+                "Objective" : "Used a range of teaching strategies that enhance learner achievement in literacy and numeracy skills. *",
+                "Selected" : "0" 
+            },
+            "3" : {
+                "Objective" : "Applied a range of teaching strategies to develop critical and creative thinking, as well as other higher-order thinking skills. *",
+                "Selected" : "0" 
+            },
+            "4" : {
+                "Objective" : "Displayed proficient use of Mother Tongue, Filipino and English to facilitate  teaching and learning. *",
+                "Selected" : "0" 
+            },
+            "5" : {
+                "Objective" : "Established safe and secure learning environment to enhance learning through the consistent implementation of policies, guidelines, and procedures. *",
+                "Selected" : "0" 
+            },
+            "6" : {
+                "Objective" : "Maintained learning environment that promotes fairness, respect and care to encourage learning. *",
+                "Selected" : "0" 
+            },
+            "7" : {
+                "Objective" : "Established a learner-centered culture by using teaching strategies that respond  to their linguistic, cultural, socio-economic and religious backgrounds. *",
+                "Selected" : "0" 
+            },
+            "8" : {
+                "Objective" : "Adapted and used culturally appropriate teaching strategies to address the needs of learners from indigenous groups. *",
+                "Selected" : "0" 
+            },
+            "9" : {
+                "Objective" : "Used strategies for providing timely, accurate and constructive feedback to  improve learner performance. *",
+                "Selected" : "0" 
+            },
+        }   
+    
+    cot_form.content = content
+    cot_form.is_for_teacher_proficient = True if cot_type == 'Proficient' else False
     cot_form.save()
     return cot_form
 
@@ -685,13 +728,62 @@ def create_ipcrf_form_highly_proficient(school : models.School , teacher : model
     pass
 
 
-
-def update_iprcf_form_part_1_by_teacher(
+def update_ipcrf_form_part_1_by_evaluator(
     school : models.School, teacher : models.People , ipcrf_form : models.IPCRFForm,
     content : dict[str, dict]
     ):
-    pass
+    
+    ipcrf_form.content_for_teacher = content
+    ipcrf_form.is_checked_by_evaluator = True
+    ipcrf_form.save()
 
+
+def update_iprcf_form_part_1_by_teacher(
+    ipcrf_form : models.IPCRFForm,
+    content : dict[str, dict]
+    ):
+    
+    part_3 = models.IPCRFForm.objects.filter(connection_to_other=ipcrf_form.connection_to_other, form_type='PART 3').first()
+    # TODO : UPDATE THE CONTENT OF PART 3
+    part_3.save()
+    
+    
+    ipcrf_form.content_for_teacher = content
+    ipcrf_form.save()
+
+
+def update_ipcrf_form_part_2_by_teacher(
+    ipcrf_form : models.IPCRFForm,
+    content : dict[str, dict]
+    ):
+    
+    part_3 = models.IPCRFForm.objects.filter(connection_to_other=ipcrf_form.connection_to_other, form_type='PART 3').first()
+    # TODO : UPDATE THE CONTENT OF PART 3
+    part_3.save()
+    
+    
+    ipcrf_form.content_for_teacher = content
+    ipcrf_form.save()
+
+
+def update_ipcrf_form_part_3_by_teacher(
+    ipcrf_form : models.IPCRFForm,
+    content : dict[str, dict]
+    ):
+    
+    ipcrf_form.content_for_teacher = content
+    
+    ipcrf_form.is_checked = True
+    ipcrf_form.save()
+    
+    
+    part_1 = models.IPCRFForm.objects.filter(connection_to_other=ipcrf_form.connection_to_other, form_type='PART 1').first()
+    part_1.is_checked = True
+    part_1.save()
+    
+    part_2 = models.IPCRFForm.objects.filter(connection_to_other=ipcrf_form.connection_to_other, form_type='PART 2').first()
+    part_2.is_checked = True
+    part_2.save()
 
 
 
@@ -727,6 +819,7 @@ def update_iprcf_form_part_1_by_teacher(
 
 
 
+# TODO : FIX THE DATA STRUCTURE EACH OF THE OBJECTIVES
 def create_rpms_class_works_for_proficient(rpms_folder_id : str):
     # Create KRA 1
     kra_1 = models.RPMSClassWork.objects.create(
@@ -745,6 +838,8 @@ def create_rpms_class_works_for_proficient(rpms_folder_id : str):
                 "1" : {
                     "Main Title" : "7% | Objective 1 (Applied knowledge of content within and across curriculum teaching areas)",
                     "Title" : "Means of Verification (MOV)",
+                    "Sub Title" : "Classroom Observation Tool (COT) rating sheet/s or inter -observer agreement form/s done through onsite / face-to-face / in-person classroom observation",
+                    "Section" : "FDFDF",
                     "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s "
                 },
                 "2" : {
@@ -772,7 +867,7 @@ def create_rpms_class_works_for_proficient(rpms_folder_id : str):
     # Create KRA 2
     kra_2 = models.RPMSClassWork.objects.create(
         rpms_folder_id = rpms_folder_id,
-        title = 'dsfdsfds',
+        title = 'KRA 2: Learning Environment and Diversity of Learners',
     )
     kra_2.class_work_id = str(uuid4())
     
@@ -953,8 +1048,7 @@ def create_rpms_class_works_for_proficient(rpms_folder_id : str):
     plus_factor.save()
     
     
-    
-    
+
 def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str):
     # Create KRA 1
     kra_1 = models.RPMSClassWork.objects.create(
@@ -996,6 +1090,37 @@ def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str):
     }
     
     kra_1.save()
+    
+    # Create KRA 2
+    kra_2 = models.RPMSClassWork.objects.create(
+        rpms_folder_id = rpms_folder_id,
+        title = 'KRA 2: Curriculum Knowledge and Pedagogy',
+    )
+    kra_2.class_work_id = str(uuid4())
+    
+    kra_2.objectives = {
+        "Instructions" : {
+            "Title" : "KRA 2: Curriculum Knowledge and Pedagogy",
+            "Date" : "", # Added when published
+            "Time" : "", # Added when published
+            "Points" : "28 points" ,
+            "Objectives" : {
+                "1" : {
+                    "Main Title" : "7% | Objective 5 (Applied knowledge of content within and across curriculum teaching areas)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s "
+                },
+            }
+        }
+    }
+
+    kra_2.save()
+
+
+
+
+
+
 
 
 

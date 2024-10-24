@@ -65,6 +65,7 @@ urlpatterns = [
     path('evaluator/school/update/cot/', views.update_rating_sheet),
     
     path('evaluator/school/get/ipcrf/part1/', views.get_iprcf_form_for_evaluator_part_1_of_teacher),
+    path('evaluator/school/check/ipcrf/part1/', views.check_teacher_ipcrf_form_part_1_by_evaluator),
     
     # =============== Teacher Path ================
     path('login_teacher/', views.login_teacher), # WORKING
@@ -76,7 +77,21 @@ urlpatterns = [
     path('teacher/swot/', views.teacher_swot),
     path('teacher/profile/', views.teacher_profile),
     path('teacher/update_education/', views.people_update_education),
-    path('teacher/update_profile/', views.people_update_profile), 
+    path('teacher/update_profile/', views.people_update_profile),
+    
+    
+    path('teacher/school/get/ipcrf/part1/', views.teacher_get_ipcrf_part_1),
+    path('teacher/school/update/ipcrf/part1/', views.teacher_update_ipcrf_part_1),
+    path('teacher/school/get/ipcrf/part2/', views.teacher_get_ipcrf_part_2),
+    path('teacher/school/update/ipcrf/part2/', views.teacher_update_ipcrf_part_2),
+    path('teacher/school/get/ipcrf/part3/', views.teacher_get_ipcrf_part_3),
+    path('teacher/school/update/ipcrf/part3/', views.teacher_update_ipcrf_part_3),
+    
+    path('teacher/school/get/rpms/folders/', views.teacher_get_rpms_folders),
+    path('teacher/school/get/rpms/folder/', views.teacher_get_rpms_folder),
+    path('teacher/school/get/rpms/folder/classwork/', views.teacher_get_rpms_work),
+    path('teacher/school/get/rpms/folder/classwork/turnin', views.teacher_turn_in_rpms_work),
+    
     
 ]
 

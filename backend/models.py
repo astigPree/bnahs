@@ -588,8 +588,10 @@ class IPCRFForm(models.Model):
         ))
     created_at = models.DateTimeField(auto_now_add=True)
     
-    is_checked = models.BooleanField(default=False)
+    is_checked_by_evaluator = models.BooleanField(default=False)
+    is_checked = models.BooleanField(default=False) # Check if the teacher submit it
     connection_to_other = models.CharField(max_length=255, blank=True, default='') # Generate a random ID, used for identifying parts (1,2,3)
+    is_for_teacher_proficient = models.BooleanField(default=False) # If True, the folder is for teacher proffecient
     
     
     def __str__(self):
@@ -604,7 +606,10 @@ class IPCRFForm(models.Model):
             'form_type' : self.form_type,
             'evaluator_id' : self.evaluator_id,
             'content_for_teacher' : self.content_for_teacher,
-            'content_for_evaluator' : self.content_for_evaluator
+            'content_for_evaluator' : self.content_for_evaluator,
+            'is_checked' : self.is_checked,
+            'connection_to_other' : self.connection_to_other,
+            'is_for_teacher_proficient' : self.is_for_teacher_proficient,
         }
         
         # Find the evaluator
@@ -749,7 +754,7 @@ class COTForm(models.Model):
          ('Completed', 'Completed'),
         ))
     
-    content = models.JSONField(default=dict, blank=True)
+    content : dict[str, dict | str] = models.JSONField(default=dict, blank=True)
     """
         {
             "Observer ID" : "Evaluator ID",
@@ -775,6 +780,8 @@ class COTForm(models.Model):
     
     cot_form_id = models.CharField(max_length=255, blank=True, default='') # ID of COT
     is_checked = models.BooleanField(default=False)
+    is_for_teacher_proficient = models.BooleanField(default=False) # If True, the folder is for teacher proffecient
+    
 
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.created_at}"
@@ -787,7 +794,10 @@ class COTForm(models.Model):
             'employee_id' : self.employee_id,
             'created_at' : self.created_at,
             'content' : self.content,
-            'status' : self.status
+            'status' : self.status,
+            'cot_form_id' : self.cot_form_id,
+            'is_checked' : self.is_checked,
+            'is_for_teacher_proficient' : self.is_for_teacher_proficient
         }
         try:
             if self.content:
@@ -888,7 +898,8 @@ class RPMSFolder(models.Model):
             'rpms_folder_name' : self.rpms_folder_name,
             'rpms_folder_school_year' : self.rpms_folder_school_year,
             'rpms_folder_id' : self.rpms_folder_id,
-            'rpms_folder_background' : '' 
+            'rpms_folder_background' : '' ,
+            'is_for_teacher_proficient' : self.is_for_teacher_proficient
         }
         
         if self.background_image is not None:
@@ -948,8 +959,8 @@ class RPMSClassWork(models.Model):
             'class_work_id' : self.class_work_id,
             'title' : self.title,
             'objectives' : self.objectives,
-            'published' : self.date_of_published,
-            
+            'due_date' : self.due_date,
+            'created_at' : self.created_at,
         }
 
 

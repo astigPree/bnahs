@@ -580,7 +580,6 @@ def create_rating_sheet(request):
                 quarter=quarter,
                 cot_type=cot_type
             )
-            
 
             return JsonResponse({
                 'message' : 'Rating sheet created successfully',
