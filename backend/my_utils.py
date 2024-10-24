@@ -73,34 +73,7 @@ def parse_date_string(date_string):
 
 
 
-def calculate_individual_averages_for_ipcrf(content):
-    total_quality = 0
-    total_efficiency = 0
-    total_timelines = 0
-    total_quality_count = 0
-    total_efficiency_count = 0
-    total_timelines_count = 0
 
-    for key, value in content.items():
-        if 'QUALITY' in value:
-            total_quality += int(value['QUALITY']['Rate'])
-            total_quality_count += 1
-        if 'EFFICIENCY' in value:
-            total_efficiency += int(value['EFFICIENCY']['Rate'])
-            total_efficiency_count += 1
-        if 'TIMELINES' in value:
-            total_timelines += int(value['TIMELINES']['Rate'])
-            total_timelines_count += 1
-
-    average_quality = total_quality / total_quality_count if total_quality_count > 0 else 0
-    average_efficiency = total_efficiency / total_efficiency_count if total_efficiency_count > 0 else 0
-    average_timelines = total_timelines / total_timelines_count if total_timelines_count > 0 else 0
-
-    return {
-        "average_quality": average_quality,
-        "average_efficiency": average_efficiency,
-        "average_timelines": average_timelines
-    }
 
 
 def classify_ipcrf_score(score):

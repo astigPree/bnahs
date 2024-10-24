@@ -3,7 +3,6 @@ from django.conf import settings
 from django.utils import timezone
 
 import uuid
-import my_utils
 # Create your models here.
 
 def generate_link_key():
@@ -28,6 +27,34 @@ class VerificationLink(models.Model):
         return self.created_at < (timezone.now() - timezone.timedelta(minutes=expire_in_minutes))
 
 
+def calculate_individual_averages_for_ipcrf(content):
+    total_quality = 0
+    total_efficiency = 0
+    total_timelines = 0
+    total_quality_count = 0
+    total_efficiency_count = 0
+    total_timelines_count = 0
+
+    for key, value in content.items():
+        if 'QUALITY' in value:
+            total_quality += int(value['QUALITY']['Rate'])
+            total_quality_count += 1
+        if 'EFFICIENCY' in value:
+            total_efficiency += int(value['EFFICIENCY']['Rate'])
+            total_efficiency_count += 1
+        if 'TIMELINES' in value:
+            total_timelines += int(value['TIMELINES']['Rate'])
+            total_timelines_count += 1
+
+    average_quality = total_quality / total_quality_count if total_quality_count > 0 else 0
+    average_efficiency = total_efficiency / total_efficiency_count if total_efficiency_count > 0 else 0
+    average_timelines = total_timelines / total_timelines_count if total_timelines_count > 0 else 0
+
+    return {
+        "average_quality": average_quality,
+        "average_efficiency": average_efficiency,
+        "average_timelines": average_timelines
+    }
 
 
 
@@ -556,7 +583,7 @@ class IPCRFForm(models.Model):
     
     def getTeacherTotalAverage(self):
         if self.form_type == 'PART 1':
-            return my_utils.calculate_individual_averages_for_ipcrf(self.content_for_teacher)
+            return calculate_individual_averages_for_ipcrf(self.content_for_teacher)
         return None
         
         
@@ -585,7 +612,7 @@ class IPCRFForm(models.Model):
     
     def getEvaluatorTotalAverage(self):
         if self.form_type == 'PART 1':
-            return my_utils.calculate_individual_averages_for_ipcrf(self.content_for_evaluator)
+            return calculate_individual_averages_for_ipcrf(self.content_for_evaluator)
         return None
     
     
