@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils import timezone
 
 import uuid
+import my_utils
 # Create your models here.
 
 def generate_link_key():
@@ -553,6 +554,12 @@ class IPCRFForm(models.Model):
         
         return data
     
+    def getTeacherTotalAverage(self):
+        if self.form_type == 'PART 1':
+            return my_utils.calculate_individual_averages_for_ipcrf(self.content_for_teacher)
+        return None
+        
+        
     def getEvaluatorPart1Scores(self):
         data = {}
         content_for_evaluator = self.content_for_evaluator
@@ -575,6 +582,11 @@ class IPCRFForm(models.Model):
                 data[key]['Total'] = total
                 
         return data
+    
+    def getEvaluatorTotalAverage(self):
+        if self.form_type == 'PART 1':
+            return my_utils.calculate_individual_averages_for_ipcrf(self.content_for_evaluator)
+        return None
     
     
 
@@ -1085,24 +1097,55 @@ class People(models.Model):
     def get_form_status(self):
         data = {}
         
-        part_1 = IPCRFForm.objects.filter(employee_id=self.employee_id, form_type='PART 1').first()
-        part_2 = IPCRFForm.objects.filter(employee_id=self.employee_id, form_type='PART 2').first()
-        part_3 = IPCRFForm.objects.filter(employee_id=self.employee_id, form_type='PART 3').first()
+        part_1 = IPCRFForm.objects.filter(employee_id=self.employee_id, form_type='PART 1').first() 
         
         data['part_1'] = part_1.is_checked
-        data['part_2'] = part_2.is_checked
-        data['part_3'] = part_3.is_checked
         
+        number_of_attachment_evaluated = 1 
         attachments = RPMSAttachment.objects.filter(employee_id=self.employee_id)
         for attachment in attachments:
             data[attachment.title] = attachment.is_checked
+            if attachment.is_checked :
+                number_of_attachment_evaluated += 1
         
-        data['evaluated'] = self.is_evaluated
+        data['evaluated'] = True if number_of_attachment_evaluated == 6 else False
         
         return data
         
+    def get_job_years(self):
+        now = timezone.now()
+        difference = self.job_started - now
+        
+        days = difference.days
+        months = (self.job_started.year - now.year) * 12 + self.job_started.month - now.month
+        years = self.job_started.year - now.year
+        
+        
+        return {
+            "days": days,
+            "months": months,
+            "years": years
+        }
+        
 
-
+    def update_is_evaluted(self):
+        part_1 = IPCRFForm.objects.filter(employee_id=self.employee_id, form_type='PART 1').first() 
+        
+        if not part_1.is_checked:
+            return 
+        
+        number_of_attachment_evaluated = 0
+        attachments = RPMSAttachment.objects.filter(employee_id=self.employee_id)
+        for attachment in attachments: 
+            if attachment.is_checked :
+                number_of_attachment_evaluated += 1
+        
+        if number_of_attachment_evaluated != 5 :
+            return
+        
+        self.is_evaluated = True
+        self.save()
+    
 # 1. title and scores for KBA BREAKDOWN
 # 2. rule based classifier for Promotion
 # 3. date of submission and score Performance tru year

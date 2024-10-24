@@ -353,7 +353,7 @@ def get_total_number_of_teachers_in_all_school(request):
         }, status=400)
 
 
-# DASHBOARD
+# DASHBOARD CALL THIS FIRST
 @csrf_exempt
 def number_of_evaluation_conducted(request):
     # TODO : DOUBLE CHECK IF IM CORRECT ON THE DATA 
@@ -371,7 +371,11 @@ def number_of_evaluation_conducted(request):
                     'message' : 'User is not an admin',
                 }, status=400)
             
-            teachers = models.People.objects.filter(role='Teacher' , is_evaluated=True)
+            teachers = models.People.objects.filter(role='Teacher', is_evaluated=False)
+            for teacher in teachers:
+                teacher.update_is_evaluted()
+                
+            teachers = models.People.objects.filter(role='Teacher', is_evaluated=True)
             
             return JsonResponse({
                 'total_evaluation_conducted' : teachers.count() if teachers else 0,
@@ -388,7 +392,7 @@ def number_of_evaluation_conducted(request):
         }, status=400)
             
 
-# DASHBOARD
+# DASHBOARD AFTER ABOVE THEN THIS
 @csrf_exempt
 def number_of_pending_evaluation(request):
     try:
@@ -406,6 +410,10 @@ def number_of_pending_evaluation(request):
                 }, status=400)
                 
             teachers = models.People.objects.filter(role='Teacher', is_evaluated=False)
+            for teacher in teachers:
+                teacher.update_is_evaluted()
+                
+            teachers = teachers.filter(is_evaluated=False)
 
             return JsonResponse({
                 'total_pending_evaluation' : teachers.count() if teachers else 0,
@@ -421,7 +429,7 @@ def number_of_pending_evaluation(request):
         'message' : 'Invalid request',
         }, status=400)
 
-
+# DASHBOARD AFTER ABOVE THEN THIS
 @csrf_exempt
 def evaluation_submission_rate(request):
     # Get the number of evaluated teacher each school
@@ -448,7 +456,6 @@ def evaluation_submission_rate(request):
                 data[school.name]['pending'] = models.People.objects.filter(school_id=school.school_id, role='Teacher', is_evaluated=False).count()
             
             
-            
             return JsonResponse({
                 'data' : data
             }, status=200)
@@ -463,8 +470,7 @@ def evaluation_submission_rate(request):
         }, status=400)
         
         
-        
-        
+             
 @csrf_exempt
 def all_teacher_recommendations(request):
     return JsonResponse({
@@ -473,10 +479,62 @@ def all_teacher_recommendations(request):
 
 
 @csrf_exempt
-def all_teacher_tenure(request):
+def get_tenure_of_all_teachers(request):
+    try:
+        
+        if request.method == 'GET':
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+        
+            people = People.objects.filter(role='Teacher')
+            total_count = people.count()
+            
+            if total_count == 0:
+                return JsonResponse({
+                    '0-3 years': 0,
+                    '3-5 years': 0,
+                    '5+ years': 0
+                }, status=200)
+
+            # Initialize counters
+            tenure_counts = {
+                '0-3 years': 0,
+                '3-5 years': 0,
+                '5+ years': 0
+            }
+
+            for person in people:
+                tenure_category = person.get_tenure_category()
+                if tenure_category in tenure_counts:
+                    tenure_counts[tenure_category] += 1
+            
+            # Calculate percentages
+            tenure_percentages = {
+                category: (count / total_count) * 100 for category, count in tenure_counts.items()
+            }
+            
+            return JsonResponse({
+                '0-3 years': tenure_counts['0-3 years'],
+                '3-5 years': tenure_counts['3-5 years'],
+                '5+ years': tenure_counts['5+ years']
+            }, status=200)
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
     return JsonResponse({
-        'message' : 'Not yet implemented',
-    }, status=400)
+        'message' : 'Invalid request',
+        }, status=400)
     
     
 @csrf_exempt

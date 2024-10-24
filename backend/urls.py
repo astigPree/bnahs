@@ -27,6 +27,11 @@ urlpatterns = [
     path('admin/school/teacher/evaluated/count/', views.number_of_evaluation_conducted),
     path('admin/school/teacher/evaluation/pending/count/', views.number_of_pending_evaluation),
     
+    path('admin/school/submission/rate/', views.evaluation_submission_rate),
+    path('admin/school/teachers/tenure/', views.get_tenure_of_all_teachers),
+    # TODO : CREATE GET FOR PROMOTIONS
+    # TODO : CREATE GET FOR DISTRIBUTIONS RATINGS
+    
     path('admin/school/reject/', views.reject_school),
     
     path('admin/school/evaluator/create/cot/', views.create_rating_sheet),

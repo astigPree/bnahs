@@ -78,7 +78,7 @@ def register_people(request):
             
             people.action_id = str(uuid4())
             people.school_id = school_user.school_id
-        
+            people.fullname = f'{people.first_name} {people.middle_name} {people.last_name}'
             job_started_date = my_utils.parse_date_string(job_started)
             people.job_started = job_started_date
             
