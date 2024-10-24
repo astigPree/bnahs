@@ -388,9 +388,24 @@ def register_school(request):
         if password != confirm_password:
             return JsonResponse({'status': 'error', 'message': 'Passwords do not match'}, status=400)
         
+        verification =  models.VerificationLink.objects.filter(email=email_address).first()
+        
+        
+        if not verification.is_expired():
+            return JsonResponse({'message': 'Please check your email or wait for 30 mins'})
+        else:
+            verification.delete()
+            school = models.School.objects.filter(email_address=email_address).first()
+            if school:
+                school.delete()
+        
         # Check if the already school exist
         if models.School.objects.filter(email_address=email_address).exists():
             return JsonResponse({ 'message': 'School already exists'}, status=400)
+
+        if models.School.objects.filter(school_id=school_id).exists():
+            return JsonResponse({ 'message': 'School ID already exists'}, status=400)
+        
 
         school = models.School.objects.create(
             name=name,
