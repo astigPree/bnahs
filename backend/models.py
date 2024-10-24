@@ -754,7 +754,7 @@ class COTForm(models.Model):
          ('Completed', 'Completed'),
         ))
     
-    content : dict[str, dict | str] = models.JSONField(default=dict, blank=True)
+    content = models.JSONField(default=dict, blank=True)
     """
         {
             "Observer ID" : "Evaluator ID",
