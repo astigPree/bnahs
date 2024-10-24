@@ -266,8 +266,7 @@ def get_iprcf_form_for_evaluator_part_1_of_teacher(request):
                    'message' : 'User not found',
                     }, status=400)
             
-            # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND TEACHER
-            # TODO : TELL THEM TO ADD IN THE HEADER 'Content-Type': 'application/json'
+            # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND TEACHER 
             
             teacher_id = request.POST.get('teacher_id')
             if not teacher_id:

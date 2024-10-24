@@ -903,4 +903,43 @@ def teacher_turn_in_rpms_work(request):
         }, status=400)
 
 
+@csrf_exempt
+def teacher_submit_rpms_work(request):
+    try:
+        
+        if request.method == 'POST':
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            
+            if 'Teacher' != user.role:
+                return JsonResponse({
+                    'message' : 'User not found',
+                },status=400)
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            class_work_id = request.POST.get('class_work_id')
+            
+            if not class_work_id:
+                return JsonResponse({
+                    'message' : 'class_work_id not found',
+                },status=400)
+            
+            attachments = models.RPMSAttachment.objects.filter(class_work_id=class_work_id, employee_id=user.employee_id)
+            
+            return JsonResponse({
+                    'classwork' : [attachment.get_information() for attachment in attachments],
+                },status=200)
+            
+            
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
 

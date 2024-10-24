@@ -184,9 +184,11 @@ def get_school_feeds(request):
             posts = models.Post.objects.filter(post_owner=user.action_id).order_by('-created_at')
             for post in posts:
                 comments = models.Comment.objects.filter(post_id=post.post_id).order_by('-created_at')
+                attachments = models.PostAttachment.objects.filter(post_id=post.post_id).order_by('-created_at')
                 feeds[post.post_id] = {
                     "post" : post.get_post(),
-                    "comments" : [comment.get_comment() for comment in comments]
+                    "comments" : [comment.get_comment() for comment in comments],
+                    "attachments" : [attachment.get_attachment() for attachment in attachments]
                 }
                 
             return JsonResponse({
@@ -223,7 +225,16 @@ def school_post(request):
                     }, status=400)
             
             content = request.POST.get('content')
-            content_file = request.FILES.get('content_file')
+            
+            content_files = []
+            try:
+                for i in range(5):
+                    content_file = request.FILES.get(f'content_file_{i}')
+                    if content_file:
+                        content_files.append(content_file)
+            except Exception as e:
+                pass
+            
             
             if not content:
                 return JsonResponse({
@@ -234,20 +245,24 @@ def school_post(request):
             post = models.Post.objects.create(
                 post_owner=user.action_id,
                 content=content,
-                content_file=content_file if content_file else ''
             )
             
             post.post_id = str(uuid4())
             post.save()
+            
+            for content_file in content_files:
+                models.PostAttachment.objects.create(
+                    post_id=post.post_id,
+                    attachment=content_file
+                )
+                
             
             return JsonResponse({
                 'message' : 'Post created successfully'
             },status=200)
 
             
-        
-        
-        
+    
     except Exception as e:
         return JsonResponse({
             'status': 'error',

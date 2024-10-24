@@ -91,9 +91,11 @@ def get_feeds(request):
             posts = models.Post.objects.filter(post_owner=user.school_action_id).order_by('-created_at')
             for post in posts:
                 comments = models.Comment.objects.filter(post_id=post.post_id).order_by('-created_at')
+                attachments = models.PostAttachment.objects.filter(post_id=post.post_id).order_by('-created_at')
                 feeds[post.post_id] = {
                     "post" : post.get_post(action_id=user.action_id),
-                    "comments" : [comment.get_comment() for comment in comments]
+                    "comments" : [comment.get_comment() for comment in comments],
+                    "attachments" : [attachment.get_attachment() for attachment in attachments]
                 }
             
             return JsonResponse({
@@ -157,7 +159,15 @@ def people_update_education(request ):
 
         try:
             # Update educations if have
-            educations = request.POST.get('educations')
+            educations = json.loads(request.POST.get('educations'))
+            """
+                educations = [
+                    {
+                        'degree' : '',
+                        'university' : ''
+                    }
+                ]
+            """
             
             if not educations:
                 return JsonResponse({
@@ -242,7 +252,15 @@ def people_update_profile(request ):
             
             
             if has_changed:
-                user.save()
+                # Re-authenticate the user with the new credentials
+                old_based_user = User.objects.get(username=user.employee_id)
+                old_based_user.set_password(user.password if not password else password)  # Use the raw user_key here
+                old_based_user.save()
+                new_user = authenticate(username=user.employee_id, password=user.password)
+                if new_user:
+                    login(request, new_user)
+                    user.save()
+                    
                 return JsonResponse({
                     'message' : 'Profile updated successfully',
                 }, status=200)
@@ -369,6 +387,35 @@ def get_people_rpms_classworks(request):
         'message' : 'Invalid request',
         }, status=400)
     
+
+@csrf_exempt
+def get_all_teachers(request):
+    try:
+        if request.method == 'GET':
+            user = models.People.objects.filter(employee_id=request.user.username, role="Evaluator").first()
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            teachers = models.People.objects.filter(role="Teacher", school_id=user.school_id)
+            if not teachers:
+                return JsonResponse({
+                    'message' : 'No teachers found',
+                }, status=400)
+            
+            return JsonResponse({
+                'teachers' : [teacher.get_information() for teacher in teachers]
+            }, status=200)
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400 )
 
 
 @csrf_exempt
