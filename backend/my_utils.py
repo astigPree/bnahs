@@ -160,6 +160,8 @@ def update_cot_form(cot_form : models.COTForm, comment : str , questions : dict[
     cot_form.content['Comments'] = comment
     for q_id, q_info in questions.items():
         cot_form.content['Questions'][q_id]['Selected'] = q_info['Selected']
+        
+    cot_form.is_checked = True
     cot_form.save()
 
 
@@ -677,10 +679,20 @@ def create_ipcrf_form_proficient( school : models.School , teacher : models.Peop
     
     return (ipcrf_form_part_1, ipcrf_form_part_2, ipcrf_form_part_3)
     
-    
+
 
 def create_ipcrf_form_highly_proficient(school : models.School , teacher : models.People ):
     pass
+
+
+
+def update_iprcf_form_part_1_by_teacher(
+    school : models.School, teacher : models.People , ipcrf_form : models.IPCRFForm,
+    content : dict[str, dict]
+    ):
+    pass
+
+
 
 
 
@@ -940,5 +952,55 @@ def create_rpms_class_works_for_proficient(rpms_folder_id : str):
     
     plus_factor.save()
     
+    
+    
+    
 def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str):
-    pass
+    # Create KRA 1
+    kra_1 = models.RPMSClassWork.objects.create(
+        rpms_folder_id = rpms_folder_id,
+        title = 'KRA 1: Content Knowledge and Pedagogy',
+    )
+    kra_1.class_work_id = str(uuid4())
+    
+    kra_1.objectives = {
+        "Instructions" : {
+            "Title" : "KRA 1: Content Knowledge and Pedagogy", 
+            "Date" : "", # Added when published
+            "Time" : "", # Added when published
+            "Points" : "28 points" ,
+            "Objectives" : {
+                "1" : {
+                    "Main Title" : "7% | Objective 1 (Applied knowledge of content within and across curriculum teaching areas)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s "
+                },
+                "2" : {
+                    "Main Title" : "7% | Objective 2 (Used a range of teaching strategies that enhance learner achievement in literacy and numeracy skills.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s "
+                },
+                "3" : {
+                    "Main Title" : "7% | Objective 3 (Applied a range of teaching strategies to develop critical and creative thinking, as well as other higher-order thinking skills.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s "
+                },
+                "4" : {
+                    "Main Title" : "7% | Objective 4 (Displayed proficient use of Mother Tongue, Filipino, and English to facilitate teaching and learning.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s"
+                }
+            }
+        },
+        "Comment" : " "
+    }
+    
+    kra_1.save()
+
+
+
+
+
+
+
+
