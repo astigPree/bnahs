@@ -945,7 +945,19 @@ class RPMSClassWork(models.Model):
                         "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s"
                     }
                 }
-            }
+            },
+            "Grade" : {
+                "1" : {
+                    "Content" : "KRA 1: Content Knowledge and Pedagogy",
+                    "Score" : "5",
+                    "Maximum Score" : "7",
+                },
+                "2" : {
+                    "Content" : "KRA 1: Content Knowledge and Pedagogy",
+                    "Score" : "5"
+                    "Maximum Score" : "7",
+                }
+            },
             "Comment" : " "
         }
     """
@@ -963,6 +975,8 @@ class RPMSClassWork(models.Model):
             'created_at' : self.created_at,
         }
 
+    def get_grade(self):
+        return self.objectives.get('Grade', '')
 
 class RPMSAttachment(models.Model):
     """
@@ -997,7 +1011,7 @@ class RPMSAttachment(models.Model):
     
     
     file = models.FileField(upload_to='rpms_attachments')
-    grade = models.JSONField(default=dict, blank=True)
+    grade : dict[str, dict] = models.JSONField(default=dict, blank=True)
     """
         {
             "1" : {

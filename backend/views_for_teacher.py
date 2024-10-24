@@ -884,7 +884,7 @@ def teacher_turn_in_rpms_work(request):
                 file=rpms_attachment
             )
             
-            
+            attachment.grade = classwork.get_grade()
             attachment.attachment_id = str(uuid4())
             attachment.save()
             

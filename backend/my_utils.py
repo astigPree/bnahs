@@ -859,6 +859,9 @@ def create_rpms_class_works_for_proficient(rpms_folder_id : str):
                 }
             }
         },
+        "Grade" : {
+            
+        },
         "Comment" : " "
     }
     
@@ -1048,7 +1051,6 @@ def create_rpms_class_works_for_proficient(rpms_folder_id : str):
     plus_factor.save()
     
     
-
 def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str):
     # Create KRA 1
     kra_1 = models.RPMSClassWork.objects.create(
