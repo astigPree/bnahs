@@ -279,30 +279,8 @@ class IPCRFForm(models.Model):
         # PART 3
         {
             "A" : {
-                "Strenghts" : {
-                    "1" : {
-                        "QUALITY" : "2",
-                        "EFFICIENCY" : "5",
-                        "TIMELINES" : ""
-                    },
-                    "2" : {
-                        "QUALITY" : "2",
-                        "EFFICIENCY" : "",
-                        "TIMELINES" : ""
-                    },
-                },
-                "Development Needs" : {
-                    "1" : {
-                        "QUALITY" : "2",
-                        "EFFICIENCY" : "5",
-                        "TIMELINES" : ""
-                    },
-                    "2" : {
-                        "QUALITY" : "2",
-                        "EFFICIENCY" : "",
-                        "TIMELINES" : ""
-                    },
-                },
+                "Strenghts" : [],
+                "Development Needs" : [],
                 "Learning Objectives": {
                     "1" : "Learning Objectives Learning Objectives Learning Objectives.",
                     "2" : "Learning Objectives Learning Objectives Learning Objectives.",
@@ -322,19 +300,9 @@ class IPCRFForm(models.Model):
                 
             },
             
-            "B" : {
-                "Selections" : {
-                    "1" : {
-                        "Title" : "SELF-MANAGEMENT",
-                        "Selected" : [
-                            "1" , "2", "3"
-                        ]
-                    },
-                    "2" : {
-                        "Title" : "Professionalism and Ethics",
-                        "Selected" : []
-                    },
-                },
+            "B" : { 
+                "Strenghts" : [],
+                "Development Needs" : [],
                 "Learning Objectives": {
                     "1" : "Learning Objectives Learning Objectives Learning Objectives.",
                     "2" : "Learning Objectives Learning Objectives Learning Objectives.",

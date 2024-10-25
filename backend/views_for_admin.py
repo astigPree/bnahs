@@ -1012,8 +1012,7 @@ def create_ipcrf_form(request):
                 return JsonResponse({
                     'message' : 'User is not an admin',
                 }, status=400)
-                
-            # TODO: NAKALIMUTAN KO YUNG SA DEVELOPEMEN PLANS 
+                  
             position = request.POST.get('position') # Check what position does the admin want to create for (Proficient or Highly Proficient)
             if not position:
                 return JsonResponse({
