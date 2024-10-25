@@ -683,7 +683,7 @@ def form_for_ipcrf_part_1_highly_proficient():
             },
             "TIMELINESS" : {
                 "1" : "No acceptable evidence was shown",
-                "2" : "Attended coaching and mentoring sessions/meetings/LAC sessions/FGDs/other collegial discussions that evaluates effectiveness of teaching strategies that promote learner achievement in literacy and numeracy, as shown in MOV 1",
+                "2" : "Evaluated with colleagues the effectiveness of teaching strategies that promote learner achievement in literacy and numeracy across 1 quarters",
                 "3" : "Evaluated with colleagues the effectiveness of teaching strategies that promote learner achievement in literacy and numeracy across 2 quarters",
                 "4" : "Evaluated with colleagues the effectiveness of teaching strategies that promote learner achievement in literacy and numeracy across 3 quarters",
                 "5" : "Evaluated with colleagues the effectiveness of teaching strategies that promote learner achievement in literacy and numeracy across 4 quarters",
@@ -691,13 +691,13 @@ def form_for_ipcrf_part_1_highly_proficient():
             },
         },
         "3" : {
-            "Question" : "Applied a range of teaching strategies to develop critical and creative thinking, as well as other higher-order thinking skills (PPST 1.5.2)",
+            "Question" : "Developed and applied effective teaching strategies to promote critical and creative thinking, as well as other higher-order thinking skills ",
             "QUALITY" : {
-                "1" : "Demonstrated Level 3 in the objective as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 4 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "3" : "Demonstrated Level 5 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "4" : "Demonstrated Level 6 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "5" : "Demonstrated Level 7 in the objective as shown in COT rating sheets / inter-observer agreement forms",
+                "1" : "Demonstrated Level 4 in the objective as shown in COT rating sheets / inter-oberver agreement forms or No acceptable evidence was shown",
+                "2" : "Demonstrated Level 5 in the objective as shown in COT rating sheets / inter-oberver agreement forms",
+                "3" : "Demonstrated Level 6 in the objective as shown in COT rating sheets / inter-oberver agreement forms",
+                "4" : "Demonstrated Level 7 in the objective as shown in COT rating sheets / inter-oberver agreement forms",
+                "5" : "Demonstrated Level 8 in the objective as shown in COT rating sheets / inter-oberver agreement forms",
                 "Rate" : "0"
             },
             "EFFICIENCY" : {
@@ -708,13 +708,13 @@ def form_for_ipcrf_part_1_highly_proficient():
             }
         },
         "4" : {
-            "Question" : "Displayed proficient use of Mother Tongue, Filipino and English to facilitate teaching and learning (PPST 1.6.2)",
+            "Question" : "Modeled and supported colleagues in the proficient use of Mother Tongues,  Filipino and English to improve teaching and learning, as well as to developed the learners’ pride of their language, heritage and culture",
             "QUALITY" : {
-                "1" : "Demonstrated Level 3 in the objective as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 4 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "3" : "Demonstrated Level 5 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "4" : "Demonstrated Level 6 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "5" : "Demonstrated Level 7 in the objective as shown in COT rating sheets / inter-observer agreement forms",
+                "1" : "Modeled Level 4 as shown in COT rating sheets/inter-oberver agreement forms",
+                "2" : "Modeled Level 5 as shown in COT rating sheets/inter-oberver agreement forms",
+                "3" : "Modeled Level 6 as shown in COT rating sheets/inter-oberver agreement forms",
+                "4" : "Modeled Level 7 as shown in COT rating sheets/inter-oberver agreement forms",
+                "5" : "Modeled Level 8 as shown in COT rating sheets/inter-oberver agreement forms",
                 "Rate" : "0"
             },
             "EFFICIENCY" : {
@@ -729,13 +729,13 @@ def form_for_ipcrf_part_1_highly_proficient():
 
     domains['Learning Environment & Diversity of Learners'] = {
         "5" : {
-            "Question" : "Established safe and secure learning environments to enhance learning through the consistent implementation of policies",
+            "Question" : "Exhibited effective strategies that ensure safe and secure learning environment to enhance learning through the consistent implementation of policies, guidelines, and procedures",
             "QUALITY" : {
-                "1" : "Demonstrated Level 3 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 4 as shown in COT rating sheets / inter-observer agreement forms",
-                "3" : "Demonstrated Level 5 as shown in COT rating sheets / inter-observer agreement forms",
-                "4" : "Demonstrated Level 6 as shown in COT rating sheets / inter-observer agreement forms",
-                "5" : "Demonstrated Level 7 as shown in COT rating sheets / inter-observer agreement forms",
+                "1" : "Modeled Level 4 as shown in COT rating sheets/inter-oberver agreement forms",
+                "2" : "Modeled Level 5 as shown in COT rating sheets/inter-oberver agreement forms",
+                "3" : "Modeled Level 6 as shown in COT rating sheets/inter-oberver agreement forms",
+                "4" : "Modeled Level 7 as shown in COT rating sheets/inter-oberver agreement forms",
+                "5" : "Modeled Level 8 as shown in COT rating sheets/inter-oberver agreement forms",
                 "Rate" : "0"
             },
             "EFFICIENCY" : {
@@ -746,13 +746,13 @@ def form_for_ipcrf_part_1_highly_proficient():
             }, 
         },
         "6" : {
-            "Question" : "Maintained learning environment that promote fairness, respect and care to encourage learning (PPST 2.2.2)",
+            "Question" : "Exhibit effective practices to foster learning environments that promote fairness, respect and care to encourage learning",
             "QUALITY" : {
-                "1" : "Demonstrated Level 3 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 4 as shown in COT rating sheets / inter-observer agreement forms",
-                "3" : "Demonstrated Level 5 as shown in COT rating sheets / inter-observer agreement forms",
-                "4" : "Demonstrated Level 6 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "5" : "Demonstrated Level 7as shown in COT rating sheets / inter-observer agreement forms",
+                "1" : "Modeled Level 4 as shown in COT rating sheets/inter-oberver agreement forms",
+                "2" : "Modeled Level 5 as shown in COT rating sheets/inter-oberver agreement forms",
+                "3" : "Modeled Level 6 as shown in COT rating sheets/inter-oberver agreement forms",
+                "4" : "Modeled Level 7 as shown in COT rating sheets/inter-oberver agreement forms",
+                "5" : "Modeled Level 8 as shown in COT rating sheets/inter-oberver agreement forms",
                 "Rate" : "0"
             },
             "EFFICIENCY" : {
@@ -763,13 +763,13 @@ def form_for_ipcrf_part_1_highly_proficient():
             }, 
         },
         "7" : {
-            "Question" : "Established a learner - centered culture by using teaching strategies that respond to their linguistic, cultural, socioeconomic and religious",
+            "Question" : "Exhibited a learner-centered culture that promotes success by using effective teaching strategies that respond to their linguistic, cultural, socio-economic and religious backgrounds",
             "QUALITY" : {
-                "1" : "Demonstrated Level 3 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 4 as shown in COT rating sheets / inter-observer agreement forms",
-                "3" : "Demonstrated Level 5 as shown in COT rating sheets / inter-observer agreement forms",
-                "4" : "Demonstrated Level 6 as shown in COT rating sheets / inter-observer agreement forms",
-                "5" : "Demonstrated Level 7 as shown in COT rating sheets / inter-observer agreement forms",
+                "1" : "Demonstrated Level 4 in the objective as shown in COT rating sheets / inter-oberver agreement forms or No acceptable evidence was shown or No acceptable evidence was shown",
+                "2" : "Modeled Level 5 as shown in COT rating sheets/inter-oberver agreement forms",
+                "3" : "Modeled Level 6 as shown in COT rating sheets/inter-oberver agreement forms",
+                "4" : "Modeled Level 7 as shown in COT rating sheets/inter-oberver agreement forms",
+                "5" : "Modeled Level 8 as shown in COT rating sheets/inter-oberver agreement forms",
                 "Rate" : "0"
             },
             "EFFICIENCY" : {
@@ -780,19 +780,16 @@ def form_for_ipcrf_part_1_highly_proficient():
             }, 
         },
         "8" : {
-            "Question" : "Adapted and used culturally appropriate teaching strategies to address the needs of learners from indigenous groups (PPST 3.5.2) ",
+            "Question" : "Developed and applied teaching strategies to address effectively the needs of learners from indigenous groups",
             "QUALITY" : {
-                "1" : "Demonstrated Level 3 in the objective as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown or in the lesson plan and annotation provided",
-                "2" : "Demonstrated Level 4 in the objective as shown in COT rating sheets / inter-observer agreement forms or in the lesson plan and annotation provided",
-                "3" : "Demonstrated Level 5 in the objective as shown in COT rating sheets / inter-observer agreement forms or in the lesson plan and annotation provided",
-                "4" : "Demonstrated Level 6 in the objective as shown in COT rating sheets / inter-observer agreement forms or in the lesson plan and annotation provided",
-                "5" : "Demonstrated Level 7 as shown in COT rating sheets / inter-observer agreement forms or in the lesson plan and annotation provided",
+                "1" : "Demonstrated Level 4 in the objective as shown in COT rating sheets / inter-oberver agreement forms or in lesson plan and annotation provided or No acceptable evidence was shown or No acceptable evidence was shown",
+                "2" : "Demonstrated Level 5 in the objective as shown in COT rating sheets / inter-oberver agreement forms or in lesson plan and annotation provided",
+                "3" : "Demonstrated Level 6 in the objective as shown in COT rating sheets / inter-oberver agreement forms or in lesson plan and annotation provided",
+                "4" : "Demonstrated Level 7 in the objective as shown in COT rating sheets / inter-oberver agreement forms or in lesson plan and annotation provided",
+                "5" : "Demonstrated Level 8 in the objective as shown in COT rating sheets / inter-oberver agreement forms or in lesson plan and annotation provided",
                 "Rate" : "0"
             },
             "EFFICIENCY" : {
-                "1" : "No acceptable evidence was shown", 
-                "3" : "Objective was met but instruction exceeded the allotted time", 
-                "5" : "Objective was met within the allotted time",
                 "Rate" : "0"
             },
         }
@@ -800,32 +797,32 @@ def form_for_ipcrf_part_1_highly_proficient():
     
     domains['Curriculum and Planning & Assessment and Reporting'] = {
         "9" : {
-            "Question" : "Set achievable and appropriate learning outcomes that are aligned with learning competencies  (PPST 4.4.2)",
+            "Question" : "Modeled to colleagues the setting of achievable and challenging learning outcomes that are aligned with learning competencies to cultivate a culture of excellence for all learners",
             "QUALITY" : {
                 "1" : "No acceptable evidence was shown",
-                "2" : "Set learning outcomes were not achievable or  appropriate, and were aligned with the learning competencies, as shown in the MOV submitted",
-                "3" : "Set learning outcomes were achievable and appropriate, and were aligned with the learning competencies, as shown in the MOV submitted",
-                "4" : "Set learning outcomes were achievable and appropriate, and contributed to the understanding of the next related competency, as shown in the MOV submitted",
-                "5" : "Set learning outcomes were achievable and appropriate, and led to the attainment of the next related competency, as shown in the MOV submitted",
+                "2" : "Attended coaching and mentoring sessions/meetings/LAC sessions/FGDs/other collegial discussion on setting of achievable and challenging learning outcomes that are aligned with learning competencies, as shown in the MOV submitted",
+                "3" : "Modeled to colleagues the setting of achievable and challenging learning outcomes that are aligned with learning competencies, as shown in the MOV submitted",
+                "4" : "Synthesized with colleagues discussion on setting of achievable and challenging learning outcomes that are aligned with learning competencies, as shown in the MOV submitted",
+                "5" : "Guided colleagues in planning for the setting of achievable and challenging learning outcomes that are aligned with learning competencies, as shown in the MOV submitted",
                 "Rate" : "0"
             },
-            "EFFICIENCY" : {
+            "TIMELINESS" : {
                 "1" : "No acceptable evidence was shown",
-                "2" : "Less than half of the learning outcomes set were aligned with the learning competencies as shown in the MOV submitted",
-                "3" : "At least half of the learning outcomes set were aligned with the learning competencies as shown in the MOV submitted",
-                "4" : "Majority of the learning outcomes set were aligned with the learning competencies as shown in the MOV submitted",
-                "5" : "All of the learning outcomes set were aligned with the learning competencies as shown in the MOV submitted",
+                "2" : "Modeled to colleagues the setting of achievable and challenging learning outcomes that are aligned with learning",
+                "3" : "Modeled to colleagues the setting of achievable and challenging learning outcomes that are aligned with learning",
+                "4" : "Modeled to colleagues the setting of achievable and challenging learning outcomes that are aligned with learning",
+                "5" : "Modeled to colleagues the setting of achievable and challenging learning outcomes that are aligned with learning",
                 "Rate" : "0"
             }
         },
         "10" : {
-            "Question" : "Used strategies for  providing timely, accurate and constructive feedback to improve learner performance  (PPST 5.3.2)",
+            "Question" : "Used effective strategies for providing timely, accurate and constructive feedback to encourage learners",
             "QUALITY" : {
-                "1" : "Demonstrate Level 6 in the objective as shown in COT rating sheet / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrate Level 4 in the objective as shown in COT rating sheet / inter-observer agreement forms",
-                "3" : "Demonstrate Level 5 in the objective as shown in COT rating sheet / inter-observer agreement forms",
-                "4" : "Demonstrate Level 6 in the objective as shown in COT rating sheet / inter-observer agreement forms",
-                "5" : "Demonstrate Level 7 in the objective as shown in COT rating sheet / inter-observer agreement forms",
+                "1" : "Demonstrated Level 4 in the objective as shown in COT rating sheets / inter-oberver agreement forms or No acceptable evidence was shown or No acceptable evidence was shown",
+                "2" : "Demonstrated Level 5 in the objective as shown in COT rating sheets / inter-oberver agreement forms",
+                "3" : "Demonstrated Level 6 in the objective as shown in COT rating sheets / inter-oberver agreement forms",
+                "4" : "Demonstrated Level 7 in the objective as shown in COT rating sheets / inter-oberver agreement forms",
+                "5" : "Demonstrated Level 8 in the objective as shown in COT rating sheets / inter-oberver agreement forms",
                 "Rate" : "0"
             },
             "EFFICIENCY" : {
@@ -836,21 +833,21 @@ def form_for_ipcrf_part_1_highly_proficient():
             } 
         },
         "11" : {
-            "Question" : "Utilized  assessment data to inform the modification of teaching and learning practices and programs (PPST 5.5.2)",
+            "Question" : "Worked collaboratively with colleagues to analyze and utilize assessment data to modify practices and programs to further support learner progress and achievement",
             "QUALITY" : {
                 "1" : "No acceptable evidence was shown",
-                "2" : "Analyzed learners' mastered skills based on the frequency of errors and correct responses as evidenced by a list of identified least / most mastered skills",
-                "3" : "Planned for teaching and learning strategy and/or program based on learners' assessment data as evidenced by a list of identified least / most mastered skills with supporting MOV No. 3",
-                "4" : "Develop material based on learners' assessment data as evidenced by a list of identified least / most mastered skills with supporting MOV  No. 2",
-                "5" : "Implemented a teaching and learning strategy / program using materials based on learners' assessment data as evidenced by a list of identified least / most mastered skills with supporting MOV No. 1",
+                "2" : "Planned for the conduct of coaching and mentoring sessions/meetings/LAC sessions/FGDs/other collegial discussions to interpret collaboratively monitoring and evaluation strategies of attainment data, as evidenced by the MOV 1 or MOV 2",
+                "3" : "Conducted collaborative discussions to analyze and utilize assessment data to modify practices and programs, as evidenced by the MOV 3 or MOV 4",
+                "4" : "Synthesized discussions colleagues on the analysis and utilization of assessment data to modify practices and programs during coaching and mentoring sessions/meetings/LAC sessions/FGDs/other collegial discussions, as evidenced by MOV 3 or MOV 4",
+                "5" : "Guided colleagues in planning for the analysis and utilization of assessment data to modify practices and programs during coaching and mentoring sessions/meetings/LAC sessions/FGDs/other collegial discussions, as evidenced by MOV 4 or MOV 5",
                 "Rate" : "0"
             }, 
             "TIMELINES" : {
                 "1" : "No acceptable evidence was shown",
-                "2" : "Submitted MOV/s showed utilization of assessment data across 1 quarters",
-                "3" : "Submitted MOV/s showed utilization of assessment data across 2 quarters",
-                "4" : "Submitted MOV/s showed utilization of assessment data across 3 quarters",
-                "5" : "Submitted MOV/s showed utilization of assessment data across 4 quarters",
+                "2" : "Collaborated with colleagues in the interpolation of attainment of data in only 1 quarter",
+                "3" : "Collaborated with colleagues in the interpolation of attainment of data across 2 quarters",
+                "4" : "Collaborated with colleagues in the interpolation of attainment of data across 3 quarters",
+                "5" : "Collaborated with colleagues in the interpolation of attainment of data across 4 quarters",
                 "Rate" : "0"
             }
         }
@@ -858,67 +855,59 @@ def form_for_ipcrf_part_1_highly_proficient():
     
     domains['Community Linkages and Professional Engagement & Personal Growth and Professional Development'] = {
         "12" : {
-            "Question" : "Built relationships with parents/guardians and the wider school community to facilitate involvement in the educative process (PSST 6.2.2.)",
+            "Question" : "Guided colleagues to strengthen relationships with parents/guardians and the wider school community to maximize their involvement in the educative process",
             "QUALITY" : {
                 "1" : "No acceptable evidence was shown",
-                "2" : "Communicated with and obtained response from parents/guardians and/or wider school community to facilitate involvement  in the educative process as evidenced by MOV no. 1 or 2",
-                "3" : "Secured collaboration with parents/guardians and/or wider school community to facilitate involvement  in the educative process as evidenced by one MOV no. 1 or 2",
-                "4" : "Sustained engagement with parents/guardians and/or wider school community to facilitate involvement  in the educative process as evidenced by 2 or more of MOV no. 1 or 2",
-                "5" : "Sustained engagement through regular communication of learners' needs, progress and achievement to key stakeholders, including parents/guardians, as shown in the MOV submitted ",
+                "2" : "Attended coaching and mentoring sessions/meetings/LAC sessions/FGDs/other collegial discussions on strengthening relationships with parents/guardians and the wider school community, as shown by MOV 1",
+                "3" : "Advised and guided colleagues to strengthen relationships with parents/guardians and the wider school community during coaching and mentoring sessions/meetings/LAC sessions/FGDs/other collegial discussions, as shown by MOV 2",
+                "4" : "Synthesized discussions with colleagues to strengthen relationships with parents/guardians and the wider school community, as shown by MOV 3",
+                "5" : "Guided colleagues in planning for strengthening relationships with parents/guardians and the wider school community during coaching and mentoring sessions/meetings/LAC sessions/FGDs/other collegial discussions, as shown by MOV 4 ",
                 "Rate" : "0"
             }, 
             "TIMELINES" : {
                 "1" : "No acceptable evidence was shown",
-                "2" : "Showed engagement with parents/guardians and the wider school community across 1 quarters",
-                "3" : "Showed engagement with parents/guardians and the wider school community across 2 quarters",
-                "4" : "Showed engagement with parents/guardians and the wider school community across 3 quarters",
-                "5" : "Showed engagement with parents/guardians and the wider school community across 4 quarters",
+                "2" : "Guided colleagues across 1 quarters",
+                "3" : "Guided colleagues across 2 quarters",
+                "4" : "Guided colleagues across 3 quarters",
+                "5" : "Guided colleagues across 4 quarters",
                 "Rate" : "0"
             }
         },
         "13" : {
-            "Question" : "Participated in professional networks to share knowledge and to enhance practice (PPST 7.3.2)",
+            "Question" : "Contributed actively to professional networks within and between schools to improve knowledge and to enhance practice",
             "QUALITY" : {
                 "1" : "No acceptable evidence was shown",
-                "2" : "Participated in any professional network/activity that does not requires output to share knowledge and to to enhance practice as evidenced by the submitted MOV",
-                "3" : "Participated in any professional network/activity that requires output* and proof of implementation** to enhance practice as evidenced by the submitted MOV",
-                "4" : "Participated in any professional network/activity that requires output* and proof of implementation** within the department/grade level to share knowledge and to enhance practice as evidenced by the submitted MOV",
-                "5" : "Participated in any professional network/activity that requires output* and proof of implementation** within the school to share knowledge and to enhance practice as evidenced by the submitted MOV",
+                "2" : "Contributed actively to any professional network/activity that does not require output to share knowledge and to enhance practice as evidenced by the submitted MOV",
+                "3" : "Contributed actively to any professional network/activity that requires output* to share knowledge and to enhance practice as evidenced by the submitted MOV",
+                "4" : "Contributed actively to any professional network/activity that requires output* and proof of implementation** within the department/grade level to share knowledge and to enhance practice as evidenced by the submitted MOV",
+                "5" : "Contributed actively to any professional network/activity that requires output* and proof of implementation** within the school to share knowledge and to enhance practice as evidenced by the submitted MOV",
                 "Rate" : "0"
             }, 
             "TIMELINES" : {
                 "1" : "No acceptable evidence was shown",
-                "2" : "Participated in professional networks to share knowledge and to enhance practice across 1 quarters",
-                "3" : "Participated in professional networks to share knowledge and to enhance practice across 2 quarters",
-                "4" : "Participated in professional networks to share knowledge and to enhance practice across 3 quarters",
-                "5" : "Participated in professional networks to share knowledge and to enhance practice across 4 quarters",
+                "2" : "Contributed actively to professional network across 1 quarters",
+                "3" : "Contributed actively to professional network across 2 quarters",
+                "4" : "Contributed actively to professional network across 3 quarters",
+                "5" : "Contributed actively to professional network across 4 quarters",
                 "Rate" : "0"
             }
         },
         "14" : {
-            "Question" : "Developed a personal improvement plan based on reflection of one's practice and ongoing professional learning (PPST 7.4.2)",
+            "Question" : "Initiated professional reflections and promote learning opportunities with colleagues to improve practice",
             "QUALITY" : {
                 "1" : "No acceptable evidence was shown",
-                "2" : "Accomplished the e-SAT at the beginning of the school year as evidence by MOV 1",
-                "3" : "Set professional development goals based on e-SAT results as evidence by MOV 2",
-                "4" : "Discussed progress on professional development goals with the rater during the mid-year review  as evidenced by MOV 3",
-                "5" : "Updated professional goals during Phase II of the RPMS Cycle as evidenced by MOV 4",
+                "2" : "Attended coaching and mentoring sessions/meetings/LAC sessions/FGDs/other activities that promote professional reflection and learning opportunities, as shown in MOV 1",
+                "3" : "Planned coaching and mentoring sessions/meetings/LAC sessions/FGDs/other activities involving colleagues in professional reflection and learning opportunities, as shown in MOV 2",
+                "4" : "Conducted coaching and mentoring sessions/meetings/LAC sessions/FGDs/other activities involving colleagues in professional reflection and learning opportunities, as shown in the MOV 3, 4 or 5",
+                "5" : "Guided colleagues in planning to professional reflections and other learning opportunities to improve practice during coaching and mentoring sessions/meetings/LAC sessions/FGDs/other activities, as shown in the MOV 4, 5 or 6",
                 "Rate" : "0"
-            },
-            "EFFICIENCY" : {
-                "1" : "No acceptable evidence was shown",
-                "2" : "Submitted 1 acceptable MOV's",
-                "3" : "Submitted 2 acceptable MOV's",
-                "4" : "Submitted 3 acceptable MOV's",
-                "5" : "Submitted 4 acceptable MOV's",
-                "Rate" : "0"
-            },
+            }, 
             "TIMELINES" : {
                 "1" : "No acceptable evidence was shown",
-                "2" : "Only one (1) of the submitted MOVs was accomplished within the prescribed RPMS Phase",
-                "3" : "Two (2) of the submitted MOVs were accomplished within the prescribed RPMS Phase",
-                "4" : "Three (3) of the submitted MOVs were accomplished within the prescribed RPMS Phase",
-                "5" : "All four (4) submitted MOVs were accomplished within the prescribed RPMS Phase",
+                "2" : "Submitted 1 acceptable MOV",
+                "3" : "Submitted 2 acceptable MOVs",
+                "4" : "Submitted 3 acceptable MOVs",
+                "5" : "Submitted 4 acceptable MOVs",
                 "Rate" : "0"
             }
         }
@@ -926,21 +915,21 @@ def form_for_ipcrf_part_1_highly_proficient():
     
     domains['PLUS FACTOR'] = {
         "15" : {
-            "Question" : "Performed various related works/activities that contribute to the teaching learning process",
+            "Question" : "Performed various related works/activities that contribute to the teaching-learning process",
             "QUALITY" : {
                 "1" : "No acceptable evidence was shown",
-                "2" : "Performed at least (1) related work/activity that contributed to the teaching-learning process within the class as evidenced by the submitted MOV.",
-                "3" : "Performed at least (1) related work/activity that contributed to the teaching-learning process within the learning area/department as evidenced by the submitted MOV.",
-                "4" : "Performed at least (1) related work/activity that contributed to the teaching-learning process within the school/Community Learning Center (CLC) as evidenced by the submitted MOV.",
-                "5" : "Performed at least (1) related work/activity that contributed to the teaching-learning process beyond the school/Community Learning Center (CLC) as evidenced by the submitted MOV.",
+                "2" : "Perform at least one (1) related work / activity that contributed to the teaching-learning process within the class as evidenced by submitted MOV",
+                "3" : "Perform at least one (1) related work / activity that contributed to the teaching-learning process within the learning area/department as evidenced by submitted MOV",
+                "4" : "Perform at least one (1) related work / activity that contributed to the teaching-learning process within the school/Community Learning Center (CLC) as evidenced by submitted MOV",
+                "5" : "Perform at least one (1) related work / activity that contributed to the teaching-learning process beyond the school/Community Learning Center (CLC) as evidenced by submitted MOV",
                 "Rate" : "0"
             },
             "EFFICIENCY" : {
                 "1" : "No acceptable evidence was shown",
-                "2" : "Submitted MOV that shows considerable overlap with, hence significantly affecting the performance of the actual teaching-learning process.",
-                "3" : "Submitted MOV that shows reasonable interlap with the actual teaching-learning process, as evidenced by the annotation provided.",
-                "4" : "Submitted MOVs that details the perceived positive contribution to the teaching-learning process, as evidenced by the annotation provided.",
-                "5" : "Submitted MOVs that details the achieved positive contribution to the teaching-learning process, as evidenced by the annotation provided.",
+                "2" : "Submitted MOV that shows considerable overlap with hence significantly affecting the performance of the actual teaching-learning process",
+                "3" : "Submitted MOV that shows reasonable interlap with the actual teaching-learning process, as evidenced by the annotation provided",
+                "4" : "Submitted MOV that details perceived positive contribution to the teaching-learning process, as evidenced by the annotation provided",
+                "5" : "Submitted MOV that details achieved positive contribution to the teaching-learning process, as evidenced by the annotation provided",
                 "Rate" : "0"
             },
             "TIMELINES" : {
