@@ -622,8 +622,7 @@ def create_rpms_class_works_for_proficient(rpms_folder_id : str):
     
     plus_factor.save()
     
-
-# TODO : UPDATE THE CONTENT OF THE RPMS CLASS WORKS HERE     
+  
 def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str):
     # Create KRA 1
     kra_1 = models.RPMSClassWork.objects.create(
@@ -632,64 +631,58 @@ def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str):
     )
     kra_1.class_work_id = str(uuid4())
     
-    kra_1.objectives = {
-        "Instructions" : {
-            "Title" : "KRA 1: Content Knowledge and Pedagogy", 
-            "Date" : "", # Added when published
-            "Time" : "", # Added when published
-            "Points" : "28 points" ,
-            "Objectives" : {
-                "1" : {
-                    "Main Title" : "7% | Objective 1 (Applied knowledge of content within and across curriculum teaching areas)",
-                    "Title" : "Means of Verification (MOV)",
-                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s "
-                },
-                "2" : {
-                    "Main Title" : "7% | Objective 2 (Used a range of teaching strategies that enhance learner achievement in literacy and numeracy skills.)",
-                    "Title" : "Means of Verification (MOV)",
-                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s "
-                },
-                "3" : {
-                    "Main Title" : "7% | Objective 3 (Applied a range of teaching strategies to develop critical and creative thinking, as well as other higher-order thinking skills.)",
-                    "Title" : "Means of Verification (MOV)",
-                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s "
-                },
-                "4" : {
-                    "Main Title" : "7% | Objective 4 (Displayed proficient use of Mother Tongue, Filipino, and English to facilitate teaching and learning.)",
-                    "Title" : "Means of Verification (MOV)",
-                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s"
-                }
-            }
-        },
-        "Comment" : " "
-    }
+    kra_1.objectives = forms_text.form_for_kra1_highly_proficient()
     
     kra_1.save()
     
     # Create KRA 2
     kra_2 = models.RPMSClassWork.objects.create(
         rpms_folder_id = rpms_folder_id,
-        title = 'KRA 2: Curriculum Knowledge and Pedagogy',
+        title = 'KRA 2: Learning Environment and Diversity of Learners',
     )
     kra_2.class_work_id = str(uuid4())
     
-    kra_2.objectives = {
-        "Instructions" : {
-            "Title" : "KRA 2: Curriculum Knowledge and Pedagogy",
-            "Date" : "", # Added when published
-            "Time" : "", # Added when published
-            "Points" : "28 points" ,
-            "Objectives" : {
-                "1" : {
-                    "Main Title" : "7% | Objective 5 (Applied knowledge of content within and across curriculum teaching areas)",
-                    "Title" : "Means of Verification (MOV)",
-                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s "
-                },
-            }
-        }
-    }
-
+    kra_2.objectives = forms_text.form_for_kra2_highly_proficient()
+    
     kra_2.save()
+    
+    
+    # Create KRA 3
+    kra_3 = models.RPMSClassWork.objects.create(
+        rpms_folder_id = rpms_folder_id,
+        title = 'KRA 3: Curriculum and Planning',
+    )
+    
+    kra_3.class_work_id = str(uuid4())
+    kra_3.objectives = forms_text.form_for_kra3_highly_proficient()
+    
+    kra_3.save()
+    
+    
+    
+    # Create KRA 4
+    kra_4 = models.RPMSClassWork.objects.create(
+        rpms_folder_id = rpms_folder_id,
+        title = 'KRA 4:  Curriculum and Planning & Assessment and Reporting',
+    )
+    
+    kra_4.class_work_id = str(uuid4())
+    
+    kra_4.objectives = forms_text.form_for_kra4_highly_proficient()
+    
+    kra_4.save()
+    
+    # Create PLUS FACTOR
+    plus_factor = models.RPMSClassWork.objects.create(
+        rpms_folder_id = rpms_folder_id,
+        title = 'PLUS FACTOR',
+    )
+    
+    plus_factor.class_work_id = str(uuid4())
+    
+    plus_factor.objectives = forms_text.form_for_plus_factor_highly_proficient()
+    
+    plus_factor.save()
 
 
 
