@@ -72,21 +72,109 @@ def parse_date_string(date_string):
         return None
 
 
+def get_kra_breakdown_of_a_teacher(employee_id : str):
+    """
+        Return dictionary of the RPMSAttachment of the teacher
+        breakdown = {
+            'kra' : ['KRA1 1', 'KRA 2', 'KRA 3', 'KRA 4', 'PLUS FACTOR' ],
+            'averages' : [ 'avg1', 'avg2', 'avg3', 'avg4', 'avg5' ]
+        }
+    """
+
+    teacher = models.People.objects.filter(employee_id=employee_id).first()
+    rpms_attachments = models.RPMSAttachment.objects.filter(teacher_id=teacher.id)
+    breakdown = {
+        'kra' : [],
+        'averages' : []
+    }
+    for rpms_attachment in rpms_attachments:
+        data = rpms_attachment.getGradeSummary()
+        breakdown['kra'].append(data['Title'])
+        breakdown['averages'].append(data['Average'])
+    
+    return breakdown
 
 
+def get_kra_breakdown_of_school(school_id: str):
+    """
+    Return dictionary of the RPMSAttachment of the school
+    breakdown = {
+        'kra': ['KRA1', 'KRA2', 'KRA3', 'KRA4', 'PLUS FACTOR'],
+        'averages': ['avg1', 'avg2', 'avg3', 'avg4', 'avg5']
+    }
+    """
+    school = models.School.objects.filter(school_id=school_id).first()
+    teachers = models.People.objects.filter(school_id=school.id)
+    breakdown = {
+        'kra': [],
+        'averages': []
+    }
+    kra_sums = {}
+    kra_counts = {}
+
+    for teacher in teachers:
+        rpms_attachments = models.RPMSAttachment.objects.filter(teacher_id=teacher.id)
+        for rpms_attachment in rpms_attachments:
+            data = rpms_attachment.getGradeSummary()
+            kra = data['Title']
+            avg = float(data['Average'])
+            
+            if kra not in kra_sums:
+                kra_sums[kra] = 0
+                kra_counts[kra] = 0
+                
+            kra_sums[kra] += avg
+            kra_counts[kra] += 1
+
+    for kra in kra_sums.keys():
+        breakdown['kra'].append(kra)
+        breakdown['averages'].append(kra_sums[kra] / kra_counts[kra])
+
+    return breakdown
 
 
 def classify_ipcrf_score(score):
-    if 4.5 <= score <= 5.0:
-        return 'Promotion'
-    elif 3.5 <= score < 4.5:
-        return 'Retention'
-    elif 2.5 <= score < 3.5:
-        return 'Retention'
-    elif 1.5 <= score < 2.5:
-        return 'Termination'
+    if 4.500 <= score <= 5.000:
+        return "Outstanding"
+    elif 3.500 <= score < 4.500:
+        return "Very Satisfactory"
+    elif 2.500 <= score < 3.500:
+        return "Satisfactory"
+    elif 1.500 <= score < 2.500:
+        return "Unsatisfactory"
+    elif score < 1.500:
+        return "Poor"
     else:
-        return 'Termination'
+        return "Unknown"
+
+
+def recommend_rank(teacher : models.People):
+    tenure = teacher.working_years()
+    current_rank = teacher.position
+    recent_ipcrf_score = teacher.get_recent_ipcrf_score()  # Assume this method returns the most recent IPCRF score
+    score_classification = classify_ipcrf_score(recent_ipcrf_score)
+    
+    recommendation = []
+
+    if current_rank == "Teacher I":
+        if tenure >= 1:
+            recommendation.append("Teacher II")
+        if tenure >= 2:
+            recommendation.append("Teacher III")
+    elif current_rank == "Teacher III":
+        if tenure >= 3:
+            recommendation.append("Master Teacher I")
+    elif current_rank == "Master Teacher I":
+        if tenure >= 1:
+            recommendation.append("Master Teacher II")
+    elif current_rank == "Master Teacher II":
+        if score_classification == "Very Satisfactory":
+            recommendation.append("Master Teacher III")
+    elif current_rank == "Master Teacher III":
+        if score_classification == "Outstanding":
+            recommendation.append("Master Teacher IV")
+    
+    return recommendation
 
 
 def is_proficient_faculty(people : models.People):

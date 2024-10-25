@@ -68,6 +68,8 @@ urlpatterns = [
     path('evaluator/update_education/', views.people_update_education),
     path('evaluator/profile/', views.evaluator_profile),
     
+    
+    
     path('evaluator/school/get/cot/', views.get_rating_sheet),
     path('evaluator/school/update/cot/', views.update_rating_sheet),
     

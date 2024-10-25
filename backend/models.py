@@ -205,63 +205,44 @@ class IPCRFForm(models.Model):
     
     # PART 1 DATA
     {
-        "1" : {
-            "Question" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
-            "QUALITY" : {
-                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "Rate" : "5"
+        "Content Knowledge and Pedagogy": {
+            "1": {
+                "Question": "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
+                "QUALITY": {
+                    "1": "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "2": "Demonstrated Level 4 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms",
+                    "3": "Demonstrated Level 5 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms",
+                    "4": "Demonstrated Level 6 in Objective 1 as  shown in COT rating sheets / inter-observer agreement forms",
+                    "5": "Demonstrated Level 7 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms",
+                    "Rate": "0"
+                },
+                "EFFICIENCY": {
+                    "1": "No acceptable evidence was shown",
+                    "3": "Objective was met but instruction exceeded the allotted time",
+                    "5": "Objective was met within the allotted time",
+                    "Rate": "1"
+                }
             },
-            "EFFICIENCY" : {
-                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "Rate" : "1"
+            ....
+        "Learning Environment & Diversity of Learners": {
+            "5": {
+                "Question": "Established safe and secure learning environments to enhance learning through the consistent implementation of policies",
+                "QUALITY": {
+                    "1": "Demonstrated Level 3 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
+                    "2": "Demonstrated Level 4 as shown in COT rating sheets / inter-observer agreement forms",
+                    "3": "Demonstrated Level 5 as shown in COT rating sheets / inter-observer agreement forms",
+                    "4": "Demonstrated Level 6 as shown in COT rating sheets / inter-observer agreement forms",
+                    "5": "Demonstrated Level 7 as shown in COT rating sheets / inter-observer agreement forms",
+                    "Rate": "0"
+                },
+                "EFFICIENCY": {
+                    "1": "No acceptable evidence was shown",
+                    "3": "Objective was met but instruction exceeded the allotted time",
+                    "5": "Objective was met within the allotted time",
+                    "Rate": "0"
+                } 
             },
-            "TIMELINES" : {
-                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "Rate" : "0"
-            }
         },
-        "2" : {
-            "Question" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
-            "QUALITY" : {
-                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "Rate" : "0"
-            },
-            "EFFICIENCY" : {
-                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "Rate" : "0"
-            },
-            "TIMELINES" : {
-                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "3" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "4" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "5" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "Rate" : "0"
-            }
-        }
-        
-    }
-    
     
     """
     
@@ -459,7 +440,7 @@ class IPCRFForm(models.Model):
     is_checked = models.BooleanField(default=False) # Check if the teacher submit it
     connection_to_other = models.CharField(max_length=255, blank=True, default='') # Generate a random ID, used for identifying parts (1,2,3)
     is_for_teacher_proficient = models.BooleanField(default=False) # If True, the folder is for teacher proffecient
-    
+    is_expired = models.BooleanField(default=False) # Used to check if the form is expired
     
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.created_at}"
@@ -559,26 +540,29 @@ class IPCRFForm(models.Model):
             for key in content_for_teacher:
                 data[key] = {}
                 total = 0
-                rates = [] # List of rates
+                rates = []  # List of rates
+                
                 if 'QUALITY' in self.content_for_teacher[key]:
                     quality_rate = self.content_for_teacher[key]['QUALITY']['Rate']
                     data[key]['QUALITY'] = quality_rate
                     total += int(quality_rate)
                     rates.append(int(quality_rate))
+                
                 if 'EFFICIENCY' in self.content_for_teacher[key]:
                     efficiency_rate = self.content_for_teacher[key]['EFFICIENCY']['Rate']
                     data[key]['EFFICIENCY'] = self.content_for_teacher[key]['EFFICIENCY']['Rate']
                     total += int(efficiency_rate)
                     rates.append(int(efficiency_rate))
+                
                 if 'TIMELINES' in self.content_for_teacher[key]:
                     timelines_rate = self.content_for_teacher[key]['TIMELINES']['Rate']
                     data[key]['TIMELINES'] = self.content_for_teacher[key]['TIMELINES']['Rate']
                     total += int(timelines_rate)
                     rates.append(int(timelines_rate))
+                
                 data[key]['Total'] = total
-                data[key]['Average'] = total / len(rates)
-        
-        
+                data[key]['Average'] = total / len(rates) if rates else 0  # Avoid division by zero
+
         return data
     
     def getTeacherTotalAverage(self):
@@ -588,33 +572,75 @@ class IPCRFForm(models.Model):
         
         
     def getEvaluatorPart1Scores(self):
+        """
+        {
+            'Content Knowledge and Pedagogy': {
+                '1': {
+                    'QUALITY': '5',
+                    'EFFICIENCY': '3',
+                    'TIMELINES': '4',
+                    'Total': 12,
+                    'Average': 4.0
+                },
+                '2': {
+                    'QUALITY': '4',
+                    'EFFICIENCY': '4',
+                    'TIMELINES': '5',
+                    'Total': 13,
+                    'Average': 4.33
+                }
+                # Additional items as needed...
+            },
+            'Learning Environment & Diversity of Learners': {
+                '5': {
+                    'QUALITY': '3',
+                    'EFFICIENCY': '5',
+                    'TIMELINES': '4',
+                    'Total': 12,
+                    'Average': 4.0
+                }
+                # Additional items as needed...
+            }
+        }
+
+        """        
+        
         data = {}
         content_for_evaluator = self.content_for_evaluator
         if content_for_evaluator:
             for key in content_for_evaluator:
                 data[key] = {}
                 total = 0
+                rates = []  # List of rates
+                
                 if 'QUALITY' in self.content_for_evaluator[key]:
                     quality_rate = self.content_for_evaluator[key]['QUALITY']['Rate']
                     data[key]['QUALITY'] = quality_rate
                     total += int(quality_rate)
+                    rates.append(int(quality_rate))
+                
                 if 'EFFICIENCY' in self.content_for_evaluator[key]:
                     efficiency_rate = self.content_for_evaluator[key]['EFFICIENCY']['Rate']
                     data[key]['EFFICIENCY'] = self.content_for_evaluator[key]['EFFICIENCY']['Rate']
                     total += int(efficiency_rate)
+                    rates.append(int(efficiency_rate))
+                
                 if 'TIMELINES' in self.content_for_evaluator[key]:
                     timelines_rate = self.content_for_evaluator[key]['TIMELINES']['Rate']
                     data[key]['TIMELINES'] = self.content_for_evaluator[key]['TIMELINES']['Rate']
                     total += int(timelines_rate)
-                data[key]['Total'] = total
+                    rates.append(int(timelines_rate))
                 
+                data[key]['Total'] = total
+                data[key]['Average'] = total / len(rates) if rates else 0  # Avoid division by zero
+
         return data
+    
     
     def getEvaluatorTotalAverage(self):
         if self.form_type == 'PART 1':
             return calculate_individual_averages_for_ipcrf(self.content_for_evaluator)
         return None
-    
     
 
 class COTForm(models.Model):
@@ -745,6 +771,7 @@ class COTForm(models.Model):
             'opportunities' : opportunities_prompt,
             'threats' : threats_prompt
         }
+
 
 class RPMSFolder(models.Model):
     """_summary_
@@ -947,14 +974,25 @@ class RPMSAttachment(models.Model):
         
         return data
 
-    def getTotalScores(self):
+    def getGradeSummary(self) -> dict:
+        
+        data = {
+            'Title' : self.title,
+            'Total' : 0,
+            'Average' : 0
+        }
+        
         total = 0
+        number_of_scores = 0
         for key, value in self.grade.items():
             for subkey, subvalue in value.items():
                 if subkey == 'Score':
                     total += int(subvalue)
-        return total
-
+                    number_of_scores += 1
+        data['Total'] = total
+        data['Average'] = total / number_of_scores
+        return data
+        
 
     
 
@@ -1037,7 +1075,7 @@ class People(models.Model):
     middle_name = models.CharField(max_length=255, blank=True, default='')
     last_name = models.CharField(max_length=255, blank=True, default='')
     email_address = models.CharField(max_length=255, blank=True, default='')
-    position = models.CharField(max_length=255, blank=True, default='',
+    position = models.CharField(max_length=255, blank=True, default='Teacher I',
         choices=(
             ('Teacher I', 'Teacher I'), 
             ('Teacher II', 'Teacher II'), 
@@ -1109,7 +1147,18 @@ class People(models.Model):
             'department' : self.department,
         }
     
-    
+    def working_years(self):
+        if self.job_ended:
+            year_gap = self.job_ended.year - self.job_started.year - ((self.job_ended.month, self.job_ended.day) < (self.job_started.month, self.job_started.day))
+            return year_gap
+
+        if self.job_started:
+            now = timezone.now()
+            year_gap = now.year - self.job_started.year - ((now.month, now.day) < (self.job_started.month, self.job_started.day))
+            return year_gap
+        
+        return 0
+            
     def update_educations(self, data):
         self.educations = data
         self.save()
@@ -1173,6 +1222,27 @@ class People(models.Model):
         
         self.is_evaluated = True
         self.save()
+    
+    
+    def get_recent_ipcrf_score(self):
+        # Get the most recent IPCRF form by the creation date
+        recent_form = IPCRFForm.objects.filter(employee_id=self.employee_id, form_type='PART 1', is_expired=False).order_by('-created_at').first()
+        if recent_form:
+            # Assuming the form has a method to get the average score
+            scores = recent_form.getEvaluatorPart1Scores()
+            # Calculate the overall average from the scores
+            total_score = 0
+            count = 0
+            for key, value in scores.items():
+                total_score += value['Average']
+                count += 1
+            if count > 0:
+                return total_score / count
+        return None  # Return None if no recent form is found
+
+
+    
+    
     
 # 1. title and scores for KBA BREAKDOWN
 # 2. rule based classifier for Promotion

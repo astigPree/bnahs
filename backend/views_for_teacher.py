@@ -23,10 +23,6 @@ import json
 
 
 
-
-
-
-
 # ================================= Teacher Views =============================== #
 @csrf_exempt
 def login_teacher(request):
@@ -168,27 +164,8 @@ def teacher_kba_breakdown(request ):
                     }, status=400)
              
             
-            # 1. title and scores for KBA BREAKDOWN
-            attachments = models.RPMSAttachment.objects.filter(employee_id=user.employee_id)
-            
-            # Sort attachments by 'streams_type'
-            sorted_attachments = sorted(attachments, key=lambda x: x.streams_type)
-
-            # Group by 'streams_type'
-            grouped_attachments = {k: list(v) for k, v in groupby(sorted_attachments, key=lambda x: x.streams_type)}
-
-            # Calculate all total scores each group
-            total_scores = {}
-            overall_scores = 0
-            for group in grouped_attachments:
-                score = sum([attachment.getTotalScores() for attachment in grouped_attachments[group]])
-                total_scores[group] = score
-                overall_scores += score
-            total_scores['Overall'] = overall_scores
-            
-            
             return JsonResponse({
-                'kba_breakdown' : total_scores,
+                'kba_breakdown' : my_utils.get_kra_breakdown_of_a_teacher(employee_id=user.employee_id),
             },status=200)
         
     
@@ -220,66 +197,89 @@ def teacher_recommendations(request ):
                     }, status=400)
              
             # 2. rule based classifier for Promotion
-            """
-                ---------------RECOMMENDATION CHART PERCENTAGE-------------
-                Dito sa chart na 'to magaappear yung percentage if promotion, termination, or retention
-
-                *If promotion, their IPCRF score should range between 4.500 - 5.000 which is Outstanding
-
-                *If retention, their IPCRF score should range between  3.500 – 4.499 (Very Satisfactory) and 2.500 – 3.499 (Satisfactory)
-
-                *If termination, their IPCRF score should range between 1.500 – 2.499 (Unsatisfactory) and below 1.499 (Poor)
-
-                {
-                    '1' : {
-                        'QUALITY' : '0',
-                        'EFFICIENCY' : '0',
-                        'TIMELINES' : '0',
-                        'Total' : '0'
-                    },
-                    '2' : {
-                        'QUALITY' : '0',
-                        'EFFICIENCY' : '0',
-                        'TIMELINES' : '0',
-                        'Total' : '0'
-                    }
-                }
-            
-            
-            """
             ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1')
             scores = [ form.getEvaluatorPart1Scores() for form in ipcrf_forms ]
             
+            # Initialize counters
             promotion_count = 0
             retention_count = 0
             termination_count = 0
-            
+            overall_scores = []
+            detailed_scores = []  # To hold detailed score information
+
+            # Classify scores
             for score in scores:
                 for _, value in score.items():
-                    category = my_utils.classify_ipcrf_score(value['Average'])
-                    if category == 'Promotion':
+                    average_score = value['Average']
+                    overall_scores.append(average_score)
+                    category = my_utils.classify_ipcrf_score(average_score)
+                    detailed_scores.append({
+                        'Average': average_score,
+                        'Category': category
+                    })
+                    if category == 'Outstanding':
                         promotion_count += 1
-                    elif category == 'Retention':
+                    elif category in ['Very Satisfactory', 'Satisfactory']:
                         retention_count += 1
-                    elif category == 'Termination':
+                    elif category in ['Unsatisfactory', 'Poor']:
                         termination_count += 1
-            
-            total = len(scores)
+
+            # Calculate percentages
+            total = len(overall_scores)
             promotion_percentage = promotion_count / total * 100 if total > 0 else 0
             retention_percentage = retention_count / total * 100 if total > 0 else 0
             termination_percentage = termination_count / total * 100 if total > 0 else 0
+
+            # Create recommendation dictionary
             recommendation = {
-                'Promotion' : promotion_percentage,
-                'Retention' : retention_percentage,
-                'Termination' : termination_percentage
+                'Promotion': promotion_percentage,
+                'Retention': retention_percentage,
+                'Termination': termination_percentage
             }
+
+            # Calculate overall classification
+            overall_average = sum(overall_scores) / total if total > 0 else 0
+            overall_classification = my_utils.classify_ipcrf_score(overall_average)
             
+            # Get The Recommended Rank
+            rank = my_utils.recommend_rank(user)
             
-            
+            """
+                {
+                    "recommendation": {
+                        "Promotion": 33.33,
+                        "Retention": 33.33,
+                        "Termination": 33.33
+                    },
+                    "detailed_scores": [
+                        {"Average": 4.8, "Category": "Outstanding"},
+                        {"Average": 4.5, "Category": "Outstanding"},
+                        {"Average": 3.9, "Category": "Very Satisfactory"},
+                        {"Average": 3.7, "Category": "Very Satisfactory"},
+                        {"Average": 2.2, "Category": "Unsatisfactory"},
+                        {"Average": 1.8, "Category": "Unsatisfactory"}
+                    ],
+                    "overall": {
+                        "Average": 3.48,
+                        "Classification": "Satisfactory"
+                    },
+                    "working years" : "5 years",
+                    "current position" : "Teacher I",
+                    "recommended position" : "Teacher II"
+                 } 
+            """
+            # Return JSON response
             return JsonResponse({
-                'recommendation' : recommendation,
-            },status=200)
-        
+                'recommendation': recommendation,
+                'detailed_scores': detailed_scores,
+                'overall': {
+                    'Average': overall_average,
+                    'Classification': overall_classification
+                },
+                'working years' : f"{user.working_years()} years",
+                "current position" : user.position,
+                "recommended position" : rank
+            }, status=200)
     
     except Exception as e:
         return JsonResponse({
@@ -292,12 +292,18 @@ def teacher_recommendations(request ):
     
 
 
+
 @csrf_exempt
 def teacher_performance(request ):
     try:
         if request.method == 'GET':
             
-            user = models.People.objects.filter(employee_id=request.user.username).first()
+            user = models.People.objects.filter(employee_id=request.user.username , role='Teacher').first()
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
             
             # TODO : CHECK IF THE USER IS TEACHER OR NOT
             # 3. date of submission and score Performance tru year
@@ -315,28 +321,48 @@ def teacher_performance(request ):
             }
             
             """
-            # attachments = models.RPMSAttachment.objects.filter(employee_id=user.employee_id)
+            # Check if the user is a teacher
+
+            # Annotate the IPCRF forms with the year of submission
             attachments = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').annotate(year=ExtractYear('created_at'))
+            
+            # Initialize the performances dictionary
             performances = {}
+            
+            # Loop through the attachments and gather scores by year
             for attachment in attachments:
                 year = attachment.year
                 if year not in performances:
-                    performances[year] = {}
-                    performances[year]['Scores'] = []
-                performances[year]['Scores'].append( attachment.getEvaluatorPart1Scores())
+                    performances[year] = {'Scores': [], 'Total': 0}
+                
+                scores = attachment.getEvaluatorPart1Scores()
+                for key, value in scores.items():
+                    if 'Average' in value:
+                        performances[year]['Scores'].append(value['Average'])
             
-            for year in performances:
-                performances[year]['Total'] = sum(performances[year]['Scores'])
+            # Calculate the total for each year
+            years = sorted(performances.keys())
+            total_scores = []
+            for year in years:
+                total = sum(performances[year]['Scores'])
+                performances[year]['Total'] = total
+                total_scores.append(total)
+
+            # Convert to labels and data suitable for the chart
+            labels = [str(year) for year in years]
+            data = total_scores
             
-            # TODO : Add the current percentage added from the past year to the current year
-            
-            
-            
-            return JsonResponse({
-                'performance' : performances,
-            },status=200)
+            """
+            {
+                "performance": {
+                    "labels": ["2022", "2023"],
+                    "data": [16.33, 9.33]
+                }
+            }
+            """
+            return JsonResponse({'performance': {'labels': labels, 'data': data}}, status=200)
+                    
         
-    
     except Exception as e:
         return JsonResponse({
             'message' : f'Something went wrong : {e}',
@@ -346,6 +372,7 @@ def teacher_performance(request ):
         'message' : 'Invalid request',
         }, status=400)
     
+
 
 @csrf_exempt
 def teacher_swot(request ):
@@ -428,7 +455,6 @@ def teacher_profile(request ):
     return JsonResponse({
         'message' : 'Invalid request',
         }, status=400)
-
 
 
 

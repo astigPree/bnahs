@@ -470,7 +470,7 @@ def evaluation_submission_rate(request):
         }, status=400)
         
         
-             
+ 
 @csrf_exempt
 def all_teacher_recommendations(request):
     return JsonResponse({
