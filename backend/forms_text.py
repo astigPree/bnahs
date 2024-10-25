@@ -490,7 +490,26 @@ def form_for_kra1_proficient():
             }
         },
         "Grade" : {
-            
+            "1" : {
+                "Objectives" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "2" : {
+                "Objectives" : "Used a range of teaching strategies that enhance learner achievement in literacy and numeracy skills (PPST 1.4.2)",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "3" : {
+                "Objectives" : "Applied a range of teaching strategies to develop critical and creative thinking, as well as other higher-order thinking skills (PPST 1.5.2)",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "4" : {
+                "Objectives" : "Displayed proficient use of Mother Tongue, Filipino and English to facilitate teaching and learning (PPST 1.6.2)",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
         },
         "Comment" : " "
     }
@@ -525,6 +544,28 @@ def form_for_kra2_proficient():
                     "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter -observer agreement form/s"
                 }
             }
+        },
+        "Grade" : {
+            "5" : {
+                "Objectives" : "Established safe and secure learning environments to enhance learning through the consistent implementation of policies",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "6" : {
+                "Objectives" : "Maintained learning environment that promote fairness, respect and care to encourage learning (PPST 2.2.2)",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "7" : {
+                "Objectives" : "Established a learner - centered culture by using teaching strategies that respond to their linguistic, cultural, socioeconomic and religious",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "8" : {
+                "Objectives" : "Adapted and used culturally appropriate teaching strategies to address the needs of learners from indigenous groups (PPST 3.5.2) ",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
         },
         "Comment" : " "
     }
@@ -562,6 +603,23 @@ def form_for_kra3_proficient():
                     "Sub Bullet 3" : "lesson plan/activity log for remediation / enhancement utilizing of assessment data to modify teaching and learning practices or programs",
                 },
             }
+        },
+        "Grade" : {
+            "9" : {
+                "Objectives" : "Set achievable and appropriate learning outcomes that are aligned with learning competencies  (PPST 4.4.2)",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "10" : {
+                "Objectives" : "Used strategies for  providing timely, accurate and constructive feedback to improve learner performance  (PPST 5.3.2)",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "11" : {
+                "Objectives" : "Utilized  assessment data to inform the modification of teaching and learning practices and programs (PPST 5.5.2)",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
         },
         "Comment" : " "
     }
@@ -610,6 +668,23 @@ def form_for_kra4_proficient():
                 }
             }
         }, 
+        "Grade" : {
+            "12" : {
+                "Objectives" : "Built relationships with parents/guardians and the wider school community to facilitate involvement in the educative process (PSST 6.2.2.)",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "13" : {
+                "Objectives" : "Participated in professional networks to share knowledge and to enhance practice (PPST 7.3.2)",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "14" : {
+                "Objectives" : "Developed a personal improvement plan based on reflection of one s practice and ongoing professional learning (PPST 7.4.2)",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+        },
         "Comment" : " "
 
     }
@@ -639,6 +714,13 @@ def form_for_plus_factor_proficient():
                     "Sub Bullet 10" : "Others (please specify) with annotation on how it contributed to the teaching-learning process."
                 },
             }
+        },
+        "Grade" : {
+            "15" : {
+                "Objectives" : "Performed various related works/activities that contribute to the teaching learning process",
+                "Score" : "0",
+                "Maximum Score" : "2",
+            },
         },
         "Comment" : " "
         
@@ -708,7 +790,7 @@ def form_for_ipcrf_part_1_highly_proficient():
             }
         },
         "4" : {
-            "Question" : "Modeled and supported colleagues in the proficient use of Mother Tongues,  Filipino and English to improve teaching and learning, as well as to developed the learners’ pride of their language, heritage and culture",
+            "Question" : "Modeled and supported colleagues in the proficient use of Mother Tongues,  Filipino and English to improve teaching and learning, as well as to developed the learners  pride of their language, heritage and culture",
             "QUALITY" : {
                 "1" : "Modeled Level 4 as shown in COT rating sheets/inter-oberver agreement forms",
                 "2" : "Modeled Level 5 as shown in COT rating sheets/inter-oberver agreement forms",
@@ -945,5 +1027,275 @@ def form_for_ipcrf_part_1_highly_proficient():
     
     
     return domains
+
+
+def form_for_kra1_highly_proficient():
+    return {
+        "Instructions" : {
+            "Title" : "KRA 1: Content Knowledge and Pedagogy", 
+            "Date" : "", # Added when published
+            "Time" : "", # Added when published
+            "Points" : "28 points" ,
+            "Objectives" : {
+                "1" : {
+                    "Main Title" : "7% | Objective 1 (Applied knowledge of content within and across curriculum teaching areas)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Sub Title" : "Classroom Observation Tool (COT) rating sheet/s or inter -observer agreement form/s done through onsite / face-to-face / in-person classroom observation",
+                    "Section" : "FDFDF",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s "
+                },
+                "2" : {
+                    "Main Title" : "7% | Objective 2 (Used a range of teaching strategies that enhance learner achievement in literacy and numeracy skills.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s "
+                },
+                "3" : {
+                    "Main Title" : "7% | Objective 3 (Applied a range of teaching strategies to develop critical and creative thinking, as well as other higher-order thinking skills.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s "
+                },
+                "4" : {
+                    "Main Title" : "7% | Objective 4 (Displayed proficient use of Mother Tongue, Filipino, and English to facilitate teaching and learning.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s"
+                }
+            }
+        },
+        "Grade" : {
+            "1" : {
+                "Objectives" : "Modeled effective applications of content knowledge within and across  curriculum teaching areas.",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "2" : {
+                "Objectives" : "Evaluated with colleagues the effectiveness of teaching strategies that promote learner achievement in literacy and numeracy",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "3" : {
+                "Objectives" : "Developed and applied effective teaching strategies to promote critical and creative thinking, as well as other higher-order thinking skills ",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "4" : {
+                "Objectives" : "Modeled and supported colleagues in the proficient use of Mother Tongues,  Filipino and English to improve teaching and learning, as well as to developed the learners  pride of their language, heritage and culture",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+        },
+        "Comment" : " "
+    }
+    
+
+def form_for_kra2_highly_proficient():
+    return {
+        "Instructions" : {
+            "Title" : "KRA 2: Learning Environment and Diversity of Learners", 
+            "Date" : "", # Added when published
+            "Time" : "", # Added when published
+            "Points" : "28 points" ,
+            "Objectives" : {
+                "1" : {
+                    "Main Title" : "7% | Objective 5 (Established safe and secure learning environments to enhance learning through the consistent implementation of policies, guidelines and procedures.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter -observer agreement form/s "
+                },
+                "2" : {
+                    "Main Title" : "7% | Objective 6 (Maintained learning environments that promote fairness, respect and care to encourage learning.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter -observer agreement form/s "
+                },
+                "3" : {
+                    "Main Title" : "7% | Objective 7 (Established a learner-centered culture by using teaching strategies that respond to their linguistic, cultural, socio-economic and religious backgrounds.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter -observer agreement form/s "
+                },
+                "4" : {
+                    "Main Title" : "7% | Objective 8 (Adapted and used culturally appropriate teaching strategies to address the needs of learners from indigenous groups. )",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter -observer agreement form/s"
+                }
+            }
+        },
+        "Grade" : {
+            "5" : {
+                "Objectives" : "Exhibited effective strategies that ensure safe and secure learning environment to enhance learning through the consistent implementation of policies, guidelines, and procedures",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "6" : {
+                "Objectives" : "Exhibit effective practices to foster learning environments that promote fairness, respect and care to encourage learning",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "7" : {
+                "Objectives" : "Exhibited a learner-centered culture that promotes success by using effective teaching strategies that respond to their linguistic, cultural, socio-economic and religious backgrounds",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "8" : {
+                "Objectives" : "Developed and applied teaching strategies to address effectively the needs of learners from indigenous groups",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+        },
+        "Comment" : " "
+    }
+
+
+
+def form_for_kra3_highly_proficient():
+    return {
+        "Instructions" : {
+            "Title" : "KRA 3: Curriculum and Planning", 
+            "Date" : "", # Added when published
+            "Time" : "", # Added when published
+            "Points" : "21 points" ,
+            "Objectives" : {
+                "1" : {
+                    "Main Title" : "7% | Objective 9 (Set achievable and appropriate learning outcomes that are aligned with learning competencies.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "At least one (1) lesson plan (e.g., DLP, DLL, WHLP, WLP, WLL, Lesson Exemplars, and the likes) or one lesson from a self-learning module, developed by the ratee* and used in instruction, with achievable and appropriate learning outcomes that are aligned with the learning competencies as shown in any one (1) of the following:",
+                    "Sub Bullet 1" : "lecture/discussion",
+                    "Sub Bullet 2" : "activity/activity sheet",
+                    "Sub Bullet 3" : "performance task",
+                    "Sub Bullet 4" : "rubric for assessing performance using criteria that appropriately describe the target output",
+                },
+                "2" : {
+                    "Main Title" : "7% | Objective 10 (Used strategies for providing timely, accurate and constructive feedback to improve learner performance.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Classroom Observation Tool (COT) rating sheet/s or inter -observer agreement form/s",
+                },
+                "3" : {
+                    "Main Title" : "7% | Objective 11 (Utilized assessment data to inform the modification of teaching and learning practices and programs..)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "A list of identified least /most mastered skills based on the frequency of errors /correct responses with any one (1) of the following supporting MOVs",
+                    "Sub Bullet 1" : "accomplishment report for remedial / enhancement activities (e.g., remedial sessions, Summer Reading Camp, Phil-IRI-based reading program)",
+                    "Sub Bullet 2" : "intervention material used for remediation / reinforcement / enhancement",
+                    "Sub Bullet 3" : "lesson plan/activity log for remediation / enhancement utilizing of assessment data to modify teaching and learning practices or programs",
+                },
+            }
+        },
+        "Grade" : {
+            "9" : {
+                "Objectives" : "Modeled to colleagues the setting of achievable and challenging learning outcomes that are aligned with learning competencies to cultivate a culture of excellence for all learners",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "10" : {
+                "Objectives" : "Used effective strategies for providing timely, accurate and constructive feedback to encourage learners",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "11" : {
+                "Objectives" : "Worked collaboratively with colleagues to analyze and utilize assessment data to modify practices and programs to further support learner progress and achievement",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+        },
+        "Comment" : " "
+    }
+
+
+def form_for_kra4_highly_proficient():
+    return {
+        "Instructions" : {
+            "Title" : "KRA 4:  Curriculum and Planning & Assessment and Reporting",
+            "Date" : "",
+            "Time" : "",
+            "Points" : "21 points" ,
+            "Objectives" : {
+                "1" : {
+                    "Main Title" : "7% | Objective 12 (Build relationships with parents/ guardians and the wider school community to facilitate involvement in the educative process. )",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Any one (1) of the following:",
+                    "Sub Bullet 1" : {
+                            "Title" : "Proof of participation in any activity highlighting the objective, such as, but not limited the following:",
+                            "Bullet 1" : "Receipt form/monitoring form during distribution of learning materials, etc.",
+                            "Bullet 2" : "Commitment form to stakeholders, developed advocacy materials, certificate of participation that shows parents'/stakeholders' engagement signed by the school head, etc.",
+                            "Bullet 3" : "Home visitation forms",
+                            "Bullet 4" : "Any equivalent ALS form/document that highlights the objective",
+                            "Bullet 5" : "Others (please specify and provide annotations)",
+                        },
+                    "Sub Bullet 2" : "Parent-teacher log or proof of other stakeholders meeting (e.g., one-on-one parent-teacher learner conference log; attendance sheet with minutes of online or face-to-face meeting; proof of involvement in the learners'/parents' orientation, etc.)",
+                    "Sub Bullet 3" : "Any form of communication to parents/stakeholders (e.g., notice of meeting; screenshot of chat/text message/communication with parent/guardian)"
+                },
+                "2" : {
+                    "Main Title" : "7% | Objective 13 (Participated in professional networks to share knowledge and to enhance practice )",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet 1" : "Certificate of completion in a course/training",
+                    "Bullet 2" : "sdfsCertificate of participation in a webinar, retooling, upskilling, and other training/ seminar/ workshop with proof of implementationdfsd",
+                    "Bullet 3" : "Certificate of recognition/ speakership in a webinar and other training/ seminar/ workshop",
+                    "Bullet 4" : "Any proof of participation to a benchmarking activity",
+                    "Bullet 5" : "Any proof of participation in school LAC sessions (online/face-to-face) certified by the LAC Coordinator",
+                    "Bullet 6" : "Others (please specify and provide annotations)",
+                },
+                "3" : {
+                    "Main Title" : "7% | Objective 14 (Developed a personal improvement plan based on reflection of one s practice and ongoing professional learning)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet 1" : "Certification from the ICT Coordinator / School Head / Focal Person in charge of e-SAT",
+                    "Bullet 2" : "IPCRF-DP",
+                    "Bullet 3" : "Mid-year Review Form (MRF)",
+                    "Bullet 4" : "Updated IPCRF-DP from Phase II"
+                }
+            }
+        }, 
+        "Grade" : {
+            "12" : {
+                "Objectives" : "Guided colleagues to strengthen relationships with parents/guardians and the wider school community to maximize their involvement in the educative process",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "13" : {
+                "Objectives" : "Contributed actively to professional networks within and between schools to improve knowledge and to enhance practice",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+            "14" : {
+                "Objectives" : "Initiated professional reflections and promote learning opportunities with colleagues to improve practice",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+        },
+        "Comment" : " "
+
+    }
+
+
+def form_for_plus_factor_highly_proficient():
+    return {
+        "Instructions" : {
+            "Title" : "PLUS FACTOR", 
+            "Date" : "",
+            "Time" : "",
+            "Points" : "7 points" ,
+            "Objectives" : {
+                "1" : {
+                    "Main Title" : "2% | Objective 15 (Performed various related works / activities that contribute to the teaching- learning process.)",
+                    "Title" : "Means of Verification (MOV)",
+                    "Bullet" : "Any one (1) of the following:",
+                    "Sub Bullet 1" : "committee involvement;",
+                    "Sub Bullet 2" : "involvement as module/learning material writer/ validator;",
+                    "Sub Bullet 3" : "involvement as a resource person/speaker/learning facilitator in the RO/SDO/school-initiated TV/radio-based instruction;",
+                    "Sub Bullet 4" : "book or journal authorship/co-authorship/ contributorship;",
+                    "Sub Bullet 5" : "advisorship/coordinatorship/chairpersonship",
+                    "Sub Bullet 6" : "participation in demonstration teaching;",
+                    "Sub Bullet 7" : "participation as research presenter in a forum/ conference;",
+                    "Sub Bullet 8" : "mentorship of pre-service/in-service teachers",
+                    "Sub Bullet 9" : "conducted research within the rating period;",
+                    "Sub Bullet 10" : "Others (please specify) with annotation on how it contributed to the teaching-learning process."
+                },
+            }
+        },
+        "Grade" : {
+            "15" : {
+                "Objectives" : "Performed various related works/activities that contribute to the teaching-learning process",
+                "Score" : "0",
+                "Maximum Score" : "7",
+            },
+        },
+        "Comment" : " "
+        
+    }
 
 
