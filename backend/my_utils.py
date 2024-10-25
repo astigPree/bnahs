@@ -8,9 +8,8 @@ from django.utils import timezone
 from datetime import datetime
 
 from uuid import uuid4
-from . import models
+from . import models, forms_text
 
-import forms_text
 
 
 position = {
