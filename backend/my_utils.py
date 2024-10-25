@@ -390,7 +390,49 @@ def create_ipcrf_form_proficient( school : models.School , teacher : models.Peop
 
 
 def create_ipcrf_form_highly_proficient(school : models.School , teacher : models.People ):
-    pass
+     # Currently walang evaluator
+    
+    connection_to_other = str(uuid4())
+    
+    # Create part 1
+    ipcrf_form_part_1 = models.IPCRFForm.objects.create(
+        school_id = school.school_id,
+        employee_id = teacher.employee_id,
+        form_type = 'PART 1',
+    )
+    
+    
+    ipcrf_form_part_1.content_for_teacher = forms_text.form_for_ipcrf_part_1_highly_proficient()
+    ipcrf_form_part_1.content_for_evaluator = forms_text.form_for_ipcrf_part_1_highly_proficient()
+    ipcrf_form_part_1.connection_to_other = connection_to_other
+    ipcrf_form_part_1.save()
+
+    # Create part 2 THEY ARE SO NO NEED TO CHANGE FORM
+    ipcrf_form_part_2 = models.IPCRFForm.objects.create(
+        school_id = school.school_id,
+        employee_id = teacher.employee_id,
+        form_type = 'PART 2',
+    )
+    
+    ipcrf_form_part_2.content_for_teacher = forms_text.form_for_ipcrf_part_2_proficient()
+    ipcrf_form_part_2.connection_to_other = connection_to_other
+    ipcrf_form_part_2.save()
+    
+    # Create part 3 THEY ARE SO NO NEED TO CHANGE FORM
+    ipcrf_form_part_3 = models.IPCRFForm.objects.create(
+        school_id = school.school_id,
+        employee_id = teacher.employee_id,
+        form_type = 'PART 3',
+    )
+    
+    
+    ipcrf_form_part_3.content_for_teacher = forms_text.form_for_ipcrf_part_3_proficient()
+    ipcrf_form_part_3.connection_to_other = connection_to_other
+    ipcrf_form_part_3.save()
+    
+    return (ipcrf_form_part_1, ipcrf_form_part_2, ipcrf_form_part_3)
+    
+
 
 
 def update_ipcrf_form_part_1_by_evaluator(
@@ -614,7 +656,7 @@ def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str):
 
 
 
-def calculate_scores(domains : dict):
+def calculate_scores_for_proficient(domains : dict):
     # Initialize variables
     efficiency_scores = []
     quality_scores = []
@@ -669,9 +711,10 @@ def calculate_scores(domains : dict):
     total_score = total_kra_score + plus_factor
 
     # Print the results
-    print(f"Total KRA Score: {total_kra_score}")
-    print(f"Plus Factor: {plus_factor}")
-    print(f"Total Score: {total_score}")
+    # Total KRA Score:  1.085
+    # Plus Factor:  0.09333333333333334
+    # Total Score:  1.1783333333333335
+
     
     return {
         'total_kra_score' : total_kra_score,
@@ -681,8 +724,62 @@ def calculate_scores(domains : dict):
 
 
 
+def calculate_scores_for_highly_proficient(domains: dict):
+    efficiency_scores = []
+    quality_scores = []
+    timeliness_scores = []
+    total_kra_score = 0
 
+    for category, objectives in domains.items():
+        for obj_id, details in objectives.items():
+            quality = int(details.get('QUALITY', {}).get('Rate', 0))
+            efficiency = int(details.get('EFFICIENCY', {}).get('Rate', 0))
+            timeliness = int(details.get('TIMELINESS', {}).get('Rate', 0))
 
+            if category != 'PLUS FACTOR':
+                efficiency_scores.append(efficiency)
+                quality_scores.append(quality)
+                timeliness_scores.append(timeliness)
+            else:
+                total_kra_score += (quality + efficiency + timeliness)
+
+    total_kra_score += (
+        ((efficiency_scores[0] + quality_scores[0]) / 2) * 0.07 +
+        ((quality_scores[1] + timeliness_scores[1]) / 2) * 0.07 +
+        ((efficiency_scores[2] + quality_scores[2]) / 2) * 0.07 +
+        ((efficiency_scores[3] + quality_scores[3]) / 2) * 0.07 +
+        ((efficiency_scores[4] + quality_scores[4]) / 2) * 0.07 +
+        ((efficiency_scores[5] + quality_scores[5]) / 2) * 0.07 +
+        ((efficiency_scores[6] + quality_scores[6]) / 2) * 0.07 +
+        ((efficiency_scores[7] + quality_scores[7]) / 2) * 0.07 +
+        ((quality_scores[8] + timeliness_scores[8]) / 2) * 0.07 +
+        ((efficiency_scores[9] + quality_scores[9]) / 2) * 0.07 +
+        ((quality_scores[10] + timeliness_scores[10]) / 2) * 0.07 +
+        ((quality_scores[11] + timeliness_scores[11]) / 2) * 0.07 +
+        ((quality_scores[12] + timeliness_scores[12]) / 2) * 0.07 +
+        ((efficiency_scores[13] + quality_scores[13]) / 2) * 0.07
+    )
+
+    plus_factor_score = sum(
+        int(details.get('QUALITY', {}).get('Rate', 0)) +
+        int(details.get('EFFICIENCY', {}).get('Rate', 0)) +
+        int(details.get('TIMELINESS', {}).get('Rate', 0))
+        for details in domains.get('PLUS FACTOR', {}).values()
+    )
+    plus_factor = (plus_factor_score / 3) * 0.02
+
+    total_score = total_kra_score + plus_factor
+
+    
+    # Total KRA Score:  1.085
+    # Plus Factor:  0.09333333333333334
+    # Total Score:  1.1783333333333335
+
+    return {
+        'total_kra_score': total_kra_score,
+        'plus_factor': plus_factor,
+        'total_score': total_score
+}
 
 
 
