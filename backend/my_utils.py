@@ -479,35 +479,6 @@ def update_ipcrf_form_part_3_by_teacher(
     part_2.is_checked = True
     part_2.save()
 
-# kra_1.objectives = {
-#         "Instructions" : {
-#             "Title" : "fsdfsdf",
-#             "Owner" : "School Admin",
-#             "Date" : "dsfsdf",
-#             "Time" : "6:01 PM",
-#             "Points" : "28 points" ,
-#             "Objectives" : {
-#                 "1" : {
-#                     "Main Title" : "sfsdfdsf",
-#                     "Title" : "dfsddf",
-#                     "Bullet" : "dfsddsf"
-#                 },
-#                 "2" : {
-#                     "Main Title" : "dsfsdfs",
-#                     "Title" : "sdfsdfa",
-#                     "Bullet" : "sdfsdfsd"
-#                 }
-#             }
-#         },
-#         "Objectives" : {
-#             "1" : {
-#                 "Content" : "sdfsafds",
-#                 "Score" : "5"
-#             }
-#         },
-#         "Comment" : " "
-#     }
-
 
 
 # TODO : UPDATE THE CONTENT OF THE RPMS CLASS WORKS HERE  
@@ -643,9 +614,70 @@ def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str):
 
 
 
+def calculate_scores(domains : dict):
+    # Initialize variables
+    efficiency_scores = []
+    quality_scores = []
+    timeliness_scores = []
+    total_kra_score = 0
+    
+    # Extract and calculate the scores
+    for category, objectives in domains.items():
+        for obj_id, details in objectives.items():
+            question = details.get('Question', '')
+            quality = int(details.get('QUALITY', {}).get('Rate', 0))
+            efficiency = int(details.get('EFFICIENCY', {}).get('Rate', 0))
+            timeliness = int(details.get('TIMELINES', {}).get('Rate', 0))
+            
+            # Collect scores for KRA calculation
+            if category != 'PLUS FACTOR':
+                efficiency_scores.append(efficiency)
+                quality_scores.append(quality)
+                timeliness_scores.append(timeliness)
+            # Add Plus Factor separately
+            else:
+                total_kra_score += (quality + efficiency + timeliness)
 
+    # Calculate total KRA score
+    total_kra_score += (
+        ((efficiency_scores[0] + quality_scores[0]) / 2) * 0.07 +
+        ((efficiency_scores[1] + quality_scores[1]) / 2) * 0.07 +
+        ((efficiency_scores[2] + quality_scores[2]) / 2) * 0.07 +
+        ((efficiency_scores[3] + quality_scores[3]) / 2) * 0.07 +
+        ((efficiency_scores[4] + quality_scores[4]) / 2) * 0.07 +
+        ((efficiency_scores[5] + quality_scores[5]) / 2) * 0.07 +
+        ((efficiency_scores[6] + quality_scores[6]) / 2) * 0.07 +
+        ((efficiency_scores[7] + quality_scores[7]) / 2) * 0.07 +
+        ((quality_scores[8] + efficiency_scores[8]) / 2) * 0.07 +
+        ((efficiency_scores[9] + quality_scores[3]) / 2) * 0.07 +
+        ((quality_scores[10] + timeliness_scores[10]) / 2) * 0.07 +
+        ((quality_scores[11] + timeliness_scores[11]) / 2) * 0.07 +
+        ((quality_scores[12] + timeliness_scores[12]) / 2) * 0.07 +
+        ((efficiency_scores[13] + quality_scores[13] + timeliness_scores[13]) / 3) * 0.07
+    )
 
+    # Calculate Plus Factor score
+    plus_factor_score = sum(
+        int(details.get('QUALITY', {}).get('Rate', 0)) + 
+        int(details.get('EFFICIENCY', {}).get('Rate', 0)) + 
+        int(details.get('TIMELINES', {}).get('Rate', 0)) 
+        for details in domains.get('PLUS FACTOR', {}).values()
+    )
+    plus_factor = (plus_factor_score / 3) * 0.02
 
+    # Calculate final total score
+    total_score = total_kra_score + plus_factor
+
+    # Print the results
+    print(f"Total KRA Score: {total_kra_score}")
+    print(f"Plus Factor: {plus_factor}")
+    print(f"Total Score: {total_score}")
+    
+    return {
+        'total_kra_score' : total_kra_score,
+        'plus_factor' : plus_factor,
+        'total_score' : total_score
+    }
 
 
 

@@ -169,9 +169,37 @@ def evaluator_forms(request):
 @csrf_exempt
 def evaluator_records(request):
     
+    try:
+        
+        if request.method == 'GET':
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            # TODO : IDENTIFY IF THE USER IS EVALUATOR OR NOT
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            
+            school = models.School.objects.filter(school_id=user.school_id).first()
+            if not school:
+                return JsonResponse({
+                    'message' : 'School not found',
+                    }, status=400)
+                
+            teachers = models.People.objects.filter(school_id=user.school_id, role='TEACHER')
+            
+            
+        
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}'
+            }, status=500)
+    
     return JsonResponse({
-        'message' : 'Not yet implemented'
+        'message' : 'Invalid request method',
     }, status=400)
+
     
     
 @csrf_exempt
