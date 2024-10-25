@@ -30,7 +30,7 @@ urlpatterns = [
     
     path('admin/school/submission/rate/', views.evaluation_submission_rate),
     path('admin/school/teachers/tenure/', views.get_tenure_of_all_teachers),
-    # TODO : CREATE GET FOR PROMOTIONS
+    path('admin/school/teachers/recommendations/', views.all_teacher_recommendations), # NEW API
     # TODO : CREATE GET FOR DISTRIBUTIONS RATINGS
     
     path('admin/school/reject/', views.reject_school),

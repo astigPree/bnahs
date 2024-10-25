@@ -473,9 +473,55 @@ def evaluation_submission_rate(request):
  
 @csrf_exempt
 def all_teacher_recommendations(request):
+    try:
+        if request.method == 'GET':
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            if user.role != 'ADMIN':
+                return JsonResponse({
+                    'message' : 'User is not an admin',
+                }, status=400)
+            
+            
+            number_of_promotion = 0
+            number_of_termination = 0
+            number_of_retention = 0
+            
+            teachers = models.People.objects.filter(role='TEACHER')
+            for teacher in teachers:
+                result = my_utils.get_recommendation_result(employee_id=teacher.employee_id)
+                if result == 'PROMOTION':
+                    number_of_promotion += 1
+                elif result == 'TERMINATION':
+                    number_of_termination += 1
+                elif result == 'RETENTION':
+                    number_of_retention += 1
+            
+            number_of_promotion = number_of_promotion / teachers.count()
+            number_of_termination = number_of_termination / teachers.count()
+            number_of_retention = number_of_retention / teachers.count()
+            
+            return JsonResponse({
+                'promotion' : number_of_promotion,
+                'termination' : number_of_termination,
+                'retention' : number_of_retention
+            }, status=200)
+            
+            
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
     return JsonResponse({
-        'message' : 'Not yet implemented',
-    }, status=400)
+        'message' : 'Invalid request',
+        }, status=400)
+
 
 
 @csrf_exempt
