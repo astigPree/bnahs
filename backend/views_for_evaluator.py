@@ -81,8 +81,88 @@ def login_evaluator(request):
 @csrf_exempt
 def evaluator_forms(request):
     
+    try:
+        
+        if request.method == 'GET':
+            user = models.People.objects.filter(employee_id=request.user.username, role='Evaluator').first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            
+            ipcrf_1_proficient = models.IPCRFForm.objects.filter(school_id=user.school_id, is_for_teacher_proficient=True)
+            ipcrf_1_highly_proficient = models.IPCRFForm.objects.filter(school_id=user.school_id, is_for_teacher_proficient=False)
+            
+            number_of_conducted_ipcrf_1_proficient = ipcrf_1_proficient.count()
+            number_of_conducted_ipcrf_1_highly_proficient = ipcrf_1_highly_proficient.count()
+            number_of_evaluated_ipcrf_1_proficient = ipcrf_1_proficient.filter(is_checked=True).count()
+            number_of_evaluated_ipcrf_1_highly_proficient = ipcrf_1_highly_proficient.filter(is_checked=True).count()
+            number_of_pending_ipcrf_1_proficient = number_of_conducted_ipcrf_1_proficient - number_of_evaluated_ipcrf_1_proficient
+            number_of_pending_ipcrf_1_highly_proficient = number_of_conducted_ipcrf_1_highly_proficient - number_of_evaluated_ipcrf_1_highly_proficient
+            response_rate_of_ipcrf_1_proficient = number_of_evaluated_ipcrf_1_proficient / number_of_conducted_ipcrf_1_proficient
+            response_rate_of_ipcrf_1_highly_proficient = number_of_evaluated_ipcrf_1_highly_proficient / number_of_conducted_ipcrf_1_highly_proficient
+            
+            cot_proficient = models.COTForm.objects.filter(school_id=user.school_id, is_for_teacher_proficient=True)
+            cot_highly_proficient = models.COTForm.objects.filter(school_id=user.school_id, is_for_teacher_proficient=False)
+            
+            number_of_conducted_cot_proficient = cot_proficient.count()
+            number_of_conducted_cot_highly_proficient = cot_highly_proficient.count()
+            number_of_evaluated_cot_proficient = cot_proficient.filter(is_checked=True).count()
+            number_of_evaluated_cot_highly_proficient = cot_highly_proficient.filter(is_checked=True).count()
+            number_of_pending_cot_proficient = number_of_conducted_cot_proficient - number_of_evaluated_cot_proficient
+            number_of_pending_cot_highly_proficient = number_of_conducted_cot_highly_proficient - number_of_evaluated_cot_highly_proficient
+            response_rate_of_cot_proficient = number_of_evaluated_cot_proficient / number_of_conducted_cot_proficient
+            response_rate_of_cot_highly_proficient = number_of_evaluated_cot_highly_proficient / number_of_conducted_cot_highly_proficient
+            
+            rpms_proficient = models.RPMSAttachment.objects.filter(school_id=user.school_id, is_for_teacher_proficient=True)
+            rpms_highly_proficient = models.RPMSAttachment.objects.filter(school_id=user.school_id, is_for_teacher_proficient=False)
+            
+            number_of_conducted_rpms_proficient = rpms_proficient.count()
+            number_of_conducted_rpms_highly_proficient = rpms_highly_proficient.count()
+            number_of_evaluated_rpms_proficient = rpms_proficient.filter(is_checked=True).count()
+            number_of_evaluated_rpms_highly_proficient = rpms_highly_proficient.filter(is_checked=True).count()
+            number_of_pending_rpms_proficient = number_of_conducted_rpms_proficient - number_of_evaluated_rpms_proficient
+            number_of_pending_rpms_highly_proficient = number_of_conducted_rpms_highly_proficient - number_of_evaluated_rpms_highly_proficient
+            response_rate_of_rpms_proficient = number_of_evaluated_rpms_proficient / number_of_conducted_rpms_proficient
+            response_rate_of_rpms_highly_proficient = number_of_evaluated_rpms_highly_proficient / number_of_conducted_rpms_highly_proficient
+            
+            
+            
+            return JsonResponse({
+                'number_of_conducted_ipcrf_1_proficient' : number_of_conducted_ipcrf_1_proficient,
+                'number_of_conducted_ipcrf_1_highly_proficient' : number_of_conducted_ipcrf_1_highly_proficient,
+                'number_of_evaluated_ipcrf_1_proficient' : number_of_evaluated_ipcrf_1_proficient,
+                'number_of_evaluated_ipcrf_1_highly_proficient' : number_of_evaluated_ipcrf_1_highly_proficient,
+                'number_of_pending_ipcrf_1_proficient' : number_of_pending_ipcrf_1_proficient,
+                'number_of_pending_ipcrf_1_highly_proficient' : number_of_pending_ipcrf_1_highly_proficient,
+                'number_of_conducted_cot_proficient' : number_of_conducted_cot_proficient,
+                'number_of_conducted_cot_highly_proficient' : number_of_conducted_cot_highly_proficient,
+                'number_of_evaluated_cot_proficient' : number_of_evaluated_cot_proficient,
+                'number_of_evaluated_cot_highly_proficient' : number_of_evaluated_cot_highly_proficient,
+                'number_of_pending_cot_proficient' : number_of_pending_cot_proficient,
+                'number_of_pending_cot_highly_proficient' : number_of_pending_cot_highly_proficient,
+                'number_of_conducted_rpms_proficient' : number_of_conducted_rpms_proficient,
+                'number_of_conducted_rpms_highly_proficient' : number_of_conducted_rpms_highly_proficient,
+                'number_of_evaluated_rpms_proficient' : number_of_evaluated_rpms_proficient,
+                'number_of_evaluated_rpms_highly_proficient' : number_of_evaluated_rpms_highly_proficient,
+                'number_of_pending_rpms_proficient' : number_of_pending_rpms_proficient,
+                'number_of_pending_rpms_highly_proficient' : number_of_pending_rpms_highly_proficient,
+                'response_rate_of_ipcrf_1_proficient' : response_rate_of_ipcrf_1_proficient,
+                'response_rate_of_ipcrf_1_highly_proficient' : response_rate_of_ipcrf_1_highly_proficient,
+                'response_rate_of_cot_proficient' : response_rate_of_cot_proficient,
+                'response_rate_of_cot_highly_proficient' : response_rate_of_cot_highly_proficient,
+                'response_rate_of_rpms_proficient' : response_rate_of_rpms_proficient,
+                'response_rate_of_rpms_highly_proficient' : response_rate_of_rpms_highly_proficient
+                }, status=200)
+            
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}'
+            }, status=500)
+    
     return JsonResponse({
-        'message' : 'Not yet implemented'
+        'message' : 'Invalid request method',
     }, status=400)
     
     
