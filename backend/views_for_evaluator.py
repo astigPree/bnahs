@@ -200,14 +200,39 @@ def evaluator_records(request):
         'message' : 'Invalid request method',
     }, status=400)
 
-    
-    
+
+
 @csrf_exempt
-def evaluator_summary(request):
+def evaluator_get_annual_ratings(request):
+    try:
+        if request.method == 'GET':
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            # TODO : IDENTIFY IF THE USER IS EVALUATOR OR NOT
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            teachers = models.People.objects.filter(school_id=user.school_id, role='TEACHER')
+            labels = []
+            ratings = []
+            for teacher in teachers:
+                labels.append(teacher.first_name)
+                ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()
+                if ipcrf_1:
+                    if my_utils.is_proficient_faculty(teacher):
+                        ratings.append(my_utils.calculate_scores_for_proficient(ipcrf_1.content_for_teacher))
+            
+            
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}'
+            }, status=500)
     
     return JsonResponse({
-        'message' : 'Not yet implemented'
-    }, status=400)  
+        'message' : 'Invalid request method',
+    }, status=400)
 
 
 @csrf_exempt
