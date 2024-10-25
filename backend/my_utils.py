@@ -75,6 +75,43 @@ def parse_date_string(date_string):
         return None
 
 
+def get_recommendation_result(employee_id : str):
+    ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=employee_id, form_type='PART 1')
+    scores = [ form.getEvaluatorPart1Scores() for form in ipcrf_forms ]
+            
+    # Initialize counters
+    promotion_count = 0
+    retention_count = 0
+    termination_count = 0
+    overall_scores = []
+
+    # Classify scores
+    for score in scores:
+        for _, value in score.items():
+            average_score = value['Average']
+            overall_scores.append(average_score)
+            category = classify_ipcrf_score(average_score) 
+            if category == 'Outstanding':
+                promotion_count += 1
+            elif category in ['Very Satisfactory', 'Satisfactory']:
+                retention_count += 1
+            elif category in ['Unsatisfactory', 'Poor']:
+                termination_count += 1
+
+    # Calculate percentages
+    total = len(overall_scores)
+    promotion_percentage = promotion_count / total * 100 if total > 0 else 0
+    retention_percentage = retention_count / total * 100 if total > 0 else 0
+    termination_percentage = termination_count / total * 100 if total > 0 else 0
+
+    if promotion_percentage > retention_percentage and promotion_percentage > termination_percentage:
+        return 'Promotion'
+    elif retention_percentage > termination_percentage:
+        return 'Retention'
+    else:
+        return 'Termination'
+
+
 def get_kra_breakdown_of_a_teacher(employee_id : str):
     """
         Return dictionary of the RPMSAttachment of the teacher

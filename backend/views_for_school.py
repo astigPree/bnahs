@@ -471,6 +471,108 @@ def get_search_school_faculty_for_mentioning(request):
     },status=400) 
 
 
+@csrf_exempt
+def school_get_all_teacher_tenure(request):
+    try:
+        
+        if request.method == 'GET':
+            user = models.School.objects.filter(school_id=request.user.username, role='Evaluator').first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+        
+            people = People.objects.filter(role='Teacher', school_id=user.school_id)
+            total_count = people.count()
+            
+            if total_count == 0:
+                return JsonResponse({
+                    '0-3 years': 0,
+                    '3-5 years': 0,
+                    '5+ years': 0
+                }, status=200)
+
+            # Initialize counters
+            tenure_counts = {
+                '0-3 years': 0,
+                '3-5 years': 0,
+                '5+ years': 0
+            }
+
+            for person in people:
+                tenure_category = person.get_tenure_category()
+                if tenure_category in tenure_counts:
+                    tenure_counts[tenure_category] += 1
+            
+            # Calculate percentages
+            tenure_percentages = {
+                category: (count / total_count) * 100 for category, count in tenure_counts.items()
+            }
+            
+            return JsonResponse({
+                '0-3 years': tenure_counts['0-3 years'],
+                '3-5 years': tenure_counts['3-5 years'],
+                '5+ years': tenure_counts['5+ years']
+            }, status=200)
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+@csrf_exempt
+def school_get_teacher_recommendations(request):
+    try:
+        if request.method == 'GET':
+            user = models.School.objects.filter(school_id=request.user.username).first()
+            # TODO : IDENTIFY IF THE USER IS EVALUATOR OR NOT
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            
+            number_of_promotion = 0
+            number_of_termination = 0
+            number_of_retention = 0
+            
+            teachers = models.People.objects.filter(school_id=user.school_id, role='TEACHER')
+            for teacher in teachers:
+                result = my_utils.get_recommendation_result(employee_id=teacher.employee_id)
+                if result == 'PROMOTION':
+                    number_of_promotion += 1
+                elif result == 'TERMINATION':
+                    number_of_termination += 1
+                elif result == 'RETENTION':
+                    number_of_retention += 1
+            
+            number_of_promotion = number_of_promotion / teachers.count()
+            number_of_termination = number_of_termination / teachers.count()
+            number_of_retention = number_of_retention / teachers.count()
+            
+            return JsonResponse({
+                'promotion' : number_of_promotion,
+                'termination' : number_of_termination,
+                'retention' : number_of_retention
+            }, status=200)
+            
+            
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
 
 
 
