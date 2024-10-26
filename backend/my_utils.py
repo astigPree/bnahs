@@ -2,9 +2,12 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.templatetags.static import static
-
-
+from django.db.models.functions import ExtractYear
 from django.utils import timezone
+
+
+from collections import defaultdict
+
 from datetime import datetime
 
 from uuid import uuid4
@@ -576,62 +579,6 @@ def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str):
 
 
 
-def calculate_scores_for_highly_proficient(domains : dict , cot_content : dict):
-    efficiency_scores = []
-    quality_scores = []
-    timeliness_scores = []
-    total_kra_score = 0
-
-    for category, objectives in domains.items():
-        for obj_id, details in objectives.items():
-            quality = int(details.get('QUALITY', {}).get('Rate', 0))
-            efficiency = int(details.get('EFFICIENCY', {}).get('Rate', 0))
-            timeliness = int(details.get('TIMELINESS', {}).get('Rate', 0))
-
-            efficiency_scores.append(efficiency)
-            quality_scores.append(quality)
-            timeliness_scores.append(timeliness)
-            
-
-    total_kra_score += (
-        ((efficiency_scores[0] + quality_scores[0]) / 2) * 0.07 +
-        ((quality_scores[1] + timeliness_scores[1]) / 2) * 0.07 +
-        ((efficiency_scores[2] + quality_scores[2]) / 2) * 0.07 +
-        ((efficiency_scores[3] + quality_scores[3]) / 2) * 0.07 +
-        ((efficiency_scores[4] + quality_scores[4]) / 2) * 0.07 +
-        ((efficiency_scores[5] + quality_scores[5]) / 2) * 0.07 +
-        ((efficiency_scores[6] + quality_scores[6]) / 2) * 0.07 +
-        ((efficiency_scores[7] + quality_scores[7]) / 2) * 0.07 +
-        ((quality_scores[8] + timeliness_scores[8]) / 2) * 0.07 +
-        ((efficiency_scores[9] + quality_scores[9]) / 2) * 0.07 +
-        ((quality_scores[10] + timeliness_scores[10]) / 2) * 0.07 +
-        ((quality_scores[11] + timeliness_scores[11]) / 2) * 0.07 +
-        ((quality_scores[12] + timeliness_scores[12]) / 2) * 0.07 +
-        ((efficiency_scores[13] + quality_scores[13]) / 2) * 0.07
-    )
-
-    plus_factor_score = sum(
-        int(details.get('QUALITY', {}).get('Rate', 0)) +
-        int(details.get('EFFICIENCY', {}).get('Rate', 0)) +
-        int(details.get('TIMELINESS', {}).get('Rate', 0))
-        for details in domains.get('PLUS FACTOR', {}).values()
-    )
-    plus_factor = (plus_factor_score / 3) * 0.02
-
-    total_score = total_kra_score + plus_factor
-
-    
-    # Total KRA Score:  1.085
-    # Plus Factor:  0.09333333333333334
-    # Total Score:  1.1783333333333335
-
-    return {
-        'total_kra_score': total_kra_score,
-        'plus_factor': plus_factor,
-        'total_score': total_score
-}
-
-
 def calculate_scores_for_proficient(domains : dict , cot_content : dict):
     # Initialize variables
     efficiency_scores = []
@@ -785,4 +732,61 @@ def calculate_scores_for_highly_proficient(domains : dict , cot_content : dict):
         'total_kra_score': total_kra_score,
         'plus_factor': plus_factor,
         'total_score': total_score
-}
+    }
+
+
+
+def calculate_scores(domains, cot_content, employee_position):
+    # Determine if the employee is Proficient or Highly Proficient
+    positions = {
+        'Proficient': ('Teacher I', 'Teacher II', 'Teacher III'),
+        'Highly Proficient': ('Master Teacher I', 'Master Teacher II', 'Master Teacher III', 'Master Teacher IV')
+    }
+
+    if employee_position in positions['Proficient']:
+        return calculate_scores_for_proficient(domains, cot_content)
+    elif employee_position in positions['Highly Proficient']:
+        return calculate_scores_for_highly_proficient(domains, cot_content)
+
+def get_employee_performance_by_year(employee_id, employee_position):
+    # Initialize the result dictionary
+    performance_by_year = defaultdict(lambda: {"ipcrf": [], "cot": []})
+
+    # Query IPCRF forms filtered by employee_id and annotate with year
+    ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=employee_id , form_type='PART 1').annotate(year=ExtractYear('created_at'))
+    for form in ipcrf_forms:
+        performance_by_year[form.year]["ipcrf"].append(form)
+
+    # Query COT forms filtered by employee_id and annotate with year
+    cot_forms = models.objects.filter(evaluated_id=employee_id).annotate(year=ExtractYear('created_at'))
+    for form in cot_forms:
+        performance_by_year[form.year]["cot"].append(form)
+        
+    # Calculate scores for each year
+    results = {}
+    for year, forms in performance_by_year.items():
+        domains = {}  # Merge or prepare domains data here as needed
+        cot_content = {}  # Prepare COT content here as needed
+        results[year] = calculate_scores(domains, cot_content, employee_position)
+    
+    # {
+    #     2021: {
+    #         'total_kra_score': 1.85,
+    #         'plus_factor': 0.02,
+    #         'total_score': 1.87
+    #     },
+    #     2022: {
+    #         'total_kra_score': 2.40,
+    #         'plus_factor': 0.04,
+    #         'total_score': 2.44
+    #     },
+    #     2023: {
+    #         'total_kra_score': 2.10,
+    #         'plus_factor': 0.03,
+    #         'total_score': 2.13
+    #     }
+    # }
+    
+    return 
+
+

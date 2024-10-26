@@ -279,7 +279,7 @@ def get_search_schools_by_location(request):
         'message' : 'Invalid request',
         }, status=400)
 
-    
+
 
 # DASHBOARD 
 @csrf_exempt
@@ -745,7 +745,6 @@ def create_rating_sheet(request):
         }, status=400) 
 
 
-
 @csrf_exempt
 def create_rpms_folder(request):
     try:
@@ -1136,5 +1135,59 @@ def get_number_of_ipcrf_forms(request):
         }, status=400)
         
 
+
+
+
+@csrf_exempt
+def get_annual_ratings(request):
+    try:
+        if request.method == 'GET':
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            # TODO : IDENTIFY IF THE USER IS EVALUATOR OR NOT
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            schools = models.School.objects.filter(is_accepted=True).order_by('-created_at')
+            school_ratings = {}
+            for school in schools:
+                school_ratings[school.school_id] = {}
+                school_ratings[school.school_id]['Name'] = school.name
+                teachers = models.People.objects.filter(school_id=user.school_id, role='TEACHER')
+                teacher_ratings = []
+                for teacher in teachers: 
+                    ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()
+                    cot_form = models.COTForm.objects.filter(evaluated_id=teacher.employee_id).order_by('-created_at').first()
+                    if ipcrf_1 and cot_form:
+                        if my_utils.is_proficient_faculty(teacher):
+                            teacher_ratings.append(my_utils.calculate_scores_for_proficient(ipcrf_1.content_for_teacher , cot_form.content).get('total_score'))
+                        else:
+                            teacher_ratings.append(my_utils.calculate_scores_for_highly_proficient(ipcrf_1.content_for_teacher, cot_form.content).get('total_score'))
+                    else:
+                        teacher_ratings.append(0)
+                school_ratings[school.school_id]['Ratings'] = sum(teacher_ratings) / len(teacher_ratings)
+            
+            """
+                {
+                    "School ID" : {
+                        "Name" : "Name",
+                        "Ratings" : 1.85
+                    } 
+                }
+            """
+            
+            return JsonResponse({
+                'school_ratings' : school_ratings
+            }, status=200)
     
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}'
+            }, status=500)
     
+    return JsonResponse({
+        'message' : 'Invalid request method',
+    }, status=400)
+
+

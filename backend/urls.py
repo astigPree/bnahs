@@ -47,6 +47,7 @@ urlpatterns = [
     path('admin/forms/ipcrf/create/', views.create_ipcrf_form),
     path('admin/forms/ipcrf/count/', views.get_number_of_ipcrf_forms),
     
+    path('admin/school/teacher/get/annual/ratings/', views.get_annual_ratings), # NEW API
     
     # ============== School Path ================
     path('login_school/', views.login_school), # WORKING
@@ -65,6 +66,9 @@ urlpatterns = [
     path('school/teachers/get/tenure', views.school_get_all_teacher_tenure), # NEED TO TEST 
     path('school/teachers/get/recommendations', views.school_get_teacher_recommendations), # NEED TO TEST 
     
+    path('school/teacher/get/annual/ratings/', views.school_get_annual_ratings), # NEW API
+    path('school/teacher/get/performance/', views.school_get_performance_true_year), # NEW API
+    
     # ============== Evaluator Path ================
     path('login_evaluator/', views.login_evaluator), # WORKING
     path('evaluator/update_profile/', views.people_update_profile),
@@ -74,6 +78,8 @@ urlpatterns = [
     path('evaluator/school/get/teachers/tenure/', views.evaluator_get_all_teacher_tenure), # NEED TO TEST 
     path('evaluator/school/get/teachers/recommendations/', views.evaluator_get_teacher_recommendations), # NEED TO TEST 
     
+    path('evaluator/teacher/get/annual/ratings/', views.evaluator_get_annual_ratings), # NEW API
+    path('evaluator/teacher/get/performance/', views.evaluator_get_performance_true_year), # NEW API
     
     path('evaluator/school/get/cot/', views.get_rating_sheet),
     path('evaluator/school/update/cot/', views.update_rating_sheet),

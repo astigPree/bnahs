@@ -279,7 +279,7 @@ def get_all_school_faculty(request):
     try:
         if request.method == 'GET':
             
-            user = models.School.objects.filter(school_id=request.user.username).first()
+            user = models.School.objects.filter(email_address=request.user.username).first()
             
             if not user:
                 return JsonResponse({
@@ -309,7 +309,7 @@ def get_number_of_school_faculty(request):
     try:
         if request.method == 'GET':
 
-            user = models.School.objects.filter(school_id=request.user.username).first()
+            user = models.School.objects.filter(email_address=request.user.username).first()
 
             if not user:
                 return JsonResponse({
@@ -337,7 +337,7 @@ def get_number_of_school_faculty(request):
 def get_number_of_school_faculty_evaluated(request):
     try:
         if request.method == 'GET':
-            user = models.School.objects.filter(school_id=request.user.username).first()
+            user = models.School.objects.filter(email_address=request.user.username).first()
 
             if not user:
                 return JsonResponse({
@@ -365,7 +365,7 @@ def get_number_of_school_faculty_evaluated(request):
 def get_number_of_school_faculty_not_evaluated(request):
     try:
         if request.method == 'GET':
-            user = models.School.objects.filter(school_id=request.user.username).first()
+            user = models.School.objects.filter(email_address=request.user.username).first()
 
             if not user:
                 return JsonResponse({
@@ -401,7 +401,7 @@ def search_school_faculty(request):
                     'message' : 'Please provide query',
                     }, status=400)
             
-            user = models.School.objects.filter(school_id=request.user.username).first()
+            user = models.School.objects.filter(email_address=request.user.username).first()
             
             if not user:
                 return JsonResponse({
@@ -441,7 +441,7 @@ def get_search_school_faculty_for_mentioning(request):
                     'message' : 'Please provide query',
                     }, status=400)
 
-            user = models.School.objects.filter(school_id=request.user.username).first()
+            user = models.School.objects.filter(email_address=request.user.username).first()
 
             if not user:
                 return JsonResponse({
@@ -476,7 +476,7 @@ def school_get_all_teacher_tenure(request):
     try:
         
         if request.method == 'GET':
-            user = models.School.objects.filter(school_id=request.user.username, role='Evaluator').first()
+            user = models.School.objects.filter(email_address=request.user.username, role='Evaluator').first()
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
@@ -530,7 +530,7 @@ def school_get_all_teacher_tenure(request):
 def school_get_teacher_recommendations(request):
     try:
         if request.method == 'GET':
-            user = models.School.objects.filter(school_id=request.user.username).first()
+            user = models.School.objects.filter(email_address=request.user.username).first()
             # TODO : IDENTIFY IF THE USER IS EVALUATOR OR NOT
             if not user:
                 return JsonResponse({
@@ -576,3 +576,96 @@ def school_get_teacher_recommendations(request):
 
 
 
+@csrf_exempt
+def school_get_annual_ratings(request):
+    try:
+        if request.method == 'GET':
+            user = models.School.objects.filter(email_address=request.user.username).first()
+            # TODO : IDENTIFY IF THE USER IS EVALUATOR OR NOT
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            teachers = models.People.objects.filter(school_id=user.school_id, role='TEACHER')
+            labels = []
+            ratings = []
+            for teacher in teachers:
+                labels.append(teacher.first_name)
+                ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()
+                cot_form = models.COTForm.objects.filter(evaluated_id=teacher.employee_id).order_by('-created_at').first()
+                if ipcrf_1 and cot_form:
+                    if my_utils.is_proficient_faculty(teacher):
+                        ratings.append(my_utils.calculate_scores_for_proficient(ipcrf_1.content_for_teacher , cot_form.content))
+                    else:
+                        ratings.append(my_utils.calculate_scores_for_highly_proficient(ipcrf_1.content_for_teacher, cot_form.content))
+                else:
+                    ratings.append({
+                        'total_kra_score' : 0,
+                        'plus_factor' : 0,
+                        'total_score' : 0
+                    })
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}'
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request method',
+    }, status=400)
+
+
+@csrf_exempt
+def school_get_performance_true_year(request):
+    try:
+        if request.method == 'GET':
+            user = models.School.objects.filter(email_address=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            
+            teacher_performance = {}
+            teachers = models.People.objects.filter(school_id=user.school_id, role='TEACHER')
+            for teacher in teachers:
+                teacher_performance[teacher.employee_id] = {}
+                teacher_performance[teacher.employee_id]['Name'] = teacher.fullname
+                teacher_performance[teacher.employee_id]['Performance'] = my_utils.get_employee_performance_by_year(teacher.employee_id , teacher.position)
+            
+            # {
+            #     "Employee ID" : {
+            #         "Name" : "Name",
+            #         "Performance" :  {
+            #             2021: {
+            #                 'total_kra_score': 1.85,
+            #                 'plus_factor': 0.02,
+            #                 'total_score': 1.87
+            #             },
+            #             2022: {
+            #                 'total_kra_score': 2.40,
+            #                 'plus_factor': 0.04,
+            #                 'total_score': 2.44
+            #             },
+            #             2023: {
+            #                 'total_kra_score': 2.10,
+            #                 'plus_factor': 0.03,
+            #                 'total_score': 2.13
+            #             }
+            #         }
+            #     } 
+            # }
+            
+            return JsonResponse({
+                'teacher_performance' : teacher_performance
+            }, status=200) 
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)

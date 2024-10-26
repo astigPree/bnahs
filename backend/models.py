@@ -193,6 +193,7 @@ class IPCRFForm(models.Model):
     school_id = models.CharField(max_length=255, blank=True, default='')
     employee_id = models.CharField(max_length=255, blank=True, default='')
     evaluator_id = models.CharField(max_length=255, blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
     form_type = models.CharField(max_length=255, blank=True, default='',
             choices=(
               ('PART 1', 'PART 1'), # Teacher to Evaluator
@@ -402,7 +403,7 @@ class IPCRFForm(models.Model):
          ('Cancelled', 'Cancelled'),
          ('Completed', 'Completed'),
         ))
-    created_at = models.DateTimeField(auto_now_add=True)
+    
     
     is_checked_by_evaluator = models.BooleanField(default=False)
     is_checked = models.BooleanField(default=False) # Check if the teacher submit it
