@@ -1289,7 +1289,7 @@ def form_for_plus_factor_highly_proficient():
                 "1" : {
                     "Main Title" : "Weight 2% | Objective 15 - Performed various related works/ activities that contribute to the teaching-learning process.",
                     "Title" : "MOVs",
-                    "Content" : "Any proof that the master teacher:\nserved as facilitator / speaker\nserved as demonstration teacher\nserved as a member of the technical working group\nserved as OIC in the absence of the principal\nrepresented the principal in meetings and conference\nobserved classes of Teachers I-III\nassisted the school selection committee in the evaluation of credentials when hiring or promoting teachers\nserved in a committee",
+                    "Content" : "Any proof that the master teacher:\nserved as facilitator / speaker\nserved as demonstration teacher\nserved as a member of the technical working group\nserved as OIC in the absence of the principal\nrepresented the principal in meetings and conference\nobserved classes of Teachers I-III\nassisted the school selection committee in the evaluation of credentials when hiring or promoting teachers\nserved in a committee\nserved as adviser to co-curricular activities\nserved as coordinator / chairperson\nauthored / contributed to a book or journal\ncoached and mentored learners in competitions\nmentored pre-service / in-service teachers\nconducted research within the rating period;\nothers (please specify)\n\nWith annotations on how it contributed to the teaching-learning process",
                 },
             }
         },
