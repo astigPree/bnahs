@@ -251,79 +251,9 @@ def create_cot_form(
         }
 
     if cot_type == 'Highly Proficient':
-        content["Questions"] = {
-            "1" : {
-                "Objective" : "Modeled effective applications of content knowledge within and across curriculum teaching areas. *",
-                "Selected" : "0" 
-            },
-            "2" : {
-                "Objective" : "Developed and applied effective teaching strategies to promote critical and creative thinking, as well as other higher-order thinking skills. *",
-                "Selected" : "0"
-            },
-            "3" : {
-                "Objective" : "Modeled and supported colleagues in the proficient use of Mother Tongues, Filipino and English to improve teaching and learning, as well as to developed the learners' pride of their language, heritage and culture. *",
-                "Selected" : "0"
-            },
-            "4" : {
-                "Objective" : "Exhibited effective strategies that ensure safe and secure learning environments to enhance learning through the consistent implementation of policies, guidelines and procedures. *",
-                "Selected" : "0"
-            },
-            "5" : {
-                "Objective" : "Exhibited effective practices to foster learning environments that promote fairness, respect and care to encourage learning. *",
-                "Selected" : "0"
-            },
-            "6" : {
-                "Objective" : "Exhibited a learner-centered culture that promotes success by using effective teaching strategies that respond to their linguistic, cultural, socio-economic and religious backgrounds *",
-                "Selected" : "0"
-            },
-            "7" : {
-                "Objective" : "Developed and applied teaching strategies to address effectively the needs of learners from indigenous groups. *",
-                "Selected" : "0"
-            },
-            "8" : {
-                "Objective" : "Used effective strategies for providing timely, accurate and constructive feedback to encourage learners to reflect on and improve their own learning.  *",
-                "Selected" : "0"
-            }
-        },
+        content["Questions"] = forms_text.form_cot_highly_proficient()
     elif cot_type == 'Proficient':
-        content["Questions"] = {
-            "1" : {
-                "Objective" : "Applied knowledge of content within and across curriculum teaching areas. *",
-                "Selected" : "0" 
-            },
-            "2" : {
-                "Objective" : "Used a range of teaching strategies that enhance learner achievement in literacy and numeracy skills. *",
-                "Selected" : "0" 
-            },
-            "3" : {
-                "Objective" : "Applied a range of teaching strategies to develop critical and creative thinking, as well as other higher-order thinking skills. *",
-                "Selected" : "0" 
-            },
-            "4" : {
-                "Objective" : "Displayed proficient use of Mother Tongue, Filipino and English to facilitate  teaching and learning. *",
-                "Selected" : "0" 
-            },
-            "5" : {
-                "Objective" : "Established safe and secure learning environment to enhance learning through the consistent implementation of policies, guidelines, and procedures. *",
-                "Selected" : "0" 
-            },
-            "6" : {
-                "Objective" : "Maintained learning environment that promotes fairness, respect and care to encourage learning. *",
-                "Selected" : "0" 
-            },
-            "7" : {
-                "Objective" : "Established a learner-centered culture by using teaching strategies that respond  to their linguistic, cultural, socio-economic and religious backgrounds. *",
-                "Selected" : "0" 
-            },
-            "8" : {
-                "Objective" : "Adapted and used culturally appropriate teaching strategies to address the needs of learners from indigenous groups. *",
-                "Selected" : "0" 
-            },
-            "9" : {
-                "Objective" : "Used strategies for providing timely, accurate and constructive feedback to  improve learner performance. *",
-                "Selected" : "0" 
-            },
-        }   
+        content["Questions"] = forms_text.form_cot_proficient()
     
     cot_form.content = content
     cot_form.is_for_teacher_proficient = True if cot_type == 'Proficient' else False
@@ -340,45 +270,6 @@ def update_cot_form(cot_form : models.COTForm, comment : str , questions : dict[
     cot_form.save()
 
 
-
-# "4" : {
-#             "Question" : "gfdgdgfdgfd",
-#             "QUALITY" : {
-#                 "1" : "fdsfsdf",
-#                 "2" : "fdsfsdf",
-#                 "3" : "fdsfsdf",
-#                 "4" : "fdsfsdf",
-#                 "5" : "fdsfsdf",
-#                 "Rate" : "0"
-#             },
-#             "EFFICIENCY" : {
-#                 "1" : "fdsfsdf",
-#                 "2" : "fdsfsdf",
-#                 "3" : "fdsfsdf",
-#                 "4" : "fdsfsdf",
-#                 "5" : "fdsfsdf",
-#                 "Rate" : "0"
-#             },
-#             "TIMELINES" : {
-#                 "1" : "fdsfsdf",
-#                 "2" : "fdsfsdf",
-#                 "3" : "fdsfsdf",
-#                 "4" : "fdsfsdf",
-#                 "5" : "fdsfsdf",
-#                 "Rate" : "0"
-#             }
-#         }
-
-
-# "1" : {
-#                 "Title" : "SELF-MANAGEMENT",
-#                 "1" : "dssddsfds",
-#                 "2" : "dssddsfds",
-#                 "3" : "dssddsfds",
-#                 "4" : "dssddsfds",
-#                 "5" : "dssddsfds",
-#                 "Selected" : []
-#         },
 
 def create_ipcrf_form_proficient( school : models.School , teacher : models.People):
     # Currently walang evaluator
@@ -685,75 +576,7 @@ def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str):
 
 
 
-def calculate_scores_for_proficient(domains : dict):
-    # Initialize variables
-    efficiency_scores = []
-    quality_scores = []
-    timeliness_scores = []
-    total_kra_score = 0
-    
-    # Extract and calculate the scores
-    for category, objectives in domains.items():
-        for obj_id, details in objectives.items():
-            question = details.get('Question', '')
-            quality = int(details.get('QUALITY', {}).get('Rate', 0))
-            efficiency = int(details.get('EFFICIENCY', {}).get('Rate', 0))
-            timeliness = int(details.get('TIMELINES', {}).get('Rate', 0))
-            
-            # Collect scores for KRA calculation
-            if category != 'PLUS FACTOR':
-                efficiency_scores.append(efficiency)
-                quality_scores.append(quality)
-                timeliness_scores.append(timeliness)
-            # Add Plus Factor separately
-            else:
-                total_kra_score += (quality + efficiency + timeliness)
-
-    # Calculate total KRA score
-    total_kra_score += (
-        ((efficiency_scores[0] + quality_scores[0]) / 2) * 0.07 +
-        ((efficiency_scores[1] + quality_scores[1]) / 2) * 0.07 +
-        ((efficiency_scores[2] + quality_scores[2]) / 2) * 0.07 +
-        ((efficiency_scores[3] + quality_scores[3]) / 2) * 0.07 +
-        ((efficiency_scores[4] + quality_scores[4]) / 2) * 0.07 +
-        ((efficiency_scores[5] + quality_scores[5]) / 2) * 0.07 +
-        ((efficiency_scores[6] + quality_scores[6]) / 2) * 0.07 +
-        ((efficiency_scores[7] + quality_scores[7]) / 2) * 0.07 +
-        ((quality_scores[8] + efficiency_scores[8]) / 2) * 0.07 +
-        ((efficiency_scores[9] + quality_scores[3]) / 2) * 0.07 +
-        ((quality_scores[10] + timeliness_scores[10]) / 2) * 0.07 +
-        ((quality_scores[11] + timeliness_scores[11]) / 2) * 0.07 +
-        ((quality_scores[12] + timeliness_scores[12]) / 2) * 0.07 +
-        ((efficiency_scores[13] + quality_scores[13] + timeliness_scores[13]) / 3) * 0.07
-    )
-
-    # Calculate Plus Factor score
-    plus_factor_score = sum(
-        int(details.get('QUALITY', {}).get('Rate', 0)) + 
-        int(details.get('EFFICIENCY', {}).get('Rate', 0)) + 
-        int(details.get('TIMELINES', {}).get('Rate', 0)) 
-        for details in domains.get('PLUS FACTOR', {}).values()
-    )
-    plus_factor = (plus_factor_score / 3) * 0.02
-
-    # Calculate final total score
-    total_score = total_kra_score + plus_factor
-
-    # Print the results
-    # Total KRA Score:  1.085
-    # Plus Factor:  0.09333333333333334
-    # Total Score:  1.1783333333333335
-
-    
-    return {
-        'total_kra_score' : total_kra_score,
-        'plus_factor' : plus_factor,
-        'total_score' : total_score
-    }
-
-
-
-def calculate_scores_for_highly_proficient(domains: dict):
+def calculate_scores_for_highly_proficient(domains : dict , cot_content : dict):
     efficiency_scores = []
     quality_scores = []
     timeliness_scores = []
@@ -765,12 +588,10 @@ def calculate_scores_for_highly_proficient(domains: dict):
             efficiency = int(details.get('EFFICIENCY', {}).get('Rate', 0))
             timeliness = int(details.get('TIMELINESS', {}).get('Rate', 0))
 
-            if category != 'PLUS FACTOR':
-                efficiency_scores.append(efficiency)
-                quality_scores.append(quality)
-                timeliness_scores.append(timeliness)
-            else:
-                total_kra_score += (quality + efficiency + timeliness)
+            efficiency_scores.append(efficiency)
+            quality_scores.append(quality)
+            timeliness_scores.append(timeliness)
+            
 
     total_kra_score += (
         ((efficiency_scores[0] + quality_scores[0]) / 2) * 0.07 +
@@ -811,4 +632,157 @@ def calculate_scores_for_highly_proficient(domains: dict):
 }
 
 
+def calculate_scores_for_proficient(domains : dict , cot_content : dict):
+    # Initialize variables
+    efficiency_scores = []
+    quality_scores = []
+    timeliness_scores = []
+    total_kra_score = 0
+    
+    # Extract and calculate the scores
+    for category, objectives in domains.items():
+        for obj_id, details in objectives.items():
+            question = details.get('Question', '')
+            quality = int(details.get('QUALITY', {}).get('Rate', 0))
+            efficiency = int(details.get('EFFICIENCY', {}).get('Rate', 0))
+            timeliness = int(details.get('TIMELINES', {}).get('Rate', 0))
+            
+            # Collect scores for KRA calculation
+            if category != 'PLUS FACTOR':
+                efficiency_scores.append(efficiency)
+                quality_scores.append(quality)
+                timeliness_scores.append(timeliness)
+            # Add Plus Factor separately
+            else:
+                total_kra_score += (quality + efficiency + timeliness)
+    
+    # Extract COTFORM Question Content
+    questions = cot_content.get('Questions', {})
+    question_selected = {}
+    for q_id, q_info in questions.items():
+        question_selected[q_id] = int(q_info['Selected']) if q_info['Selected'] != '0' else 3
+    
+    # Calculate total KRA score
+    # total_kra_score += (
+    #     ((efficiency_scores[0] + quality_scores[0]) / 2) * 0.07 +
+    #     ((efficiency_scores[1] + quality_scores[1]) / 2) * 0.07 +
+    #     ((efficiency_scores[2] + quality_scores[2]) / 2) * 0.07 +
+    #     ((efficiency_scores[3] + quality_scores[3]) / 2) * 0.07 +
+    #     ((efficiency_scores[4] + quality_scores[4]) / 2) * 0.07 +
+    #     ((efficiency_scores[5] + quality_scores[5]) / 2) * 0.07 +
+    #     ((efficiency_scores[6] + quality_scores[6]) / 2) * 0.07 +
+    #     ((efficiency_scores[7] + quality_scores[7]) / 2) * 0.07 +
+    #     ((quality_scores[8] + efficiency_scores[8]) / 2) * 0.07 +
+    #     ((efficiency_scores[9] + quality_scores[3]) / 2) * 0.07 +
+    #     ((quality_scores[10] + timeliness_scores[10]) / 2) * 0.07 +
+    #     ((quality_scores[11] + timeliness_scores[11]) / 2) * 0.07 +
+    #     ((quality_scores[12] + timeliness_scores[12]) / 2) * 0.07 +
+    #     ((efficiency_scores[13] + quality_scores[13] + timeliness_scores[13]) / 3) * 0.07
+    # )
+    
+    totalKraScore = (
+        ((efficiency_scores[0] + (question_selected['1'] / 7) ) / 2) * 0.07 + 
+        ((efficiency_scores[1] + (question_selected['2'] / 7)) / 2) * 0.07 +
+        ((efficiency_scores[2] + (question_selected['3'] / 7)) / 2) * 0.07 +
+        ((efficiency_scores[3] + (question_selected['4'] / 7)) / 2) * 0.07 +
+        ((efficiency_scores[4] + (question_selected['5'] / 7)) / 2 ) * 0.07 +
+        ((efficiency_scores[5] + (question_selected['6'] / 7)) / 2) * 0.07 +
+        ((efficiency_scores[6] + (question_selected['7'] / 7)) / 2) * 0.07 +
+        ((efficiency_scores[7] + (question_selected['8'] / 7)) / 2) * 0.07 +
+        ((quality_scores[8] + efficiency_scores[8]) / 2) * 0.07 +
+        ((efficiency_scores[9] + (question_selected['4'] / 7)) / 2) * 0.07 +
+        ((quality_scores[10] + timeliness_scores[10]) / 2) * 0.07 +
+        ((quality_scores[11] + timeliness_scores[11]) / 2) * 0.07 +
+        ((quality_scores[12] + timeliness_scores[12]) / 2) * 0.07 +
+        ((efficiency_scores[13] + quality_scores[13] + timeliness_scores[13]) / 3) * 0.07
+    )
+    
+    # Calculate Plus Factor score
+    plus_factor_score = sum(
+        int(details.get('QUALITY', {}).get('Rate', 0)) + 
+        int(details.get('EFFICIENCY', {}).get('Rate', 0)) + 
+        int(details.get('TIMELINES', {}).get('Rate', 0)) 
+        for details in domains.get('PLUS FACTOR', {}).values()
+    )
+    plus_factor = (plus_factor_score / 3) * 0.02
 
+    # Calculate final total score
+    total_score = total_kra_score + plus_factor
+
+    # Print the results
+    # Total KRA Score:  1.085
+    # Plus Factor:  0.09333333333333334
+    # Total Score:  1.1783333333333335
+
+    
+    return {
+        'total_kra_score' : total_kra_score,
+        'plus_factor' : plus_factor,
+        'total_score' : total_score
+    }
+
+
+
+def calculate_scores_for_highly_proficient(domains : dict , cot_content : dict):
+    efficiency_scores = []
+    quality_scores = []
+    timeliness_scores = []
+    total_kra_score = 0
+
+    for category, objectives in domains.items():
+        for obj_id, details in objectives.items():
+            quality = int(details.get('QUALITY', {}).get('Rate', 0))
+            efficiency = int(details.get('EFFICIENCY', {}).get('Rate', 0))
+            timeliness = int(details.get('TIMELINESS', {}).get('Rate', 0))
+
+            efficiency_scores.append(efficiency)
+            quality_scores.append(quality)
+            timeliness_scores.append(timeliness)
+            
+            
+
+    # Extract COTFORM Question Content
+    questions = cot_content.get('Questions', {})
+    question_selected = {}
+    for q_id, q_info in questions.items():
+        question_selected[q_id] = int(q_info['Selected']) if q_info['Selected'] != '0' else 3
+        
+
+    total_kra_score = (
+            ((efficiency_scores[0] + (question_selected['1'] / 7)) / 2) * 0.07 +
+            ((quality_scores[1] + timeliness_scores[1]) / 2) * 0.07 +
+            ((efficiency_scores[2] + (question_selected['3'] / 7)) / 2) * 0.07 +
+            ((efficiency_scores[3] + (question_selected['4'] / 7)) / 2) * 0.07 +
+            ((efficiency_scores[4] + (question_selected['5'] / 7)) / 2) * 0.07 +
+            ((efficiency_scores[5] + (question_selected['6'] / 7)) / 2) * 0.07 +
+            ((efficiency_scores[6] + (question_selected['7'] / 7)) / 2) * 0.07 +
+            ((quality_scores[7] + (question_selected['8'] / 7)) / 2) * 0.07 +
+            ((quality_scores[8] + timeliness_scores[8]) / 2) * 0.07 +
+            ((efficiency_scores[9] + (question_selected['9'] / 7)) / 2) * 0.07 +
+            ((quality_scores[10] + timeliness_scores[10]) / 2) * 0.07 +
+            ((quality_scores[11] + timeliness_scores[11]) / 2) * 0.07 +
+            ((quality_scores[12] + timeliness_scores[12]) / 2) * 0.07 +
+            ((efficiency_scores[13] + quality_scores[13]) / 2) * 0.07
+        )
+
+
+    plus_factor_score = sum(
+        int(details.get('QUALITY', {}).get('Rate', 0)) +
+        int(details.get('EFFICIENCY', {}).get('Rate', 0)) +
+        int(details.get('TIMELINESS', {}).get('Rate', 0))
+        for details in domains.get('PLUS FACTOR', {}).values()
+    )
+    plus_factor = (plus_factor_score / 3) * 0.02
+
+    total_score = total_kra_score + plus_factor
+
+    
+    # Total KRA Score:  1.085
+    # Plus Factor:  0.09333333333333334
+    # Total Score:  1.1783333333333335
+
+    return {
+        'total_kra_score': total_kra_score,
+        'plus_factor': plus_factor,
+        'total_score': total_score
+}

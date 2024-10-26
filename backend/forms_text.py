@@ -727,10 +727,85 @@ def form_for_plus_factor_proficient():
     }
 
 
-
+def form_cot_proficient():
+    return {
+            "1" : {
+                "Objective" : "Applied knowledge of content within and across curriculum teaching areas. *",
+                "Selected" : "0" 
+            },
+            "2" : {
+                "Objective" : "Used a range of teaching strategies that enhance learner achievement in literacy and numeracy skills. *",
+                "Selected" : "0" 
+            },
+            "3" : {
+                "Objective" : "Applied a range of teaching strategies to develop critical and creative thinking, as well as other higher-order thinking skills. *",
+                "Selected" : "0" 
+            },
+            "4" : {
+                "Objective" : "Displayed proficient use of Mother Tongue, Filipino and English to facilitate  teaching and learning. *",
+                "Selected" : "0" 
+            },
+            "5" : {
+                "Objective" : "Established safe and secure learning environment to enhance learning through the consistent implementation of policies, guidelines, and procedures. *",
+                "Selected" : "0" 
+            },
+            "6" : {
+                "Objective" : "Maintained learning environment that promotes fairness, respect and care to encourage learning. *",
+                "Selected" : "0" 
+            },
+            "7" : {
+                "Objective" : "Established a learner-centered culture by using teaching strategies that respond  to their linguistic, cultural, socio-economic and religious backgrounds. *",
+                "Selected" : "0" 
+            },
+            "8" : {
+                "Objective" : "Adapted and used culturally appropriate teaching strategies to address the needs of learners from indigenous groups. *",
+                "Selected" : "0" 
+            },
+            "9" : {
+                "Objective" : "Used strategies for providing timely, accurate and constructive feedback to  improve learner performance. *",
+                "Selected" : "0" 
+            },
+        }   
 
 
 # =================================== HIGHLY PROFICIENT =================================
+
+def form_cot_highly_proficient():
+    return {
+            "1" : {
+                "Objective" : "Modeled effective applications of content knowledge within and across curriculum teaching areas. *",
+                "Selected" : "0" 
+            },
+            "2" : {
+                "Objective" : "Developed and applied effective teaching strategies to promote critical and creative thinking, as well as other higher-order thinking skills. *",
+                "Selected" : "0"
+            },
+            "3" : {
+                "Objective" : "Modeled and supported colleagues in the proficient use of Mother Tongues, Filipino and English to improve teaching and learning, as well as to developed the learners' pride of their language, heritage and culture. *",
+                "Selected" : "0"
+            },
+            "4" : {
+                "Objective" : "Exhibited effective strategies that ensure safe and secure learning environments to enhance learning through the consistent implementation of policies, guidelines and procedures. *",
+                "Selected" : "0"
+            },
+            "5" : {
+                "Objective" : "Exhibited effective practices to foster learning environments that promote fairness, respect and care to encourage learning. *",
+                "Selected" : "0"
+            },
+            "6" : {
+                "Objective" : "Exhibited a learner-centered culture that promotes success by using effective teaching strategies that respond to their linguistic, cultural, socio-economic and religious backgrounds *",
+                "Selected" : "0"
+            },
+            "7" : {
+                "Objective" : "Developed and applied teaching strategies to address effectively the needs of learners from indigenous groups. *",
+                "Selected" : "0"
+            },
+            "8" : {
+                "Objective" : "Used effective strategies for providing timely, accurate and constructive feedback to encourage learners to reflect on and improve their own learning.  *",
+                "Selected" : "0"
+            }
+        },
+
 
 def form_for_ipcrf_part_1_highly_proficient():
     domains = {}
@@ -1297,5 +1372,6 @@ def form_for_plus_factor_highly_proficient():
         "Comment" : " "
         
     }
+
 
 

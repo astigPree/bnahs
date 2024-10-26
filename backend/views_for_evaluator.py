@@ -219,11 +219,18 @@ def evaluator_get_annual_ratings(request):
             for teacher in teachers:
                 labels.append(teacher.first_name)
                 ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()
-                if ipcrf_1:
+                cot_form = models.COTForm.objects.filter(evaluated_id=teacher.employee_id).order_by('-created_at').first()
+                if ipcrf_1 and cot_form:
                     if my_utils.is_proficient_faculty(teacher):
-                        ratings.append(my_utils.calculate_scores_for_proficient(ipcrf_1.content_for_teacher))
-            
-            
+                        ratings.append(my_utils.calculate_scores_for_proficient(ipcrf_1.content_for_teacher , cot_form.content))
+                    else:
+                        ratings.append(my_utils.calculate_scores_for_highly_proficient(ipcrf_1.content_for_teacher, cot_form.content))
+                else:
+                    ratings.append({
+                        'total_kra_score' : 0,
+                        'plus_factor' : 0,
+                        'total_score' : 0
+                    })
     
     except Exception as e:
         return JsonResponse({

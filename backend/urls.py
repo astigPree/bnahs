@@ -30,7 +30,7 @@ urlpatterns = [
     
     path('admin/school/submission/rate/', views.evaluation_submission_rate),
     path('admin/school/teachers/tenure/', views.get_tenure_of_all_teachers),
-    path('admin/school/teachers/recommendations/', views.all_teacher_recommendations), # NEW API
+    path('admin/school/teachers/recommendations/', views.all_teacher_recommendations), # NEED TO TEST 
     # TODO : CREATE GET FOR DISTRIBUTIONS RATINGS
     
     path('admin/school/reject/', views.reject_school),
@@ -62,8 +62,8 @@ urlpatterns = [
     path('school/faculties/evaluated/count/', views.get_number_of_school_faculty_evaluated),
     path('school/faculties/evaluated/pending/count/', views.get_number_of_school_faculty_not_evaluated),
     
-    path('school/teachers/get/tenure', views.school_get_all_teacher_tenure), # NEW API
-    path('school/teachers/get/recommendations', views.school_get_teacher_recommendations), # NEW API
+    path('school/teachers/get/tenure', views.school_get_all_teacher_tenure), # NEED TO TEST 
+    path('school/teachers/get/recommendations', views.school_get_teacher_recommendations), # NEED TO TEST 
     
     # ============== Evaluator Path ================
     path('login_evaluator/', views.login_evaluator), # WORKING
@@ -71,8 +71,8 @@ urlpatterns = [
     path('evaluator/update_education/', views.people_update_education),
     path('evaluator/profile/', views.evaluator_profile),
     
-    path('evaluator/school/get/teachers/tenure/', views.evaluator_get_all_teacher_tenure), # NEW API
-    path('evaluator/school/get/teachers/recommendations/', views.evaluator_get_teacher_recommendations), # NEW API
+    path('evaluator/school/get/teachers/tenure/', views.evaluator_get_all_teacher_tenure), # NEED TO TEST 
+    path('evaluator/school/get/teachers/recommendations/', views.evaluator_get_teacher_recommendations), # NEED TO TEST 
     
     
     path('evaluator/school/get/cot/', views.get_rating_sheet),
