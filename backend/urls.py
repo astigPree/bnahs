@@ -11,7 +11,9 @@ urlpatterns = [
     path('user/feeds/', views.get_feeds),
     path('user/notifications/', views.get_notifications),
     path('user/logout/', views.people_logout), # WORKING
-     
+    
+    path('user/teacher/get/rpms/attachments/', views.get_teacher_all_rpms_attachment),  # NEW API
+    path('user/teacher/get/rpms/attachment/', views.get_teacher_rpms_attachment), # NEW API
     
     path('register/school/', views.register_school), # WORKING
     
@@ -66,8 +68,8 @@ urlpatterns = [
     path('school/teachers/get/tenure', views.school_get_all_teacher_tenure), # NEED TO TEST 
     path('school/teachers/get/recommendations', views.school_get_teacher_recommendations), # NEED TO TEST 
     
-    path('school/teacher/get/annual/ratings/', views.school_get_annual_ratings), # NEW API
-    path('school/teacher/get/performance/', views.school_get_performance_true_year), # NEW API
+    path('school/teachers/get/annual/ratings/', views.school_get_annual_ratings), # NEW API
+    path('school/teachers/get/performance/', views.school_get_performance_true_year), # NEW API
     
     # ============== Evaluator Path ================
     path('login_evaluator/', views.login_evaluator), # WORKING
@@ -78,14 +80,16 @@ urlpatterns = [
     path('evaluator/school/get/teachers/tenure/', views.evaluator_get_all_teacher_tenure), # NEED TO TEST 
     path('evaluator/school/get/teachers/recommendations/', views.evaluator_get_teacher_recommendations), # NEED TO TEST 
     
-    path('evaluator/teacher/get/annual/ratings/', views.evaluator_get_annual_ratings), # NEW API
-    path('evaluator/teacher/get/performance/', views.evaluator_get_performance_true_year), # NEW API
+    path('evaluator/school/get/teachers/annual/ratings/', views.evaluator_get_annual_ratings), # NEW API
+    path('evaluator/school/get/teachers//performance/', views.evaluator_get_performance_true_year), # NEW API
     
     path('evaluator/school/get/cot/', views.get_rating_sheet),
     path('evaluator/school/update/cot/', views.update_rating_sheet),
     
     path('evaluator/school/get/ipcrf/part1/', views.get_iprcf_form_for_evaluator_part_1_of_teacher),
     path('evaluator/school/check/ipcrf/part1/', views.check_teacher_ipcrf_form_part_1_by_evaluator),
+    
+    path('evaluator/school/check/rpms/attachment/', views.evaluator_check_rpms_attachment), # NEW API
     
     # =============== Teacher Path ================
     path('login_teacher/', views.login_teacher), # WORKING

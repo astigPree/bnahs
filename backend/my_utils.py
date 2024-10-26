@@ -578,6 +578,12 @@ def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str):
     plus_factor.save()
 
 
+def update_rpms_attachment( rpms_attachment : models.RPMSAttachment, content : dict):
+    rpms_attachment.grade = content
+    rpms_attachment.is_checked = True
+    rpms_attachment.save()
+    
+    
 
 def calculate_scores_for_proficient(domains : dict , cot_content : dict):
     # Initialize variables

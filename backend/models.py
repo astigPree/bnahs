@@ -884,7 +884,7 @@ class RPMSAttachment(models.Model):
         ))
     
     title = models.CharField(max_length=255, blank=True, default='') # Name of classwork
-    file = models.FileField(upload_to='rpms_attachments')
+    file = models.FileField(upload_to='rpms_attachments' , blank=True, null=True)
     grade : dict[str, dict] = models.JSONField(default=dict, blank=True)
     """
         {
@@ -914,7 +914,11 @@ class RPMSAttachment(models.Model):
             'created_at' : self.created_at,
             'class_work_id' : self.class_work_id,
             'status' : self.status,
-            'attachment_type' : self.attachment_type,
+            'attachment_id' : self.attachment_id,
+            'streams_type' : self.streams_type,
+            'title' : self.title,
+            'grade' : self.grade,
+            'is_checked' : self.is_checked
         }
         """
         {
@@ -927,19 +931,25 @@ class RPMSAttachment(models.Model):
         }
         
         """
-        overall_score = 0
-        if self.grade:
-            for key, value in self.grade.items():
-                total = 0
-                data[key] = {}
-                for subkey, subvalue in value.items():
-                    if subkey == 'Score':
-                        data[key][subkey] = subvalue
-                        total += int(subvalue)
-                data[key]['Total'] = total
-                overall_score += total
-       
-        data['Overall Score'] = overall_score
+        try:
+            data['file'] = self.file.url if self.file else None
+            
+            overall_score = 0
+            if self.grade:
+                for key, value in self.grade.items():
+                    total = 0
+                    data[key] = {}
+                    for subkey, subvalue in value.items():
+                        if subkey == 'Score':
+                            data[key][subkey] = subvalue
+                            total += int(subvalue)
+                    data[key]['Total'] = total
+                    overall_score += total
+            data['Overall Score'] = overall_score
+        except Exception as e:
+            pass
+        
+        
         
         return data
 
@@ -962,7 +972,6 @@ class RPMSAttachment(models.Model):
         data['Average'] = total / number_of_scores
         return data
         
-
     
 
 class MainAdmin(models.Model):

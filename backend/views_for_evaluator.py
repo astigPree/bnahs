@@ -669,3 +669,60 @@ def check_teacher_ipcrf_form_part_1_by_evaluator(request):
 
 
 
+def evaluator_check_rpms_attachment(request):
+    try:
+        
+        if request.method == 'POST':
+            
+            user = models.People.objects.filter(employee_id=request.user.username , role='Evaluator').first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND TEACHER
+            """
+                {
+                    'rpms_id' : 'rpms_id',
+                    'content' : {...} !Content/Checked of RPMS form from teacher
+                }
+            """
+            
+            rpms_id = request.POST.get('rpms_id')
+            content : dict[str , dict] = json.loads(request.POST.get('content', None))
+            
+            if not rpms_id:
+                return JsonResponse({
+                   'message' : 'Please provide RPMS ID',
+                    }, status=400)
+            
+            if not content:
+                return JsonResponse({
+                    'message' : 'Content is required',
+                    }, status=400)
+            
+            rpms = models.RPMSAttachment.objects.filter(attachment_id=rpms_id).order_by('-created_at').first()
+            if not rpms:
+                return JsonResponse({
+                    'message' : 'Invalid RPMS ID',
+                    }, status=400)
+            
+            my_utils.update_rpms_attachment(rpms=rpms, content=content)
+            
+            
+            return JsonResponse({
+                'message' : 'Form updated successfully',
+            },status=200)
+            
+        
+        
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+

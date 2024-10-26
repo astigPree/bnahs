@@ -487,8 +487,80 @@ def register_school(request):
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
 
+
+@csrf_exempt
+def get_teacher_all_rpms_attachment(request):
+    try:
+        if request.method == 'POST':
+            user = request.user.is_authenticated
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            teacher_id = request.POST.get('teacher_id')
+            
+            rpms_attachments = models.RPMSAttachment.objects.filter(employee_id=teacher_id).order_by('-created_at')
+            if not rpms_attachments:
+                return JsonResponse({
+                    'message' : 'RPMS attachments not found',
+                }, status=400)
+            
+            return JsonResponse({
+                'rpms_attachments' : [rpms_attachment.get_information() for rpms_attachment in rpms_attachments],
+            }, status=200)
     
     
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+
+@csrf_exempt
+def get_teacher_rpms_attachment(request):
+    try:
+        
+        if request.method == 'POST':
+            user = request.user.is_authenticated
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            attachment_id = request.POST.get('rpms_attachment_id')
+            if not attachment_id:
+                return JsonResponse({
+                    'message' : 'RPMS attachment id is required',
+                }, status=400)
+            
+            rpms_attachment = models.RPMSAttachment.objects.filter(attachment_id=attachment_id).order_by('-created_at').first()
+            if not rpms_attachment:
+                return JsonResponse({
+                    'message' : 'RPMS attachment not found',
+                }, status=400)
+            
+            return JsonResponse({
+                'rpms_attachment' : rpms_attachment.grade
+            }, status=200)
+    
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+    
+
+
 
 
 
