@@ -370,11 +370,7 @@ def number_of_evaluation_conducted(request):
                 return JsonResponse({
                     'message' : 'User is not an admin',
                 }, status=400)
-            
-            teachers = models.People.objects.filter(role='Teacher', is_evaluated=False)
-            for teacher in teachers:
-                teacher.update_is_evaluted()
-                
+              
             teachers = models.People.objects.filter(role='Teacher', is_evaluated=True)
             
             return JsonResponse({
@@ -409,11 +405,7 @@ def number_of_pending_evaluation(request):
                     'message' : 'User is not an admin',
                 }, status=400)
                 
-            teachers = models.People.objects.filter(role='Teacher', is_evaluated=False)
-            for teacher in teachers:
-                teacher.update_is_evaluted()
-                
-            teachers = teachers.filter(is_evaluated=False)
+            teachers = models.People.objects.filter(role='Teacher', is_evaluated=False)  
 
             return JsonResponse({
                 'total_pending_evaluation' : teachers.count() if teachers else 0,
@@ -1134,10 +1126,7 @@ def get_number_of_ipcrf_forms(request):
         'message' : 'Invalid request',
         }, status=400)
         
-
-
-
-
+ 
 @csrf_exempt
 def get_annual_ratings(request):
     try:
@@ -1189,5 +1178,7 @@ def get_annual_ratings(request):
     return JsonResponse({
         'message' : 'Invalid request method',
     }, status=400)
+
+
 
 

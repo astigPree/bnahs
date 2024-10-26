@@ -539,6 +539,9 @@ def update_rating_sheet(request):
                 }, status=400)
             
             my_utils.update_cot_form(cot_form=cot_form, comment=comments, questions=questions)
+             
+            if search_evaluated:
+                search_evaluated.update_is_evaluted()
             
             return JsonResponse({
                 'message' : 'Rating sheet updated successfully',
@@ -650,7 +653,9 @@ def check_teacher_ipcrf_form_part_1_by_evaluator(request):
             my_utils.update_iprcf_form_part_1_by_teacher(
                 school=school, teacher=teacher, ipcrf_form=part_1, content=content    
             )
-            
+             
+            if teacher:
+                teacher.update_is_evaluted()
             
             return JsonResponse({
                 'message' : 'Form updated successfully',
@@ -666,7 +671,6 @@ def check_teacher_ipcrf_form_part_1_by_evaluator(request):
     return JsonResponse({
         'message' : 'Invalid request',
         }, status=400)
-
 
 
 def evaluator_check_rpms_attachment(request):
@@ -709,6 +713,9 @@ def evaluator_check_rpms_attachment(request):
             
             my_utils.update_rpms_attachment(rpms=rpms, content=content)
             
+            teacher = models.People.objects.filter(employee_id=rpms.employee_id, role='Teacher').first()
+            if teacher:
+                teacher.update_is_evaluted()
             
             return JsonResponse({
                 'message' : 'Form updated successfully',
