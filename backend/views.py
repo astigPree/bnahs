@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.db.models.functions import ExtractYear
 from django.db.models import Count
 
-from . import models, my_utils
+from . import models, my_utils , forms_text
 
 
 import secrets
@@ -567,7 +567,130 @@ def get_teacher_rpms_attachment(request):
         }, status=400)
     
 
+@csrf_exempt
+def get_form_for_ipcrf_part_1_proficient(request):
+    try:
+        if request.method == 'GET':
+            return JsonResponse({
+                'form' : forms_text.form_for_ipcrf_part_1_proficient()
+            },status=200)
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+@csrf_exempt
+def get_form_for_ipcrf_part_1_highly_proficient(request):
+    try:
+        if request.method == 'GET':
+            return JsonResponse({
+                'form' : forms_text.form_for_ipcrf_part_1_highly_proficient()
+            },status=200)
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
 
 
 
+@csrf_exempt
+def get_form_for_ipcrf_part_2(request):
+    try:
+        if request.method == 'GET':
+            return JsonResponse({
+                'form' : forms_text.form_for_ipcrf_part_2_proficient()
+            },status=200)
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+@csrf_exempt
+def get_form_for_ipcrf_part_3(request):
+    try:
+        if request.method == 'GET':
+            return JsonResponse({
+                'form' : forms_text.form_for_ipcrf_part_2_proficient()
+            },status=200)
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+@csrf_exempt
+def get_rmps_form_proficient(request):
+    try:
+        if request.method == 'GET':
+            return JsonResponse({
+                'kra1' : forms_text.form_for_kra1_proficient(),
+                'kra2' : forms_text.form_for_kra2_proficient(),
+                'kra3' : forms_text.form_for_kra3_proficient(),
+                'kra4' : forms_text.form_for_kra4_proficient(),
+                'plus_factor' : forms_text.form_for_plus_factor_proficient()
+            },status=200)
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+@csrf_exempt
+def get_rmps_form_highly_proficient(request):
+    try:
+        if request.method == 'GET':
+            return JsonResponse({
+                'kra1' : forms_text.form_for_kra1_highly_proficient(),
+                'kra2' : forms_text.form_for_kra2_highly_proficient(),
+                'kra3' : forms_text.form_for_kra3_highly_proficient(),
+                'kra4' : forms_text.form_for_kra4_highly_proficient(),
+                'plus_factor' : forms_text.form_for_plus_factor_highly_proficient()
+            },status=200)
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+@csrf_exempt
+def get_cot_forms(request):
+    try:
+        if request.method == 'GET':
+            return JsonResponse({
+                'proficient' : forms_text.form_cot_proficient(),
+                'highly_proficient' : forms_text.form_cot_highly_proficient()
+            },status=200)
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
 

@@ -17,6 +17,15 @@ urlpatterns = [
     
     path('register/school/', views.register_school), # WORKING
     
+    path('user/forms/get/cot/', views.get_cot_forms),
+    path('user/forms/get/ipcrf/part1/proficient/', views.get_form_for_ipcrf_part_1_proficient),
+    path('user/forms/get/ipcrf/part2/', views.get_form_for_ipcrf_part_2),
+    path('user/forms/get/ipcrf/part3/', views.get_form_for_ipcrf_part_3),
+    path('user/forms/get/ipcrf/part1/highlyproficient/', views.get_form_for_ipcrf_part_1_highly_proficient),
+    path('user/forms/get/rpms/proficient/', views.get_rmps_form_proficient),
+    path('user/forms/get/cot/', views.get_cot_forms),
+    path('user/forms/get/rpms/highlyproficient/', views.get_rmps_form_highly_proficient),
+    
     # ============ Admin Path ================
     path('login_admin/', views.login_admin), # WORKING
     path('admin/schools/add/', views.add_school), # WORKING
