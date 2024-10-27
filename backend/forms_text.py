@@ -27,7 +27,7 @@ def form_for_ipcrf_part_1_proficient():
                 "1" : "No acceptable evidence was shown", 
                 "3" : "Objective was met but instruction exceeded the allotted time", 
                 "5" : "Objective was met within the allotted time",
-                "Rate" : "1"
+                "Rate" : "0"
             }
         },
         "2" : {
@@ -788,7 +788,7 @@ def form_for_ipcrf_part_1_highly_proficient():
                 "1" : "No acceptable evidence was shown", 
                 "3" : "Objective was met but instruction exceeded the allotted time", 
                 "5" : "Objective was met within the allotted time",
-                "Rate" : "1"
+                "Rate" : "0"
             }
         },
         "2" : {
@@ -1094,12 +1094,7 @@ def form_for_kra1_highly_proficient():
                     "Main Title" : "Weight 7% | Objective 4 - Modeled and supported colleagues in the proficient use of Mother Tongue, Filipino and English to improve teaching and learning, as well as to develop the learners  pride of their language, heritage and culture. (PPST 1.6.3)",
                     "Title" : "MOVs",
                     "Content" : "Classroom Observation Tool (COT) rating sheet/s or inter-observer agreement form/s done through onsite/face-to-face/in-person classroom observation.\nIf onsite/ face-to-face/ in-person classes are not implemented,\nthrough observation of synchronous/asynchronous teaching in other modalities; or\nthrough observation of a demonstration teaching* via LAC session.\nColleagues proof of attendance",
-                },
-                "3" : {
-                    "Main Title" : "sdfd",
-                    "Title" : "sdf",
-                    "Content" : "sdf",
-                },
+                }, 
             }
         },
         "Grade" : {
