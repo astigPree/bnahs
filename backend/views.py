@@ -438,14 +438,15 @@ def register_school(request):
             
             verification =  models.VerificationLink.objects.filter(email=email_address).first()
             
-            
-            if not verification.is_expired():
-                return JsonResponse({'message': 'Please check your email or wait for 30 mins'})
-            else:
-                verification.delete()
-                school = models.School.objects.filter(email_address=email_address).first()
-                if school:
-                    school.delete()
+            if verification:
+                if not verification.is_expired():
+                    return JsonResponse({'message': 'Please check your email or wait for 30 mins'})
+                else :
+                    verification.delete()
+                    school = models.School.objects.filter(email_address=email_address).first()
+                    if school:
+                        school.delete()
+                
             
             # Check if the already school exist
             if models.School.objects.filter(email_address=email_address).exists():
