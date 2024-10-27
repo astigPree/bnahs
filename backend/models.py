@@ -699,22 +699,22 @@ class COTForm(models.Model):
     
     def generatePromtTemplate(self):
         strengths_prompt = """
-        Based on the following evaluation data, what are the strengths?
+        Based on the following evaluation data, what are the strengths? Make it atleast 2-3 sentences.
         Objectives and Ratings:
         """
 
         weaknesses_prompt = """
-        Based on the following evaluation data, what are the weaknesses?
+        Based on the following evaluation data, what are the weaknesses? Make it atleast 2-3 sentences.
         Objectives and Ratings:
         """
 
         opportunities_prompt = """
-        Based on the following evaluation data, what are the opportunities?
+        Based on the following evaluation data, what are the opportunities? Make it atleast 2-3 sentences.
         Objectives and Ratings:
         """
 
         threats_prompt = """
-        Based on the following evaluation data, what are the threats?
+        Based on the following evaluation data, what are the threats? Make it atleast 2-3 sentences.
         Objectives and Ratings:
 """
 
