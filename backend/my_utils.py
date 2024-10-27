@@ -5,6 +5,7 @@ from django.templatetags.static import static
 from django.db.models.functions import ExtractYear
 from django.utils import timezone
 from django.conf import settings
+from django.templatetags.static import static 
 
 from collections import defaultdict
 
@@ -16,8 +17,8 @@ from . import models, forms_text
 import openai
 
 openai.api_key = settings.OPEN_AI_KEY
-
-
+ 
+ 
 
 position = {
     'Proficient' : ('Teacher I', 'Teacher II', 'Teacher III'  ),
@@ -37,14 +38,16 @@ def generate_text(promt : str):
 
 
 
-def send_verification_email(user_email, verification_code , template , masbate_locker_email , subject):
+def send_verification_email(user_email, verification_code , template , masbate_locker_email , subject, request):
     subject = subject
     from_email = masbate_locker_email
     to_email = user_email
-
+ 
+    deped_logo_url = request.build_absolute_uri(static('logo.png'))
     # Render the HTML template
     html_content = render_to_string(template, {
-        'verification_code': verification_code 
+        'verification_code': verification_code ,
+        'deped_logo' : deped_logo_url
     })
     text_content = strip_tags(html_content)  # Create a plain text version
 

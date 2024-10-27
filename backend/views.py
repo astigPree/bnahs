@@ -477,7 +477,7 @@ def register_school(request):
             
             # verification_code , template , masbate_locker_email , subject
             Thread(target=my_utils.send_verification_email, args=(
-                email_address, verification , 'email-template.html', settings.EMAIL_HOST_USER, 'School Registration'
+                email_address, verification , 'email-template.html', settings.EMAIL_HOST_USER, 'School Registration' , request
             )).start()
             
 
