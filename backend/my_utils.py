@@ -44,8 +44,7 @@ def send_verification_email(user_email, verification_code , template , masbate_l
 
     # Render the HTML template
     html_content = render_to_string(template, {
-        'verification_code': verification_code,
-        'deped_logo' : static('logo.png')
+        'verification_code': verification_code 
     })
     text_content = strip_tags(html_content)  # Create a plain text version
 

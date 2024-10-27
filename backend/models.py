@@ -27,6 +27,10 @@ class VerificationLink(models.Model):
         return self.created_at < (timezone.now() - timezone.timedelta(minutes=expire_in_minutes))
 
 
+    def __str__(self) -> str:
+        return f"{self.email} - {self.verification_link}"
+
+
 def calculate_individual_averages_for_ipcrf(content):
     total_quality = 0
     total_efficiency = 0
