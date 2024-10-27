@@ -86,9 +86,9 @@ def teacher_evaluation(request ):
                     }, status=400)
             
             # Fetch filtered data
-            ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1')  # Apply your filters here
-            cot_forms = models.COTForm.objects.filter(employee_id=user.employee_id)  # Apply your filters here
-            rpms_attachments = models.RPMSAttachment.objects.filter(employee_id=user.employee_id)  # Apply your filters here
+            ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').order_by('-created_at')  # Apply your filters here
+            cot_forms = models.COTForm.objects.filter(employee_id=user.employee_id).order_by('-created_at')  # Apply your filters here
+            rpms_attachments = models.RPMSAttachment.objects.filter(employee_id=user.employee_id).order_by('-created_at')  # Apply your filters here
 
             # Combine data
             combined_data = list(ipcrf_forms) + list(cot_forms) + list(rpms_attachments)
@@ -197,7 +197,7 @@ def teacher_recommendations(request ):
                     }, status=400)
              
             # 2. rule based classifier for Promotion
-            ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1')
+            ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').order_by('-created_at')
             scores = [ form.getEvaluatorPart1Scores() for form in ipcrf_forms ]
             
             # Initialize counters
@@ -323,7 +323,7 @@ def teacher_performance(request ):
             # Check if the user is a teacher
 
             # Annotate the IPCRF forms with the year of submission
-            attachments = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').annotate(year=ExtractYear('created_at'))
+            attachments = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').order_by('-created_at').annotate(year=ExtractYear('created_at'))
             
             # Initialize the performances dictionary
             performances = {}
@@ -392,19 +392,19 @@ def teacher_swot(request ):
             
          
             # 4. generated text SWOT from COTForm 
-            # cot_form = models.COTForm.objects.filter(employee_id=user.employee_id).first()
+            cot_form = models.COTForm.objects.filter(employee_id=user.employee_id).order_by('-created_at').first()
             generated_swot = {
                 'Strengths': '',
                 'Weaknesses': '',
                 'Opportunities': '',
                 'Threats': ''
             }
-            # if cot_form:
-            #     swot = cot_form.generatePromtTemplate()
-            #     generated_swot["Strengths"] = my_utils.generate_text(swot["strengths"])
-            #     generated_swot["Weaknesses"] = my_utils.generate_text(swot["weaknesses"])
-            #     generated_swot["Opportunities"] = my_utils.generate_text(swot["opportunities"])
-            #     generated_swot["Threats"] = my_utils.generate_text(swot["threats"])
+            if cot_form:
+                swot = cot_form.generatePromtTemplate()
+                generated_swot["Strengths"] = my_utils.generate_text(swot["strengths"])
+                generated_swot["Weaknesses"] = my_utils.generate_text(swot["weaknesses"])
+                generated_swot["Opportunities"] = my_utils.generate_text(swot["opportunities"])
+                generated_swot["Threats"] = my_utils.generate_text(swot["threats"])
             
             
             
@@ -474,7 +474,7 @@ def teacher_get_ipcrf_part_1(request):
                     'message' : 'User not found',
                 }, status=400)
             
-            ipcrf = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').first()
+            ipcrf = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').order_by('-created_at').first()
             if not ipcrf:
                 return JsonResponse({
                     'message' : 'IPCRF Form not found',
@@ -522,7 +522,7 @@ def teacher_update_ipcrf_part_1(request):
             connection_to_other = request.POST.get('ipcrf_id')
             content : dict[str , dict] = json.loads(request.POST.get('content', None))
             
-            ipcrf = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type='PART 1').first()
+            ipcrf = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type='PART 1').order_by('-created_at').first()
             if not ipcrf:
                 return JsonResponse({
                     'message' : 'IPCRF Form not found',
@@ -568,7 +568,7 @@ def teacher_get_ipcrf_part_2(request):
                     'message' : 'User not found',
                 }, status=400)
             
-            ipcrf = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 2').first()
+            ipcrf = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 2').order_by('-created_at').first()
             if not ipcrf:
                 return JsonResponse({
                     'message' : 'IPCRF Form not found',
@@ -616,7 +616,7 @@ def teacher_update_ipcrf_part_2(request):
             connection_to_other = request.POST.get('ipcrf_id')
             content : dict[str , dict] = json.loads(request.POST.get('content', None))
             
-            ipcrf = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type='PART 2').first()
+            ipcrf = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type='PART 2').order_by('-created_at').first()
             if not ipcrf:
                 return JsonResponse({
                     'message' : 'IPCRF Form not found',
@@ -662,7 +662,7 @@ def teacher_get_ipcrf_part_3(request):
                     'message' : 'User not found',
                 }, status=400)
             
-            ipcrf = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 3').first()
+            ipcrf = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 3').order_by('-created_at').first()
             if not ipcrf:
                 return JsonResponse({
                     'message' : 'IPCRF Form not found',
@@ -710,7 +710,7 @@ def teacher_update_ipcrf_part_3(request):
             connection_to_other = request.POST.get('ipcrf_id')
             content : dict[str , dict] = json.loads(request.POST.get('content', None))
             
-            ipcrf = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type='PART 3').first()
+            ipcrf = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type='PART 3').order_by('-created_at').first()
             if not ipcrf:
                 return JsonResponse({
                     'message' : 'IPCRF Form not found',
@@ -761,7 +761,7 @@ def teacher_get_rpms_folders(request):
             rpms_folders = models.RPMSFolder.objects.filter(
                 employee_id=user.employee_id, 
                 is_for_teacher_proficient=my_utils.is_proficient_faculty(user)
-                )
+                ).order_by('-created_at')
             
             return JsonResponse({
                 'rpms_folders' : [rpms_folder.get_rpms_folder_information() for rpms_folder in rpms_folders],
@@ -800,13 +800,13 @@ def teacher_get_rpms_folder(request):
                     'message' : 'rpms_folder_id not found',
                 }, status=400)
             
-            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id).first()
+            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id).order_by('-created_at').first()
             if not rpms_folder:
                 return JsonResponse({
                     'message' : 'RPMS Folder not found',
                 }, status=400)
                 
-            classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpms_folder_id)
+            classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpms_folder_id).order_by('-created_at')
             
             return JsonResponse({
                 'rpms_folder' : rpms_folder,
@@ -895,7 +895,7 @@ def teacher_turn_in_rpms_work(request):
                     'message' : 'rpms_attachment not found',
                 },status=400)
             
-            classwork = models.RPMSClassWork.objects.filter(class_work_id=class_work_id).first()
+            classwork = models.RPMSClassWork.objects.filter(class_work_id=class_work_id).order_by('-created_at').first()
             if not classwork:
                 return JsonResponse({
                     'message' : 'Class Work not found',
@@ -952,7 +952,7 @@ def teacher_submit_rpms_work(request):
                     'message' : 'class_work_id not found',
                 },status=400)
             
-            attachments = models.RPMSAttachment.objects.filter(class_work_id=class_work_id, employee_id=user.employee_id)
+            attachments = models.RPMSAttachment.objects.filter(class_work_id=class_work_id, employee_id=user.employee_id).order_by('-created_at')
             
             return JsonResponse({
                     'classwork' : [attachment.get_information() for attachment in attachments],

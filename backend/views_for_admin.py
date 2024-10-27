@@ -873,7 +873,7 @@ def get_rpms_folder_by_id(request):
                     'message' : 'RPMS folder id is required',
                 }, status=400)
 
-            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id).first()
+            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id).order_by('-created_at').first()
             if not rpms_folder:
                 return JsonResponse({
                     'message' : 'RPMS folder not found',
@@ -915,7 +915,7 @@ def update_rpms_folder_background(request):
                     'message' : 'RPMS folder id is required',
                 }, status=400)
 
-            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id).first()
+            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id).order_by('-created_at').first()
             if not rpms_folder:
                 return JsonResponse({
                     'message' : 'RPMS folder not found',
@@ -965,13 +965,13 @@ def get_rpms_classworks(request):
                     'message' : 'RPMS folder id is required',
                 }, status=400)
 
-            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id).first()
+            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id).order_by('-created_at').first()
             if not rpms_folder:
                 return JsonResponse({
                     'message' : 'RPMS folder not found',
                 }, status=400)
                 
-            rpms_classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpms_folder_id)
+            rpms_classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpms_folder_id).order_by('-created_at')
             
             
             return JsonResponse({
@@ -1013,7 +1013,7 @@ def get_rpms_classwork_by_id(request):
                     'message' : 'RPMS classwork id is required',
                 }, status=400)
 
-            rpms_classwork = models.RPMSClassWork.objects.filter(rpms_classwork_id=rpms_classwork_id).first()
+            rpms_classwork = models.RPMSClassWork.objects.filter(rpms_classwork_id=rpms_classwork_id).order_by('-created_at').first()
             if not rpms_classwork:
                 return JsonResponse({
                     'message' : 'RPMS classwork not found',

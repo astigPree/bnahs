@@ -4,7 +4,7 @@ from django.utils.html import strip_tags
 from django.templatetags.static import static
 from django.db.models.functions import ExtractYear
 from django.utils import timezone
-
+from django.conf import settings
 
 from collections import defaultdict
 
@@ -13,6 +13,10 @@ from datetime import datetime
 from uuid import uuid4
 from . import models, forms_text
 
+import openai
+
+openai.api_key = settings.OPENAI_API_KEY
+
 
 
 position = {
@@ -20,6 +24,16 @@ position = {
     'Highly Proficient' : ('Master Teacher I', 'Master Teacher II', 'Master Teacher III', 'Master Teacher IV'),
 }
 
+
+
+def generate_text(promt : str):
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": promt}
+        ]
+    )
+    return response.choices[0].message.content.strip()
 
 
 
@@ -368,7 +382,7 @@ def update_iprcf_form_part_1_by_teacher(
     content : dict[str, dict]
     ):
     
-    part_3 = models.IPCRFForm.objects.filter(connection_to_other=ipcrf_form.connection_to_other, form_type='PART 3').first()
+    part_3 = models.IPCRFForm.objects.filter(connection_to_other=ipcrf_form.connection_to_other, form_type='PART 3').order_by('-created_at').first()
     # TODO : UPDATE THE CONTENT OF PART 3
     Str = []
     Dev = []
@@ -398,7 +412,7 @@ def update_ipcrf_form_part_2_by_teacher(
     content : dict[str, dict]
     ):
     
-    part_3 = models.IPCRFForm.objects.filter(connection_to_other=ipcrf_form.connection_to_other, form_type='PART 3').first()
+    part_3 = models.IPCRFForm.objects.filter(connection_to_other=ipcrf_form.connection_to_other, form_type='PART 3').order_by('-created_at').first()
     
     Yes = []
     No = []
@@ -431,11 +445,11 @@ def update_ipcrf_form_part_3_by_teacher(
     ipcrf_form.save()
     
     
-    part_1 = models.IPCRFForm.objects.filter(connection_to_other=ipcrf_form.connection_to_other, form_type='PART 1').first()
+    part_1 = models.IPCRFForm.objects.filter(connection_to_other=ipcrf_form.connection_to_other, form_type='PART 1').order_by('-created_at').first()
     part_1.is_checked = True
     part_1.save()
     
-    part_2 = models.IPCRFForm.objects.filter(connection_to_other=ipcrf_form.connection_to_other, form_type='PART 2').first()
+    part_2 = models.IPCRFForm.objects.filter(connection_to_other=ipcrf_form.connection_to_other, form_type='PART 2').order_by('-created_at').first()
     part_2.is_checked = True
     part_2.save()
 

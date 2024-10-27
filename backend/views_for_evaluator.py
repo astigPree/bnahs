@@ -91,8 +91,8 @@ def evaluator_forms(request):
                     }, status=400)
             
             
-            ipcrf_1_proficient = models.IPCRFForm.objects.filter(school_id=user.school_id, is_for_teacher_proficient=True)
-            ipcrf_1_highly_proficient = models.IPCRFForm.objects.filter(school_id=user.school_id, is_for_teacher_proficient=False)
+            ipcrf_1_proficient = models.IPCRFForm.objects.filter(school_id=user.school_id, is_for_teacher_proficient=True).order_by('-created_at')
+            ipcrf_1_highly_proficient = models.IPCRFForm.objects.filter(school_id=user.school_id, is_for_teacher_proficient=False).order_by('-created_at')
             
             number_of_conducted_ipcrf_1_proficient = ipcrf_1_proficient.count()
             number_of_conducted_ipcrf_1_highly_proficient = ipcrf_1_highly_proficient.count()
@@ -103,8 +103,8 @@ def evaluator_forms(request):
             response_rate_of_ipcrf_1_proficient = number_of_evaluated_ipcrf_1_proficient / number_of_conducted_ipcrf_1_proficient
             response_rate_of_ipcrf_1_highly_proficient = number_of_evaluated_ipcrf_1_highly_proficient / number_of_conducted_ipcrf_1_highly_proficient
             
-            cot_proficient = models.COTForm.objects.filter(school_id=user.school_id, is_for_teacher_proficient=True)
-            cot_highly_proficient = models.COTForm.objects.filter(school_id=user.school_id, is_for_teacher_proficient=False)
+            cot_proficient = models.COTForm.objects.filter(school_id=user.school_id, is_for_teacher_proficient=True).order_by('-created_at')
+            cot_highly_proficient = models.COTForm.objects.filter(school_id=user.school_id, is_for_teacher_proficient=False).order_by('-created_at')
             
             number_of_conducted_cot_proficient = cot_proficient.count()
             number_of_conducted_cot_highly_proficient = cot_highly_proficient.count()
@@ -115,8 +115,8 @@ def evaluator_forms(request):
             response_rate_of_cot_proficient = number_of_evaluated_cot_proficient / number_of_conducted_cot_proficient
             response_rate_of_cot_highly_proficient = number_of_evaluated_cot_highly_proficient / number_of_conducted_cot_highly_proficient
             
-            rpms_proficient = models.RPMSAttachment.objects.filter(school_id=user.school_id, is_for_teacher_proficient=True)
-            rpms_highly_proficient = models.RPMSAttachment.objects.filter(school_id=user.school_id, is_for_teacher_proficient=False)
+            rpms_proficient = models.RPMSAttachment.objects.filter(school_id=user.school_id, is_for_teacher_proficient=True).order_by('-created_at')
+            rpms_highly_proficient = models.RPMSAttachment.objects.filter(school_id=user.school_id, is_for_teacher_proficient=False).order_by('-created_at')
             
             number_of_conducted_rpms_proficient = rpms_proficient.count()
             number_of_conducted_rpms_highly_proficient = rpms_highly_proficient.count()
@@ -449,7 +449,7 @@ def get_rating_sheet(request):
                     'message' : 'Teacher not found',
                     }, status=400)
 
-            cots = models.COTForm.objects.filter(evaluated_id=evaluator.employee_id , employee_id=teacher_id).first()
+            cots = models.COTForm.objects.filter(evaluated_id=evaluator.employee_id , employee_id=teacher_id).order_by('-created_at').first()
             
             return JsonResponse({
                 'rating_sheet' : cots.get_information(),
@@ -531,7 +531,7 @@ def update_rating_sheet(request):
             cot_form = models.COTForm.objects.filter(
                 employee_id=evaluator_id,
                 cot_form_id=cot_id
-            ).first()
+            ).order_by('-created_at').first()
             
             if not cot_form:
                 return JsonResponse({
@@ -577,7 +577,7 @@ def get_iprcf_form_for_evaluator_part_1_of_teacher(request):
                    'message' : 'Teacher ID is required',
                     }, status=400)
             
-            part_1 = models.IPCRFForm.objects.filter( employee_id=teacher_id , form_type="PART 1").first()
+            part_1 = models.IPCRFForm.objects.filter( employee_id=teacher_id , form_type="PART 1").order_by('-created_at').first()
             
             if not part_1:
                 return JsonResponse({
@@ -631,7 +631,7 @@ def check_teacher_ipcrf_form_part_1_by_evaluator(request):
                     'message' : 'Content is required',
                     }, status=400)
             
-            part_1 = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type="PART 1").first()
+            part_1 = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type="PART 1").order_by('-created_at').first()
             
             if not part_1:
                 return JsonResponse({
