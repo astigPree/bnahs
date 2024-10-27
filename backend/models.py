@@ -2,14 +2,9 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 
-import uuid
+import uuid, string ,random
 # Create your models here.
 
-def generate_link_key():
-    link_key = str(uuid.uuid4())
-    while VerificationLink.objects.filter(verification_link=link_key).exists():
-        link_key = str(uuid.uuid4())
-    return link_key
 
 class VerificationLink(models.Model):
     email = models.CharField(max_length=255, blank=True, default='')
@@ -18,9 +13,8 @@ class VerificationLink(models.Model):
     
     @classmethod
     def generate_link(cls, email):
-        link_key = generate_link_key()
-        cls.objects.create(email=email, verification_link=link_key)
-        
+        link_key = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(20))
+        cls.objects.create(email=email, verification_link=link_key) 
         return f"{settings.MY_HOST}register/school/verifications/{link_key}/"
     
     def is_expired(self, expire_in_minutes=30):
