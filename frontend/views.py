@@ -22,6 +22,7 @@ def verify_school(request, token):
         if not verification:
             return JsonResponse({
                 'message' : 'Invalid token',
+                'token' : token
                 }, status=400)
         
         if verification.is_expired():
