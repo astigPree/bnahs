@@ -196,4 +196,4 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'vincelance62@gmail.com' # Email address
 EMAIL_HOST_PASSWORD = 'azfjtketimfequnm' # Generated email password appp 'azfj tket imfe qunm'
 
-OPEN_AI_KEY = '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'
+OPEN_AI_KEY = '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'
