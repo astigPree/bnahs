@@ -477,7 +477,7 @@ def register_school(request):
             
             # verification_code , template , masbate_locker_email , subject
             Thread(target=my_utils.send_verification_email, args=(
-                email_address, verification , 'email-template.html', settings.EMAIL_HOST_USER, 'Bnahs Change Password' , request
+                email_address, verification , 'email-template.html', settings.EMAIL_HOST_USER, 'School Registration' , request
             )).start()
             
 
@@ -749,7 +749,7 @@ def forgot_password(request):
 
             # Send password reset link to user's email
             Thread(target=my_utils.send_password_reset_email, args=(
-                user.email_address, verification_link , 'forgot_password.html', settings.EMAIL_HOST_USER, 'School Registration' , request
+                user.email_address, verification_link , 'forgot_password.html', settings.EMAIL_HOST_USER, 'Bnahs Change Password' , request
             )).start()
             
 
