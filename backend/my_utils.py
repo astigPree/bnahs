@@ -71,6 +71,22 @@ def send_account_info_email(user_email, username, password, template, from_email
     email.send()
 
 
+
+def send_password_reset_email(user_email, verifiy_change_password_link, template, from_email, subject, request ):
+    
+    deped_logo_url = request.build_absolute_uri(static('logo.png'))
+    html_content = render_to_string(template, {
+        'verifiy_change_password_link': verifiy_change_password_link,
+        'deped_logo' : deped_logo_url
+    })
+    text_content = strip_tags(html_content)  # Create a plain text version
+
+    # Create the email
+    email = EmailMultiAlternatives(subject, text_content, from_email, [user_email])
+    email.attach_alternative(html_content, "text/html")
+    email.send()
+
+
 def parse_date_string(date_string):
     try:
         naive_datetime = datetime.strptime(date_string, "%B %d, %Y")
@@ -798,5 +814,6 @@ def get_employee_performance_by_year(employee_id, employee_position):
     # }
     
     return 
+
 
 

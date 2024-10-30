@@ -477,7 +477,7 @@ def register_school(request):
             
             # verification_code , template , masbate_locker_email , subject
             Thread(target=my_utils.send_verification_email, args=(
-                email_address, verification , 'email-template.html', settings.EMAIL_HOST_USER, 'School Registration' , request
+                email_address, verification , 'email-template.html', settings.EMAIL_HOST_USER, 'Bnahs Change Password' , request
             )).start()
             
 
@@ -685,6 +685,79 @@ def get_cot_forms(request):
                 'proficient' : forms_text.form_cot_proficient(),
                 'highly_proficient' : forms_text.form_cot_highly_proficient()
             },status=200)
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+@csrf_exempt
+def forgot_password(request):
+    try:
+        if request.method == 'POST':
+            email = request.POST.get('email')
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+            
+            if not email:
+                return JsonResponse({
+                   'message' : 'Email is required',
+                   'email' : email
+                }, status=400)
+            
+            if not new_password:
+                return JsonResponse({
+                   'message' : 'New password is required',
+                   'new_password' : new_password
+                }, status=400)
+                
+            if not confirm_password:
+                return JsonResponse({
+                   'message' : 'Confirm password is required',
+                   'confirm_password' : confirm_password
+                }, status=400)
+            
+            if new_password != confirm_password:
+                return JsonResponse({
+                   'message' : 'Passwords do not match',
+                   'new_password' : new_password,
+                   'confirm_password' : confirm_password
+                }, status=400)
+                
+            user_type = None
+            user = models.School.objects.filter(email=email).first()
+            
+            if user is None:
+                user = models.People.objects.filter(email=email).first()
+                if user is None:
+                    return JsonResponse({
+                        'message' : 'User not found',
+                        'email' : email
+                    }, status=400)
+                else:
+                    user_type = 'people'
+            else :
+                user_type ='school'
+                
+            verification_link = models.VerificationLink.generate_change_key_link(email, {
+                'password' : new_password, 'confirm_password' : confirm_password , 'user_type' : user_type
+            })
+
+            # Send password reset link to user's email
+            Thread(target=my_utils.send_password_reset_email, args=(
+                user.email_address, verification_link , 'forgot_password.html', settings.EMAIL_HOST_USER, 'School Registration' , request
+            )).start()
+            
+
+            return JsonResponse({
+                'message' : 'Password reset link sent successfully',
+            }, status=200)
+
+
     except Exception as e:
         return JsonResponse({
             'message' : f'Something went wrong : {e}',

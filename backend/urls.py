@@ -26,6 +26,8 @@ urlpatterns = [
     path('user/forms/get/cot/', views.get_cot_forms),
     path('user/forms/get/rpms/highlyproficient/', views.get_rmps_form_highly_proficient),
     
+    path('user/forgot-password/', views.forgot_password),  # NEW API
+    
     # ============ Admin Path ================
     path('login_admin/', views.login_admin), # WORKING
     path('admin/schools/add/', views.add_school), # WORKING

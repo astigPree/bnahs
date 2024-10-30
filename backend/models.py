@@ -10,12 +10,26 @@ class VerificationLink(models.Model):
     email = models.CharField(max_length=255, blank=True, default='')
     verification_link = models.CharField(max_length=255, blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
+    data = models.JSONField(default=dict, blank=True)
+    """
+    {
+        'password' : 'password',
+        'confirm_password' : 'password'
+    }
+    """
     
     @classmethod
     def generate_link(cls, email):
         link_key = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(20))
         cls.objects.create(email=email, verification_link=link_key) 
         return f"{settings.MY_HOST}register/school/verifications/{link_key}/"
+    
+    
+    @classmethod
+    def generate_change_key_link(cls, email, data : dict):
+        link_key = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(20))
+        cls.objects.create(email=email, verification_link=link_key, data=data)
+        return f"{settings.MY_HOST}/change-password-verifications/{link_key}/"
     
     def is_expired(self, expire_in_minutes=30):
         return self.created_at < (timezone.now() - timezone.timedelta(minutes=expire_in_minutes))
