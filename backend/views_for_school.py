@@ -102,6 +102,7 @@ def login_school(request):
         if request.method == 'POST':
             email = request.POST.get('employee_id')
             password = request.POST.get('password')
+            remember = request.POST.get('remember_me', False)
             
             if not email or not password:
                 return JsonResponse({
@@ -134,6 +135,11 @@ def login_school(request):
                     }, status=400)
             
             login(request, user_authenticated)
+            if remember_me:
+                request.session.set_expiry(1209600) # remember for 14 days
+            else:
+                request.session.set_expiry(0)
+                
             return JsonResponse({
                 'message' : 'Login successful'
                 }, status=200)

@@ -31,6 +31,7 @@ def login_admin(request):
         if request.method == 'POST':
             employee_id = request.POST.get('employee_id')
             password = request.POST.get('password')
+            remember_me = request.POST.get('remember_me' , False)
             
             if not employee_id or not password:
                 return JsonResponse({
@@ -50,6 +51,11 @@ def login_admin(request):
                     }, status=400)
             
             login(request, user_authenticated)
+            if remember_me:
+                request.session.set_expiry(1209600) # remember for 14 days
+            else:
+                request.session.set_expiry(0)
+                
             return JsonResponse({
                 'message' : 'Login successful',
                 }, status=200)
