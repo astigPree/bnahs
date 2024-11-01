@@ -1015,6 +1015,7 @@ class School(models.Model):
     
     # number of forms answered / evaluation submision rate
     
+    is_declined = models.BooleanField(default=False) # is the school declined
     is_verified = models.BooleanField(default=False) # Is the school verified or click the link
     is_accepted = models.BooleanField(default=False) # Is the school accepted or added by admin
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
