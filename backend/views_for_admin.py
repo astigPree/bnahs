@@ -610,7 +610,7 @@ def reject_school(request):
                     'message' : 'School id is required',
                 }, status=400)
             
-            rejected_school = models.School.objects.filter(id=school_id).first()
+            rejected_school = models.School.objects.filter(school_id=school_id).first()
             if not rejected_school:
                 return JsonResponse({
                     'message' : 'School not found',
