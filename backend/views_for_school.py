@@ -102,7 +102,7 @@ def login_school(request):
         if request.method == 'POST':
             email = request.POST.get('employee_id')
             password = request.POST.get('password')
-            remember = request.POST.get('remember_me', False)
+            remember_me = request.POST.get('remember_me', False)
             
             if not email or not password:
                 return JsonResponse({
