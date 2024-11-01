@@ -617,6 +617,7 @@ def reject_school(request):
                 }, status=400)
                 
             rejected_school.is_accepted = False
+            rejected_school.save()
             schools = models.School.objects.filter(is_accepted=True).order_by('-created_at')
 
             return JsonResponse({
