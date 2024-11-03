@@ -115,6 +115,7 @@ class Post(models.Model):
             'number_of_likes' : 0,
             'liked' : False,
             'commented' : False,
+            'created_at' : self.created_at
         }
         
         if self.liked:
@@ -142,6 +143,7 @@ class PostAttachment(models.Model):
     def get_attachment(self):
         return {
             'attachment' : self.attachment.url if self.attachment else '',
+            'created_at' : self.created_at,
         }
     
 
@@ -171,7 +173,8 @@ class Comment(models.Model):
             'post_id' : self.post_id,
             'comment_owner' : self.comment_owner,
             'replied_to' : self.replied_to,
-            'attachment' : ''
+            'attachment' : '',
+            'created_at' : self.created_at,
         }
         
         if self.attachment or self.attachment != "":
