@@ -294,9 +294,9 @@ def get_all_school_faculty(request):
             
             people = models.People.objects.filter(school_id=user.school_id).order_by('-created_at')
             people_informations = [person.get_information() for person in people]
-            
+            people_informations.append(user.get_school_information())
             return JsonResponse({
-                'people' : people_informations.append(user.get_school_information())
+                'people' : people_informations
             },status=200)
     
     except Exception as e:
