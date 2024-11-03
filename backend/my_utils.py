@@ -24,7 +24,7 @@ position = {
     'Highly Proficient' : ('Master Teacher I', 'Master Teacher II', 'Master Teacher III', 'Master Teacher IV'),
 }
 
-
+client = Client()
 
 def generate_text(promt : str):
     # response = openai.ChatCompletion.create(
@@ -35,8 +35,7 @@ def generate_text(promt : str):
     # )
     # return response.choices[0].message.content.strip()
     
-    try:
-        client = Client()
+    try: 
         response = client.chat.completions.create(
             model="gpt-4-turbo",
             messages=[{"role": "user", "content": promt}],
@@ -48,12 +47,12 @@ def generate_text(promt : str):
 
 
 def send_verification_email(user_email, verification_code , template , masbate_locker_email , subject, request):
-    subject = subject
+    subject = subject 
     from_email = masbate_locker_email
     to_email = user_email
  
     deped_logo_url = request.build_absolute_uri(static('logo.png'))
-    # Render the HTML template
+    # Render the HTML template 
     html_content = render_to_string(template, {
         'verification_code': verification_code ,
         'deped_logo' : deped_logo_url
