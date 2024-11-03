@@ -104,7 +104,7 @@ class Post(models.Model):
     
     
     def __str__(self):
-        return f"{self.post_owner} - {self.title}"
+        return f"{self.post_owner} - {self.post_id}"
     
     
     def get_post(self, action_id = None):
