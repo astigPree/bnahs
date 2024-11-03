@@ -292,7 +292,7 @@ def get_all_school_faculty(request):
                     'message' : 'User not found',
                     }, status=400)
             
-            people = models.People.objects.filter(school_id=user.school_id).all().order_by('-created_at')
+            people = models.People.objects.filter(school_id=user.school_id).order_by('-created_at')
             people_informations = [person.get_information() for person in people]
             
             return JsonResponse({

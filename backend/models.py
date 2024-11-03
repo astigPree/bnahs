@@ -442,56 +442,56 @@ class IPCRFForm(models.Model):
         }
         
         # Find the evaluator
-        if self.evaluator_id or self.evaluator_id != '':
-            evaluator = People.objects.filter(school_id=self.school_id, employee_id=self.evaluator_id).first()
-            if evaluator:
-                data['evaluator'] = evaluator.get_information()
+        # if self.evaluator_id or self.evaluator_id != '':
+        #     evaluator = People.objects.filter(school_id=self.school_id, employee_id=self.evaluator_id).first()
+        #     if evaluator:
+        #         data['evaluator'] = evaluator.get_information()
         
-        if self.form_type == 'PART 1':
-            """
-            {
-                "1" : {
-                    "QUALITY" : "0",
-                    "EFFICIENCY" : "0",
-                    "TIMELINES" : "0",
-                    "Total" : "0"
-                },
-                "2" : {
-                    "QUALITY" : "0",
-                    "EFFICIENCY" : "0",
-                    "TIMELINES" : "0",
-                    "Total" : "0"
-                },
-            }
-            """
-            try : 
-                for key in self.content_for_teacher:
-                    data[key] = {}
-                    total = 0
-                    if 'QUALITY' in self.content_for_teacher[key]:
-                        quality_rate = self.content_for_teacher[key]['QUALITY']['Rate']
-                        data[key]['QUALITY'] = quality_rate
-                        total += int(quality_rate)
-                    if 'EFFICIENCY' in self.content_for_teacher[key]:
-                        efficiency_rate = self.content_for_teacher[key]['EFFICIENCY']['Rate']
-                        data[key]['EFFICIENCY'] = self.content_for_teacher[key]['EFFICIENCY']['Rate']
-                        total += int(efficiency_rate)
-                    if 'TIMELINES' in self.content_for_teacher[key]:
-                        timelines_rate = self.content_for_teacher[key]['TIMELINES']['Rate']
-                        data[key]['TIMELINES'] = self.content_for_teacher[key]['TIMELINES']['Rate']
-                        total += int(timelines_rate)
-                    data[key]['Total'] = total
-            except Exception as e :
-                data['Error'] = str(e)
+        # if self.form_type == 'PART 1':
+        #     """
+        #     {
+        #         "1" : {
+        #             "QUALITY" : "0",
+        #             "EFFICIENCY" : "0",
+        #             "TIMELINES" : "0",
+        #             "Total" : "0"
+        #         },
+        #         "2" : {
+        #             "QUALITY" : "0",
+        #             "EFFICIENCY" : "0",
+        #             "TIMELINES" : "0",
+        #             "Total" : "0"
+        #         },
+        #     }
+        #     """
+        #     try : 
+        #         for key in self.content_for_teacher:
+        #             data[key] = {}
+        #             total = 0
+        #             if 'QUALITY' in self.content_for_teacher[key]:
+        #                 quality_rate = self.content_for_teacher[key]['QUALITY']['Rate']
+        #                 data[key]['QUALITY'] = quality_rate
+        #                 total += int(quality_rate)
+        #             if 'EFFICIENCY' in self.content_for_teacher[key]:
+        #                 efficiency_rate = self.content_for_teacher[key]['EFFICIENCY']['Rate']
+        #                 data[key]['EFFICIENCY'] = self.content_for_teacher[key]['EFFICIENCY']['Rate']
+        #                 total += int(efficiency_rate)
+        #             if 'TIMELINES' in self.content_for_teacher[key]:
+        #                 timelines_rate = self.content_for_teacher[key]['TIMELINES']['Rate']
+        #                 data[key]['TIMELINES'] = self.content_for_teacher[key]['TIMELINES']['Rate']
+        #                 total += int(timelines_rate)
+        #             data[key]['Total'] = total
+        #     except Exception as e :
+        #         data['Error'] = str(e)
         
-        if self.form_type == 'PART 2':
-            pass
-            # TODO : Add content for part 2
+        # if self.form_type == 'PART 2':
+        #     pass
+        #     # TODO : Add content for part 2
 
         
-        if self.form_type == 'PART 3':
-            pass
-            # TODO : Add content for part 3
+        # if self.form_type == 'PART 3':
+        #     pass
+        #     # TODO : Add content for part 3
         
         return data
     
@@ -1018,7 +1018,7 @@ class School(models.Model):
     is_declined = models.BooleanField(default=False) # is the school declined
     is_verified = models.BooleanField(default=False) # Is the school verified or click the link
     is_accepted = models.BooleanField(default=False) # Is the school accepted or added by admin
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
 
@@ -1039,7 +1039,8 @@ class School(models.Model):
             'is_accepted' : self.is_accepted,
             'is_verified' : self.is_verified,
             'is_declined' : self.is_declined,
-            'role' : 'School Admin'
+            'role' : 'School Admin',
+            'created_at' : self.created_at
         }
         
         if self.school_logo:
@@ -1114,7 +1115,7 @@ class People(models.Model):
     
     is_evaluated = models.BooleanField(default=False) # Is the person evaluated or not
     is_deactivated = models.BooleanField(default=False) # Is the person deactivated or not
-    
+    created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
