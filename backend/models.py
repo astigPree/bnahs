@@ -9,7 +9,7 @@ import uuid, string ,random
 class VerificationLink(models.Model):
     email = models.CharField(max_length=255, blank=True, default='')
     verification_link = models.CharField(max_length=255, blank=True, default='')
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True, default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     data = models.JSONField(default=dict, blank=True)
     """
@@ -75,7 +75,7 @@ def calculate_individual_averages_for_ipcrf(content):
 class Post(models.Model):
     post_owner = models.CharField(max_length=255, blank=True, default='') # Action ID of owner of post
     content = models.TextField(blank=True, default='') # Content of post
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True, default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     post_id = models.CharField(max_length=255, blank=True, default='') # Generated id by system to identify post
     liked = models.JSONField(default=list, blank=True)
@@ -146,7 +146,7 @@ class PostAttachment(models.Model):
 
 class Comment(models.Model):
     content = models.TextField(blank=True, default='')
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True, default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     post_id = models.CharField(max_length=255, blank=True, default='') # post_id of post where comment is posted
     comment_owner = models.CharField(max_length=255, blank=True, default='') # Action ID of owner of comment
@@ -208,7 +208,7 @@ class IPCRFForm(models.Model):
     school_id = models.CharField(max_length=255, blank=True, default='')
     employee_id = models.CharField(max_length=255, blank=True, default='')
     evaluator_id = models.CharField(max_length=255, blank=True, default='')
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True, default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     form_type = models.CharField(max_length=255, blank=True, default='',
             choices=(
@@ -635,7 +635,7 @@ class COTForm(models.Model):
     school_id = models.CharField(max_length=255, blank=True, default='')
     employee_id = models.CharField(max_length=255, blank=True, default='') # ID of evaluator
     evaluated_id = models.CharField(max_length=255, blank=True, default='') # ID of teacher
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True, default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     
     status = models.CharField(max_length=255, blank=True, default='Pending',
@@ -777,7 +777,7 @@ class RPMSFolder(models.Model):
     
     background_image = models.ImageField(upload_to='rpms_folders/', blank=True, null=True) # Background image of the folder
     
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True, default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     rpms_folder_id = models.CharField(max_length=255, blank=True, default='') # Unique ID of the folder
     
@@ -809,7 +809,7 @@ class RPMSClassWork(models.Model):
     school_id = models.CharField(max_length=255, blank=True, default='') # I don't know where to use it, but just stay there
     employee_id = models.CharField(max_length=255, blank=True, default='') # I don't know where to use it, but just stay there
     
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True, default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     
     rpms_folder_id = models.CharField(max_length=255, blank=True, default='')
@@ -880,7 +880,7 @@ class RPMSAttachment(models.Model):
     
     school_id = models.CharField(max_length=255, blank=True, default='')
     employee_id = models.CharField(max_length=255, blank=True, default='')
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True, default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     class_work_id = models.CharField(max_length=255, blank=True, default='')
     
@@ -1026,7 +1026,7 @@ class School(models.Model):
     is_declined = models.BooleanField(default=False) # is the school declined
     is_verified = models.BooleanField(default=False) # Is the school verified or click the link
     is_accepted = models.BooleanField(default=False) # Is the school accepted or added by admin
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True, default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
 
     action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
@@ -1123,7 +1123,7 @@ class People(models.Model):
     
     is_evaluated = models.BooleanField(default=False) # Is the person evaluated or not
     is_deactivated = models.BooleanField(default=False) # Is the person deactivated or not
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True, default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     
     def __str__(self):
