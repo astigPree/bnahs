@@ -134,6 +134,7 @@ class PostAttachment(models.Model):
     ppst_owner = models.CharField(max_length=255, blank=True, default='')
     post_id = models.CharField(max_length=255, blank=True, default='')
     attachment = models.FileField(upload_to='uploads/', default='', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     
     def __str__(self):
         return f"{self.post_id} - {self.attachment}"
