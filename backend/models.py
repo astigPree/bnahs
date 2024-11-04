@@ -1164,7 +1164,16 @@ class People(models.Model):
             return year_gap
         
         return 0
-            
+    
+    def get_tenure_category(self):
+        if self.working_years() <= 3:
+            return '0-3 years'
+        elif self.working_years() <= 5:
+            return '3-5 years'
+        else:
+            return '5+ years'
+    
+    
     def update_educations(self, data):
         self.educations = data
         self.save()

@@ -729,10 +729,10 @@ def forgot_password(request):
                 }, status=400)
                 
             user_type = None
-            user = models.School.objects.filter(email=email).first()
+            user = models.School.objects.filter(email_address=email).first()
             
             if user is None:
-                user = models.People.objects.filter(email=email).first()
+                user = models.People.objects.filter(email_address=email).first()
                 if user is None:
                     return JsonResponse({
                         'message' : 'User not found',
