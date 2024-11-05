@@ -605,9 +605,16 @@ def reject_school(request):
                 }, status=400)
             
             school_id = request.POST.get('school_id')
+            reason = request.POST.get('reason')
             if not school_id:
                 return JsonResponse({
                     'message' : 'School id is required',
+                }, status=400)
+                
+            if not reason:
+                return JsonResponse({
+                    'message' : 'Reason is required',
+                    'reason' : reason
                 }, status=400)
             
             rejected_school = models.School.objects.filter(school_id=school_id).first()
@@ -620,7 +627,11 @@ def reject_school(request):
             rejected_school.is_declined = True
             rejected_school.save()
             schools = models.School.objects.filter(is_accepted=True).order_by('-created_at')
-
+            
+            Thread(target=my_utils.send_declined_reason, args=(
+                rejected_school.email_address, reason  , 'email_declined.html' , settings.EMAIL_HOST_USER, 'School Declined', request
+                )).start()
+            
             return JsonResponse({
                 'message' : 'School rejected successfully',
                 'schools' : [school.get_school_information() for school in schools],

@@ -70,6 +70,25 @@ def send_verification_email(user_email, verification_code , template , masbate_l
     email.send()
 
 
+def send_declined_reason(user_email, reason , template , masbate_locker_email , subject, request):
+    subject = subject 
+    from_email = masbate_locker_email
+    to_email = user_email
+ 
+    deped_logo_url = request.build_absolute_uri(static('logo.png'))
+    # Render the HTML template 
+    html_content = render_to_string(template, {
+        'reason': reason ,
+        'deped_logo' : deped_logo_url
+    })
+    text_content = strip_tags(html_content)  # Create a plain text version
+
+    # Create the email
+    email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+    email.attach_alternative(html_content, "text/html")
+    email.send()
+
+
 def send_account_info_email(user_email, username, password, template, from_email, subject):
     # Render the HTML template
     html_content = render_to_string(template, {
