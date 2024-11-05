@@ -5,11 +5,16 @@ from django.templatetags.static import static
 from django.db.models.functions import ExtractYear
 from django.utils import timezone
 from django.conf import settings
-from django.templatetags.static import static 
+from django.templatetags.static import static
 
 from collections import defaultdict
 
 from datetime import datetime
+
+# Import requests first
+import requests
+from curl_cffi import requests as cf_reqs  # Import curl_cffi after requests
+
 
 from g4f.client import Client
 from uuid import uuid4
@@ -18,7 +23,7 @@ from . import models, forms_text
 # import openai
 
 # openai.api_key = settings.OPEN_AI_KEY
-  
+
 position = {
     'Proficient' : ('Teacher I', 'Teacher II', 'Teacher III'  ),
     'Highly Proficient' : ('Master Teacher I', 'Master Teacher II', 'Master Teacher III', 'Master Teacher IV'),
@@ -34,12 +39,12 @@ def generate_text(promt : str):
     #     ]
     # )
     # return response.choices[0].message.content.strip()
-    
-    try: 
+
+    try:
         response = client.chat.completions.create(
             model="gpt-4-turbo",
             messages=[{"role": "user", "content": promt}],
-        ) 
+        )
         return response.choices[0].message.content
     except Exception as e:
         return f"An error occurred: {str(e)}"
