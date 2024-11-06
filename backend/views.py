@@ -767,3 +767,55 @@ def forgot_password(request):
         'message' : 'Invalid request',
         }, status=400)
 
+
+
+@csrf_exempt
+def get_user_by_action_id(request):
+    try:
+        if request.method == 'POST':
+            action_id = request.POST.get('action_id')
+            
+            if not action_id:
+                return JsonResponse({
+                   'message' : 'Action ID is required',
+                   'action_id' : action_id
+                }, status=400)
+            
+            data = None
+            user_type = None
+            user = models.MainAdmin.objects.filter(action_id=action_id).first()
+            if user:
+                user_type = 'MainAdmin'
+                data = None
+            if not user:
+                user = models.School.objects.filter(action_id=action_id).first()
+                if user:
+                    user_type = 'School'
+                    data = user.get_school_information()
+                if not user:
+                    user = models.People.objects.filter(action_id=action_id).first()
+                    if user:
+                        user_type = user.role
+                        data = user.get_information()
+                    if not user:
+                        return JsonResponse({
+                            'message' : 'User not found',
+                            'action_id' : action_id
+                        }, status=400)
+             
+            return JsonResponse({
+                'message' : 'User not found',
+                'action_id' : action_id,
+                'data' : data,
+                'user' : user_type
+            }, status=400)
+             
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400) 
+
