@@ -543,7 +543,7 @@ def update_rating_sheet(request):
                     'message' : 'COT form not found',
                 }, status=400)
             
-            my_utils.update_cot_form(cot_form=cot_form, comment=comments, questions=questions)
+            my_utils.update_cot_form(cot_form=cot_form, comment=comments, questions=questions , content=content)
              
             if search_evaluated:
                 search_evaluated.update_is_evaluted()

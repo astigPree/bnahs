@@ -283,12 +283,17 @@ def is_highly_proficient_faculty(people : models.People):
 
 
 def create_cot_form(
+<<<<<<< HEAD
     school : models.School , evaluator : models.People , teacher : models.People,
     subject : str , cot_date : str, quarter : str, cot_type : str):
+=======
+    school : models.School , evaluator : models.People , 
+    subject : str , cot_date : str, quarter : str, cot_type : str, school_year : str):
+>>>>>>> 1b678ddb4d43c5d0720b6dd64b21ec0e8614d804
     cot_form = models.COTForm.objects.create(
         school_id = school.school_id,
         employee_id = evaluator.employee_id,
-        evaluated_id = teacher.employee_id
+        school_year = school_year,
     )
 
     cot_form.cot_form_id = str(uuid4())
@@ -297,8 +302,8 @@ def create_cot_form(
             "COT Type" : f"{cot_type}",
             "Observer ID" : f"{evaluator.employee_id}",
             "Observer Name" : f"{evaluator.fullname}",
-            "Teacher Name" : f"{teacher.fullname}",
-            "Teacher ID" : f"{teacher.employee_id}",
+            "Teacher Name" : "",
+            "Teacher ID" : "",
             "Subject & Grade Level" : f"{subject}",
             "Date" : f"{cot_date}",
             "Quarter": f"{quarter}",
@@ -316,11 +321,19 @@ def create_cot_form(
     return cot_form
 
 
+<<<<<<< HEAD
 def update_cot_form(cot_form : models.COTForm, comment : str , questions : dict[str, dict] ):
     cot_form.content['Comments'] = comment
     for q_id, q_info in questions.items():
         cot_form.content['Questions'][q_id]['Selected'] = q_info['Selected']
 
+=======
+def update_cot_form(cot_form : models.COTForm, comment : str , questions : dict[str, dict] , content : dict[str, dict] ):
+    # cot_form.content['Comments'] = comment
+    # for q_id, q_info in questions.items():
+    #     cot_form.content['Questions'][q_id]['Selected'] = q_info['Selected'] 
+    cot_form.content = content
+>>>>>>> 1b678ddb4d43c5d0720b6dd64b21ec0e8614d804
     cot_form.is_checked = True
     cot_form.save()
 

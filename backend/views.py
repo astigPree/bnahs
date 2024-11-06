@@ -803,8 +803,7 @@ def get_user_by_action_id(request):
                             'action_id' : action_id
                         }, status=400)
              
-            return JsonResponse({
-                'message' : 'User not found',
+            return JsonResponse({ 
                 'action_id' : action_id,
                 'data' : data,
                 'user' : user_type
