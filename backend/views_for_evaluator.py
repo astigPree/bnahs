@@ -738,3 +738,28 @@ def evaluator_check_rpms_attachment(request):
         }, status=400)
 
 
+
+@csrf_exempt
+def get_all_teacher_in_school(request):
+    try:
+        if request.method == 'GET':
+            user = models.People.objects.filter(employee_id=request.user.username).first() 
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+  
+            teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher').order_by('-created_at')
+
+            return JsonResponse({
+                'teachers' : [teacher.get_information() for teacher in teachers],
+            }, status=200)
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400) 

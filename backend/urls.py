@@ -105,6 +105,8 @@ urlpatterns = [
     
     path('evaluator/school/check/rpms/attachment/', views.evaluator_check_rpms_attachment),  
     
+    path('evaluator/school/get/teachers/', views.get_all_teacher_in_school), # NEW API
+    
     # =============== Teacher Path ================
     path('login_teacher/', views.login_teacher), # WORKING
     path('teacher/evaluation/', views.teacher_evaluation), 
