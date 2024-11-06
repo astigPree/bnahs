@@ -161,6 +161,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # For development purposes, you can allow all origins, but it's not recommended for production
 CORS_ALLOWED_ORIGINS = [
     'https://bnahs.pythonanywhere.com',
+    'http://www.deped-performance-evaluation-system3211.online/',
     "http://localhost:8000", # For development purposes
     "http://127.0.0.1:8000", # For development purposes
 ]
