@@ -282,9 +282,7 @@ def is_highly_proficient_faculty(people : models.People):
     return False
 
 
-def create_cot_form(
-    school : models.School , evaluator : models.People , 
-    subject : str , cot_date : str, quarter : str, cot_type : str, school_year : str):
+def create_cot_form( school : models.School , evaluator : models.People ,  subject : str , cot_date : str, quarter : str, cot_type : str, school_year : str ):
     cot_form = models.COTForm.objects.create(
         school_id = school.school_id,
         employee_id = evaluator.employee_id,
