@@ -694,16 +694,16 @@ def create_rating_sheet(request):
             """
             
             
-            content = {
-                    "COT Type" : "",  
-                    "Observer ID" : "",
-                    "Observer Name" : "",  
-                    "Teacher Name" : "", 
-                    "Teacher ID" : "",
-                    "Subject & Grade Level" : "",
-                    "Date" : "", 
-                    "Quarter": ""
-                }
+            # content = {
+            #         "COT Type" : "",  
+            #         "Observer ID" : "",
+            #         "Observer Name" : "",  
+            #         "Teacher Name" : "", 
+            #         "Teacher ID" : "",
+            #         "Subject & Grade Level" : "",
+            #         "Date" : "", 
+            #         "Quarter": ""
+            #     }
             
             # cot_type = content['COT Type']
             # observer = content['Observer ID']
