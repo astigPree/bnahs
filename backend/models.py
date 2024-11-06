@@ -640,7 +640,7 @@ class COTForm(models.Model):
     employee_id = models.CharField(max_length=255, blank=True, default='') # ID of evaluator
     evaluated_id = models.CharField(max_length=255, blank=True, default='') # ID of teacher
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-
+    school_year = models.CharField(max_length=255, blank=True, default='')
     
     status = models.CharField(max_length=255, blank=True, default='Pending',
         choices=(

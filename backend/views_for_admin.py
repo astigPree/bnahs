@@ -664,8 +664,8 @@ def create_rating_sheet(request):
                     'message' : 'User is not an admin',
                 }, status=400)
             
-            content = request.POST.get('content')
-            if not content:
+            school_year = request.POST.get('school_year')
+            if not school_year:
                 return JsonResponse({
                     'message' : 'Content is required',
                 }, status=400)
@@ -673,9 +673,13 @@ def create_rating_sheet(request):
 
             # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND TEACHER
             # Checking if the data is exist before saving
-            content : dict = json.loads(content)
+            # content : dict = json.loads(content)
             # Matatangap na data sa front end
+            
+            # UPDATE FOR CREATION ONLY
+            
             """
+            
                 {
                     "COT Type" : "Proficient", ! Used to identify what rating type of form
                     "Observer ID" : "Evaluator ID",
@@ -686,60 +690,99 @@ def create_rating_sheet(request):
                     "Date : "September 05, 2023", 
                     "Quarter": "1st Quarter"
                 }
+                
             """
-            cot_type = content['COT Type']
-            observer = content['Observer ID']
-            teacher_observed = content['Teacher ID']
-            taught = content['Subject & Grade Level'] 
-            date = content['Date']
-            quarter = content['Quarter']
+            
+            
+            content = {
+                    "COT Type" : "",  
+                    "Observer ID" : "",
+                    "Observer Name" : "",  
+                    "Teacher Name" : "", 
+                    "Teacher ID" : "",
+                    "Subject & Grade Level" : "",
+                    "Date" : "", 
+                    "Quarter": ""
+                }
+            
+            # cot_type = content['COT Type']
+            # observer = content['Observer ID']
+            # teacher_observed = content['Teacher ID']
+            # taught = content['Subject & Grade Level'] 
+            # date = content['Date']
+            # quarter = content['Quarter']
             
             # Check for evaluator
-            search_observer = models.People.objects.filter(employee_id=observer, role='Evaluator').first()
-            if not search_observer:
-                return JsonResponse({
-                    'message' : 'Observer not found',
-                }, status=400)
+            # search_observer = models.People.objects.filter(employee_id=observer, role='Evaluator').first()
+            # if not search_observer:
+            #     return JsonResponse({
+            #         'message' : 'Observer not found',
+            #     }, status=400)
             
-            if cot_type == 'Proficient':
-                if not my_utils.is_proficient_faculty(search_observer):
+            # if cot_type == 'Proficient':
+            #     if not my_utils.is_proficient_faculty(search_observer):
+            #         return JsonResponse({
+            #             'message' : 'Observer is not a proficient faculty',
+            #         }, status=400)
+            # elif cot_type == 'Highly Proficient':
+            #     if not my_utils.is_highly_proficient_faculty(search_observer):
+            #         return JsonResponse({
+            #             'message' : 'Observer is not a highly proficient faculty',
+            #         }, status=400)
+            # else :
+            #     return JsonResponse({
+            #         'message' : 'COT type not found',
+            #     }, status=400)
+            
+            
+            # search_teacher = models.People.objects.filter(employee_id=teacher_observed , role='Teacher').first()
+            # if not search_teacher:
+            #     return JsonResponse({
+            #         'message' : 'Teacher observed not found',
+            #     }, status=400)
+            
+            
+            # school = models.School.objects.filter(school_id=search_observer.school_id).first()
+            # if not school:
+            #     return JsonResponse({
+            #         'message' : 'School not found',
+            #     }, status=400)
+            
+            schools = models.School.objects.filter(is_accepted=True)
+            if not schools:
+                return JsonResponse({
+                    'message' : 'Schools not found',
+                }, status=400)
+                
+            for school in schools:
+                observers = models.People.objects.filter(role='Evaluator', school_id=school.school_id) 
+                if not observers:
                     return JsonResponse({
-                        'message' : 'Observer is not a proficient faculty',
+                        'message' : 'Observers not found',
                     }, status=400)
-            elif cot_type == 'Highly Proficient':
-                if not my_utils.is_highly_proficient_faculty(search_observer):
-                    return JsonResponse({
-                        'message' : 'Observer is not a highly proficient faculty',
-                    }, status=400)
-            else :
-                return JsonResponse({
-                    'message' : 'COT type not found',
-                }, status=400)
+                
+                for observer in observers:
+                    my_utils.create_cot_form(
+                        school=school, 
+                        observer=observer,  
+                        subject='', 
+                        cot_date='', 
+                        quarter='',
+                        cot_type='Proficient' if my_utils.is_proficient_faculty(observer) else 'Highly Proficient',
+                        school_year=school_year
+                    )
             
             
-            search_teacher = models.People.objects.filter(employee_id=teacher_observed , role='Teacher').first()
-            if not search_teacher:
-                return JsonResponse({
-                    'message' : 'Teacher observed not found',
-                }, status=400)
-            
-            
-            school = models.School.objects.filter(school_id=search_observer.school_id).first()
-            if not school:
-                return JsonResponse({
-                    'message' : 'School not found',
-                }, status=400)
-            
-            
-            my_utils.create_cot_form(
-                school=school, 
-                observer=search_observer, 
-                teacher_observed=search_teacher, 
-                subject=taught, 
-                cot_date=date, 
-                quarter=quarter,
-                cot_type=cot_type
-            )
+            # my_utils.create_cot_form(
+            #     school=school, 
+            #     observer=search_observer, 
+            #     teacher_observed=search_teacher, 
+            #     subject=taught, 
+            #     cot_date=date, 
+            #     quarter=quarter,
+            #     cot_type=cot_type,
+            #     school_year=school_year
+            # )
 
             return JsonResponse({
                 'message' : 'Rating sheet created successfully',
