@@ -667,7 +667,7 @@ def create_rating_sheet(request):
             school_year = request.POST.get('school_year')
             if not school_year:
                 return JsonResponse({
-                    'message' : 'Content is required',
+                    'message' : 'school_year is required',
                 }, status=400)
             
 
