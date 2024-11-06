@@ -767,7 +767,7 @@ def create_rating_sheet(request):
                     #     school_year : str ):
                     my_utils.create_cot_form(
                         school=school, 
-                        observer=observer,  
+                        evaluator=observer,  
                         subject='', 
                         cot_date='', 
                         quarter='',
