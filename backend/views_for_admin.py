@@ -762,6 +762,9 @@ def create_rating_sheet(request):
                     }, status=400)
                 
                 for observer in observers:
+                    #   school : models.School , evaluator : models.People , 
+                    #     subject : str , cot_date : str, quarter : str, cot_type : str, 
+                    #     school_year : str ):
                     my_utils.create_cot_form(
                         school=school, 
                         observer=observer,  
