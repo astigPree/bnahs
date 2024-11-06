@@ -1153,6 +1153,7 @@ class People(models.Model):
             'job_ended' : self.job_ended,
             'grade_level' : self.grade_level,
             'department' : self.department,
+            'is_evaluated' : self.is_evaluated,
         }
     
     def working_years(self):
