@@ -676,6 +676,8 @@ class COTForm(models.Model):
     is_checked = models.BooleanField(default=False)
     is_for_teacher_proficient = models.BooleanField(default=False) # If True, the folder is for teacher proffecient
     
+    # New Added
+    quarter = models.CharField(max_length=255, blank=True, default='')
 
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.created_at}"

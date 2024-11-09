@@ -670,6 +670,12 @@ def create_rating_sheet(request):
                     'message' : 'school_year is required',
                 }, status=400)
             
+            quarter = request.POST.get('quarter')
+            if not quarter:
+                return JsonResponse({
+                    'message' : 'quarter is required',
+                }, status=400)
+ 
 
             # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND TEACHER
             # Checking if the data is exist before saving
@@ -770,7 +776,7 @@ def create_rating_sheet(request):
                         evaluator=observer,  
                         subject='', 
                         cot_date='', 
-                        quarter='',
+                        quarter=f'{quarter}',
                         cot_type='Proficient' if my_utils.is_proficient_faculty(observer) else 'Highly Proficient',
                         school_year=school_year
                     )
