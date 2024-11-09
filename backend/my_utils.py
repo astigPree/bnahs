@@ -287,6 +287,7 @@ def create_cot_form( school : models.School , evaluator : models.People ,  subje
         school_id = school.school_id,
         employee_id = evaluator.employee_id,
         school_year = school_year,
+        quarter = quarter
     )
     
     cot_form.cot_form_id = str(uuid4())
