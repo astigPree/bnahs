@@ -217,7 +217,7 @@ def teacher_recommendations(request ):
                 for _, value in score.items():
                     average_score = value['Average']
                     overall_scores.append(average_score)
-                    category = my_utils.classify_ipcrf_score(average_score)
+                    category = my_utils.classify_ipcrf_score(average_score if average_score else 0)
                     detailed_scores.append({
                         'Average': average_score,
                         'Category': category

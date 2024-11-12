@@ -1027,7 +1027,7 @@ def get_kra_breakdown_of_a_teacher(employee_id : str):
     """
 
     teacher = models.People.objects.filter(employee_id=employee_id).first()
-    rpms_attachments = models.RPMSAttachment.objects.filter(teacher_id=teacher.id)
+    rpms_attachments = models.RPMSAttachment.objects.filter(employee_id=employee_id)
     breakdown = {
         'kra' : [],
         'averages' : []
