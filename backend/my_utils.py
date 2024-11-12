@@ -144,7 +144,7 @@ def get_recommendation_result(employee_id : str):
         for _, value in score.items():
             average_score = value['Average']
             overall_scores.append(average_score)
-            category = classify_ipcrf_score(average_score) 
+            category = classify_ipcrf_score(average_score if average_score else 0) 
             if category == 'Outstanding':
                 promotion_count += 1
             elif category in ['Very Satisfactory', 'Satisfactory']:
