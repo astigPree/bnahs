@@ -1258,7 +1258,7 @@ class People(models.Model):
                 count += 1
             if count > 0:
                 return total_score / count
-        return None  # Return None if no recent form is found
+        return 0  # Return None if no recent form is found
 
 
     
