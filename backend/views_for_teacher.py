@@ -206,6 +206,7 @@ def teacher_recommendations(request ):
             scores = [ form.getEvaluatorPart1Scores() for form in ipcrf_forms ]
             
             # Initialize counters
+            
             promotion_count = 0
             retention_count = 0
             termination_count = 0
