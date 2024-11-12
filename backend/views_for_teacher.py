@@ -216,7 +216,7 @@ def teacher_recommendations(request ):
             # Classify scores
             for score in scores:
                 for _, value in score.items():
-                    average_score = value['Average']
+                    average_score = value['Average']    
                     overall_scores.append(average_score)
                     category = my_utils.classify_ipcrf_score(average_score if average_score else 0)
                     detailed_scores.append({
@@ -407,7 +407,7 @@ def teacher_swot(request ):
             }
             if cot_form:
                 swot = cot_form.generatePromtTemplate()
-                generated_swot["Strengths"] = my_utils.generate_text(swot["strengths"])
+                generated_swot["Strengths"] = my_utils.my_utils(swot["strengths"])
                 generated_swot["Weaknesses"] = my_utils.generate_text(swot["weaknesses"])
                 generated_swot["Opportunities"] = my_utils.generate_text(swot["opportunities"])
                 generated_swot["Threats"] = my_utils.generate_text(swot["threats"])
