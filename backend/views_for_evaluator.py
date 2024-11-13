@@ -383,9 +383,9 @@ def evaluator_get_all_teacher_tenure(request):
             }
             
             return JsonResponse({
-                '0-3 years': tenure_counts['0-3 years'],
-                '3-5 years': tenure_counts['3-5 years'],
-                '5+ years': tenure_counts['5+ years']
+                '0-3 years': tenure_percentages['0-3 years'],
+                '3-5 years': tenure_percentages['3-5 years'],
+                '5+ years': tenure_percentages['5+ years']
             }, status=200)
     
     except Exception as e:
