@@ -103,10 +103,28 @@ def evaluator_forms(request):
             number_of_conducted_ipcrf_1_highly_proficient = ipcrf_1_highly_proficient.count()
             number_of_evaluated_ipcrf_1_proficient = ipcrf_1_proficient.filter(is_checked=True).count()
             number_of_evaluated_ipcrf_1_highly_proficient = ipcrf_1_highly_proficient.filter(is_checked=True).count()
+            
+            # number_of_pending_ipcrf_1_proficient = number_of_conducted_ipcrf_1_proficient - number_of_evaluated_ipcrf_1_proficient
+            # number_of_pending_ipcrf_1_highly_proficient = number_of_conducted_ipcrf_1_highly_proficient - number_of_evaluated_ipcrf_1_highly_proficient
+            # response_rate_of_ipcrf_1_proficient = number_of_evaluated_ipcrf_1_proficient / number_of_conducted_ipcrf_1_proficient
+            # response_rate_of_ipcrf_1_highly_proficient = number_of_evaluated_ipcrf_1_highly_proficient / number_of_conducted_ipcrf_1_highly_proficient
+            
+            # Calculate the number of pending IPCRF
             number_of_pending_ipcrf_1_proficient = number_of_conducted_ipcrf_1_proficient - number_of_evaluated_ipcrf_1_proficient
             number_of_pending_ipcrf_1_highly_proficient = number_of_conducted_ipcrf_1_highly_proficient - number_of_evaluated_ipcrf_1_highly_proficient
-            response_rate_of_ipcrf_1_proficient = number_of_evaluated_ipcrf_1_proficient / number_of_conducted_ipcrf_1_proficient
-            response_rate_of_ipcrf_1_highly_proficient = number_of_evaluated_ipcrf_1_highly_proficient / number_of_conducted_ipcrf_1_highly_proficient
+
+            # Handle division by zero
+            if number_of_conducted_ipcrf_1_proficient != 0:
+                response_rate_of_ipcrf_1_proficient = number_of_evaluated_ipcrf_1_proficient / number_of_conducted_ipcrf_1_proficient
+            else:
+                response_rate_of_ipcrf_1_proficient = 0  # or handle this case as needed
+
+            if number_of_conducted_ipcrf_1_highly_proficient != 0:
+                response_rate_of_ipcrf_1_highly_proficient = number_of_evaluated_ipcrf_1_highly_proficient / number_of_conducted_ipcrf_1_highly_proficient
+            else:
+                response_rate_of_ipcrf_1_highly_proficient = 0  # or handle this case as needed
+
+            
             
             cot_proficient = models.COTForm.objects.filter(school_id=user.school_id, is_for_teacher_proficient=True).order_by('-created_at')
             cot_highly_proficient = models.COTForm.objects.filter(school_id=user.school_id, is_for_teacher_proficient=False).order_by('-created_at')
@@ -115,10 +133,27 @@ def evaluator_forms(request):
             number_of_conducted_cot_highly_proficient = cot_highly_proficient.count()
             number_of_evaluated_cot_proficient = cot_proficient.filter(is_checked=True).count()
             number_of_evaluated_cot_highly_proficient = cot_highly_proficient.filter(is_checked=True).count()
+            # number_of_pending_cot_proficient = number_of_conducted_cot_proficient - number_of_evaluated_cot_proficient
+            # number_of_pending_cot_highly_proficient = number_of_conducted_cot_highly_proficient - number_of_evaluated_cot_highly_proficient
+            # response_rate_of_cot_proficient = number_of_evaluated_cot_proficient / number_of_conducted_cot_proficient
+            # response_rate_of_cot_highly_proficient = number_of_evaluated_cot_highly_proficient / number_of_conducted_cot_highly_proficient
+            
+            # Calculate the number of pending COT
             number_of_pending_cot_proficient = number_of_conducted_cot_proficient - number_of_evaluated_cot_proficient
             number_of_pending_cot_highly_proficient = number_of_conducted_cot_highly_proficient - number_of_evaluated_cot_highly_proficient
-            response_rate_of_cot_proficient = number_of_evaluated_cot_proficient / number_of_conducted_cot_proficient
-            response_rate_of_cot_highly_proficient = number_of_evaluated_cot_highly_proficient / number_of_conducted_cot_highly_proficient
+
+            # Handle division by zero for response rates
+            if number_of_conducted_cot_proficient != 0:
+                response_rate_of_cot_proficient = number_of_evaluated_cot_proficient / number_of_conducted_cot_proficient
+            else:
+                response_rate_of_cot_proficient = 0  # or handle this case as needed
+
+            if number_of_conducted_cot_highly_proficient != 0:
+                response_rate_of_cot_highly_proficient = number_of_evaluated_cot_highly_proficient / number_of_conducted_cot_highly_proficient
+            else:
+                response_rate_of_cot_highly_proficient = 0  # or handle this case as needed
+
+            
             
             rpms_proficient = models.RPMSAttachment.objects.filter(school_id=user.school_id, is_for_teacher_proficient=True).order_by('-created_at')
             rpms_highly_proficient = models.RPMSAttachment.objects.filter(school_id=user.school_id, is_for_teacher_proficient=False).order_by('-created_at')
@@ -127,12 +162,26 @@ def evaluator_forms(request):
             number_of_conducted_rpms_highly_proficient = rpms_highly_proficient.count()
             number_of_evaluated_rpms_proficient = rpms_proficient.filter(is_checked=True).count()
             number_of_evaluated_rpms_highly_proficient = rpms_highly_proficient.filter(is_checked=True).count()
+            # number_of_pending_rpms_proficient = number_of_conducted_rpms_proficient - number_of_evaluated_rpms_proficient
+            # number_of_pending_rpms_highly_proficient = number_of_conducted_rpms_highly_proficient - number_of_evaluated_rpms_highly_proficient
+            # response_rate_of_rpms_proficient = number_of_evaluated_rpms_proficient / number_of_conducted_rpms_proficient
+            # response_rate_of_rpms_highly_proficient = number_of_evaluated_rpms_highly_proficient / number_of_conducted_rpms_highly_proficient
+            
+            # Calculate the number of pending RPMS
             number_of_pending_rpms_proficient = number_of_conducted_rpms_proficient - number_of_evaluated_rpms_proficient
             number_of_pending_rpms_highly_proficient = number_of_conducted_rpms_highly_proficient - number_of_evaluated_rpms_highly_proficient
-            response_rate_of_rpms_proficient = number_of_evaluated_rpms_proficient / number_of_conducted_rpms_proficient
-            response_rate_of_rpms_highly_proficient = number_of_evaluated_rpms_highly_proficient / number_of_conducted_rpms_highly_proficient
-            
-            
+
+            # Handle division by zero for response rates
+            if number_of_conducted_rpms_proficient != 0:
+                response_rate_of_rpms_proficient = number_of_evaluated_rpms_proficient / number_of_conducted_rpms_proficient
+            else:
+                response_rate_of_rpms_proficient = 0  # or handle this case as needed
+
+            if number_of_conducted_rpms_highly_proficient != 0:
+                response_rate_of_rpms_highly_proficient = number_of_evaluated_rpms_highly_proficient / number_of_conducted_rpms_highly_proficient
+            else:
+                response_rate_of_rpms_highly_proficient = 0  # or handle this case as needed
+
             
             return JsonResponse({
                 'number_of_conducted_ipcrf_1_proficient' : number_of_conducted_ipcrf_1_proficient,
