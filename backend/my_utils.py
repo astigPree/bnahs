@@ -450,8 +450,8 @@ def update_iprcf_form_part_1_by_teacher(
             else:
                 Dev.append(q_info['Question'])
     
-    part_3.content_for_teacher['A']['Strenghts'] = Str
-    part_3.content_for_teacher['A']['Development Needs'] = Dev
+    part_3.content_for_teacher['A'][0]['Strenghts'] = Str
+    part_3.content_for_teacher['A'][0]['Development Needs'] = Dev
     
     part_3.save()
     
@@ -476,8 +476,8 @@ def update_ipcrf_form_part_2_by_teacher(
         else:
             No.append(value["Title"])
     
-    part_3.content_for_teacher['B']['Strenghts'] = Yes
-    part_3.content_for_teacher['B']['Development Needs'] = No
+    part_3.content_for_teacher['B'][0]['Strenghts'] = Yes
+    part_3.content_for_teacher['B'][0]['Development Needs'] = No
     
     part_3.save()
     
