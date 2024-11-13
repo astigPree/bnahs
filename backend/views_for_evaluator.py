@@ -424,9 +424,9 @@ def evaluator_get_teacher_recommendations(request):
                 elif result == 'RETENTION':
                     number_of_retention += 1
             
-            number_of_promotion = number_of_promotion / teachers.count()
-            number_of_termination = number_of_termination / teachers.count()
-            number_of_retention = number_of_retention / teachers.count()
+            number_of_promotion = number_of_promotion / teachers.count() if teachers.count() > 0 else 0
+            number_of_termination = number_of_termination / teachers.count() if teachers.count() > 0 else 0
+            number_of_retention = number_of_retention / teachers.count() if teachers.count() > 0 else 0
             
             return JsonResponse({
                 'promotion' : number_of_promotion,
