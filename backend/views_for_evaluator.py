@@ -265,7 +265,7 @@ def evaluator_records(request):
             for teacher in teachers:
                 # ADD CHECK IF in filter IT EVALUATED
                 cot = models.COTForm.objects.filter(evaluated_id=teacher.employee_id ).order_by('-created_at').first()
-                ipcrf = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id ).order_by('-created_at').first()
+                ipcrf = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id , form_type="PART 1" ).order_by('-created_at').first()
                 rpm = models.RPMSAttachment.objects.filter(employee_id=teacher.employee_id ).order_by('-created_at').first()
                 
                 cots[teacher.employee_id] = {
