@@ -432,6 +432,10 @@ class IPCRFForm(models.Model):
     is_expired = models.BooleanField(default=False) # Used to check if the form is expired
     school_year = models.CharField(max_length=255, blank=True, default='') # School year
     
+    rating = models.FloatField( blank=True, default=0.0) # Rating
+    average_score = models.FloatField( blank=True, default=0.0) # Average Score
+    plus_factor = models.FloatField( blank=True, default=0.0) # Plus Factor Score
+    
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.created_at}"
     

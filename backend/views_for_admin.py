@@ -1224,12 +1224,14 @@ def get_annual_ratings(request):
                 teacher_ratings = []
                 for teacher in teachers: 
                     ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()
-                    cot_form = models.COTForm.objects.filter(evaluated_id=teacher.employee_id).order_by('-created_at').first()
-                    if ipcrf_1 and cot_form:
+                    # cot_form = models.COTForm.objects.filter(evaluated_id=teacher.employee_id).order_by('-created_at').first()
+                    if ipcrf_1:
                         if my_utils.is_proficient_faculty(teacher):
-                            teacher_ratings.append(my_utils.calculate_scores_for_proficient(ipcrf_1.content_for_teacher , cot_form.content).get('total_score'))
+                            # teacher_ratings.append(my_utils.calculate_scores_for_proficient(ipcrf_1.content_for_teacher , cot_form.content).get('total_score'))
+                            teacher_ratings.append(ipcrf_1.rating)
                         else:
-                            teacher_ratings.append(my_utils.calculate_scores_for_highly_proficient(ipcrf_1.content_for_teacher, cot_form.content).get('total_score'))
+                            # teacher_ratings.append(my_utils.calculate_scores_for_highly_proficient(ipcrf_1.content_for_teacher, cot_form.content).get('total_score'))
+                            teacher_ratings.append(ipcrf_1.rating)
                     else:
                         teacher_ratings.append(0)
                 school_ratings[school.school_id]['Ratings'] = sum(teacher_ratings) / len(teacher_ratings)

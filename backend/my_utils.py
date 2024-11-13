@@ -847,7 +847,7 @@ def get_employee_performance_by_year(employee_id, employee_position):
     #     }
     # }
     
-    return 
+    return results
 
 
 

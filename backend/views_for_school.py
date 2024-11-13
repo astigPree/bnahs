@@ -599,18 +599,27 @@ def school_get_annual_ratings(request):
             for teacher in teachers:
                 labels.append(teacher.first_name)
                 ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()
-                cot_form = models.COTForm.objects.filter(evaluated_id=teacher.employee_id).order_by('-created_at').first()
-                if ipcrf_1 and cot_form:
+                # cot_form = models.COTForm.objects.filter(evaluated_id=teacher.employee_id).order_by('-created_at').first()
+                if ipcrf_1:
                     if my_utils.is_proficient_faculty(teacher):
-                        ratings.append(my_utils.calculate_scores_for_proficient(ipcrf_1.content_for_teacher , cot_form.content))
+                        # ratings.append(my_utils.calculate_scores_for_proficient(ipcrf_1.content_for_teacher , cot_form.content))
+                        ratings.append({
+                            'average_score' : ipcrf_1.average_score,
+                            'plus_factor' : ipcrf_1.plus_factor,
+                            'total_score' : ipcrf_1.rating,
+                        })
                     else:
-                        ratings.append(my_utils.calculate_scores_for_highly_proficient(ipcrf_1.content_for_teacher, cot_form.content))
-                else:
+                        # ratings.append(my_utils.calculate_scores_for_highly_proficient(ipcrf_1.content_for_teacher, cot_form.content))
+                        ratings.append({
+                            'average_score' : ipcrf_1.average_score,
+                            'plus_factor' : ipcrf_1.plus_factor,
+                            'total_score' : ipcrf_1.rating,
+                        })
                     ratings.append({
-                        'total_kra_score' : 0,
-                        'plus_factor' : 0,
-                        'total_score' : 0
-                    })
+                            'average_score' : 0,
+                            'plus_factor' : 0,
+                            'total_score' : 0,
+                        })
     
     except Exception as e:
         return JsonResponse({
