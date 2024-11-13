@@ -138,6 +138,7 @@ def teacher_forms(request ):
             return JsonResponse({
                 'user' : user.get_information(),
                 'position' : user.position,
+                'Proficient' : my_utils.is_proficient_faculty(user)
             },status=200)
         
     
