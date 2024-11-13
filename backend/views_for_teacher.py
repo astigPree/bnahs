@@ -532,7 +532,7 @@ def teacher_update_ipcrf_part_1(request):
             connection_to_other = request.POST.get('ipcrf_id')
             content : dict[str , dict] = json.loads(request.POST.get('content', None))
             rating = request.POST.get('total_score', None)
-            total_score = request.POST.get('plus_factor', None)
+            plus_factor = request.POST.get('plus_factor', None)
             average_score = request.POST.get('average_score', None)
             
             if not rating:
@@ -543,9 +543,9 @@ def teacher_update_ipcrf_part_1(request):
                 return JsonResponse({
                     'message' : 'Connection to other not found',
                 }, status=400)
-            if not total_score:
+            if not plus_factor:
                 return JsonResponse({
-                    'message' : 'Total score not found',
+                    'message' : 'Plus Factor score not found',
                 }, status=400)
             if not average_score:
                 return JsonResponse({
@@ -568,7 +568,10 @@ def teacher_update_ipcrf_part_1(request):
                 return JsonResponse({
                     'message' : 'Content not found',
                 }, status=400)
-                
+            
+            ipcrf.rating = rating
+            ipcrf.plus_factor = plus_factor
+            ipcrf.average_score = average_score
             my_utils.update_iprcf_form_part_1_by_teacher(ipcrf, content)
             
             return JsonResponse({
