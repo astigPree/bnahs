@@ -225,13 +225,19 @@ def evaluator_records(request):
     
     try:
         
-        if request.method == 'GET':
+        if request.method == 'POST':
             user = models.People.objects.filter(employee_id=request.user.username).first()
             # TODO : IDENTIFY IF THE USER IS EVALUATOR OR NOT
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
                     }, status=400)
+            
+            school_year = request.POST.get('school_year')
+            school_year = school_year if school_year else 'all'
+            
+            position = request.POST.get('position')
+            position = position if position else 'all'
             
             
             school = models.School.objects.filter(school_id=user.school_id).first()
@@ -242,6 +248,46 @@ def evaluator_records(request):
                 
             teachers = models.People.objects.filter(school_id=user.school_id, role='TEACHER')
             
+            if not teachers:
+                return JsonResponse({
+                    'message' : 'No teachers found',
+                    }, status=400)
+            
+            cots = {}
+            ipcrfs = {}
+            rpms = {}
+            """
+                {
+                    "Teacher" : {},
+                }
+            """
+            
+            for teacher in teachers:
+                # ADD CHECK IF in filter IT EVALUATED
+                cot = models.COTForm.objects.filter(evaluated_id=teacher.employee_id ).order_by('-created_at').first()
+                ipcrf = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id ).order_by('-created_at').first()
+                rpm = models.RPMSAttachment.objects.filter(employee_id=teacher.employee_id ).order_by('-created_at').first()
+                
+                cots[teacher.employee_id] = {
+                    'teacher' : teacher.get_information(),
+                    'cot' : cot.get_information() if cot else None,
+                }
+                
+                ipcrfs[teacher.employee_id] = {
+                    'teacher' : teacher.get_information(),
+                    'ipcrf' : ipcrf.get_information() if ipcrf else None,
+                }
+                
+                rpms[teacher.employee_id] = {
+                    'teacher' : teacher.get_information(),
+                    'rpm' : rpm.get_information() if rpm else None,
+                }
+    
+            return JsonResponse({ 
+                'cots' : cots,
+                'ipcrfs' : ipcrfs,
+                'rpms' : rpms,  
+            }, status=200)
             
         
     

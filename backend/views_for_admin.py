@@ -1127,6 +1127,12 @@ def create_ipcrf_form(request):
                     'message' : 'Position is required',
                 }, status=400)
             
+            school_year = request.POST.get("school_year")
+            if not school_year:
+                return JsonResponse({
+                    'message' : 'School year is required',
+                }, status=400)
+            
             schools = models.School.objects.filter(is_accepted=True)
             for school in schools:
                 if position == 'Proficient':
@@ -1136,7 +1142,7 @@ def create_ipcrf_form(request):
                         position__in=my_utils.position['Proficient']
                     )
                     for teacher in teachers:
-                        my_utils.create_ipcrf_form_proficient(school=school, teacher=teacher)
+                        my_utils.create_ipcrf_form_proficient(school=school, teacher=teacher , school_year=school_year)
                     
                 elif position == "Highly Proficient":
                     teachers = models.People.objects.filter(
@@ -1145,7 +1151,7 @@ def create_ipcrf_form(request):
                         position__in=my_utils.position['Highly Proficient']
                     )
                     for teacher in teachers:
-                        my_utils.create_ipcrf_form_highly_proficient(school=school, teacher=teacher)
+                        my_utils.create_ipcrf_form_highly_proficient(school=school, teacher=teacher,  school_year=school_year)
                     
             return JsonResponse({
                 'message' : 'IPCRF form created successfully',

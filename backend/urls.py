@@ -91,7 +91,8 @@ urlpatterns = [
     path('evaluator/update_education/', views.people_update_education),
     path('evaluator/profile/', views.evaluator_profile),
     
-    path('evaluator/forms/', views.evaluator_forms), # NEED TO TEST
+    path('evaluator/forms/', views.evaluator_forms), 
+    path('evaluator/evaluated/', views.evaluator_records), # NEW API
     
     path('evaluator/school/get/teachers/tenure/', views.evaluator_get_all_teacher_tenure), # NEED TO TEST 
     path('evaluator/school/get/teachers/recommendations/', views.evaluator_get_teacher_recommendations), # NEED TO TEST 

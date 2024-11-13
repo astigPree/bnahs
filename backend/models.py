@@ -430,6 +430,7 @@ class IPCRFForm(models.Model):
     connection_to_other = models.CharField(max_length=255, blank=True, default='') # Generate a random ID, used for identifying parts (1,2,3)
     is_for_teacher_proficient = models.BooleanField(default=False) # If True, the folder is for teacher proffecient
     is_expired = models.BooleanField(default=False) # Used to check if the form is expired
+    school_year = models.CharField(max_length=255, blank=True, default='') # School year
     
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.created_at}"
@@ -895,6 +896,7 @@ class RPMSAttachment(models.Model):
     
     school_id = models.CharField(max_length=255, blank=True, default='')
     employee_id = models.CharField(max_length=255, blank=True, default='')
+    evaluator_id = models.CharField(max_length=255, blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     class_work_id = models.CharField(max_length=255, blank=True, default='')
@@ -938,6 +940,7 @@ class RPMSAttachment(models.Model):
     
     is_checked = models.BooleanField(default=False) 
     is_for_teacher_proficient = models.BooleanField(default=False)
+    school_year = models.CharField(max_length=255, blank=True, default='')
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.created_at}"
     
