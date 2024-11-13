@@ -615,6 +615,7 @@ def school_get_annual_ratings(request):
                             'plus_factor' : ipcrf_1.plus_factor,
                             'total_score' : ipcrf_1.rating,
                         })
+                else:
                     ratings.append({
                             'average_score' : 0,
                             'plus_factor' : 0,
