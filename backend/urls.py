@@ -98,7 +98,7 @@ urlpatterns = [
     path('evaluator/school/get/teachers/recommendations/', views.evaluator_get_teacher_recommendations), # NEED TO TEST 
     
     path('evaluator/school/get/teachers/annual/ratings/', views.evaluator_get_annual_ratings),  
-    path('evaluator/school/get/teachers//performance/', views.evaluator_get_performance_true_year),  
+    path('evaluator/school/get/teachers/performance/', views.evaluator_get_performance_true_year),  
     
     path('evaluator/school/get/cot/', views.get_rating_sheet),
     path('evaluator/school/update/cot/', views.update_rating_sheet),
