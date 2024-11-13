@@ -818,7 +818,7 @@ def get_employee_performance_by_year(employee_id, employee_position):
         performance_by_year[form.year]["ipcrf"].append(form)
 
     # Query COT forms filtered by employee_id and annotate with year
-    cot_forms = models.objects.filter(evaluated_id=employee_id).annotate(year=ExtractYear('created_at'))
+    cot_forms = models.COTForm.objects.filter(evaluated_id=employee_id).annotate(year=ExtractYear('created_at'))
     for form in cot_forms:
         performance_by_year[form.year]["cot"].append(form)
         
