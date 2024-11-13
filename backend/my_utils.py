@@ -476,8 +476,8 @@ def update_ipcrf_form_part_2_by_teacher(
         else:
             No.append(value["Title"])
     
-    part_3.content_for_teacher['B'][0]['Strenghts'] = Yes
-    part_3.content_for_teacher['B'][0]['Development Needs'] = No
+    part_3.content_for_teacher['B']['Strenghts'] = Yes
+    part_3.content_for_teacher['B']['Development Needs'] = No
     
     part_3.save()
     
