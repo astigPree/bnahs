@@ -937,7 +937,7 @@ class RPMSAttachment(models.Model):
     """
     
     is_checked = models.BooleanField(default=False) 
-    
+    is_for_teacher_proficient = models.BooleanField(default=False)
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.created_at}"
     
