@@ -548,7 +548,7 @@ def school_get_teacher_recommendations(request):
             number_of_termination = 0
             number_of_retention = 0
             
-            teachers = models.People.objects.filter(school_id=user.school_id, role='TEACHER')
+            teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher')
             for teacher in teachers:
                 result = my_utils.get_recommendation_result(employee_id=teacher.employee_id)
                 if result == 'PROMOTION':
@@ -593,7 +593,7 @@ def school_get_annual_ratings(request):
                     'message' : 'User not found',
                     }, status=400)
             
-            teachers = models.People.objects.filter(school_id=user.school_id, role='TEACHER')
+            teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher')
             labels = []
             ratings = []
             for teacher in teachers:
@@ -634,7 +634,7 @@ def school_get_performance_true_year(request):
             
             
             teacher_performance = {}
-            teachers = models.People.objects.filter(school_id=user.school_id, role='TEACHER')
+            teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher')
             for teacher in teachers:
                 teacher_performance[teacher.employee_id] = {}
                 teacher_performance[teacher.employee_id]['Name'] = teacher.fullname

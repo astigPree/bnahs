@@ -246,7 +246,7 @@ def evaluator_records(request):
                     'message' : 'School not found',
                     }, status=400)
                 
-            teachers = models.People.objects.filter(school_id=user.school_id, role='TEACHER')
+            teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher').order_by('-created_at')
             
             if not teachers:
                 return JsonResponse({
@@ -313,7 +313,7 @@ def evaluator_get_annual_ratings(request):
                     'message' : 'User not found',
                     }, status=400)
             
-            teachers = models.People.objects.filter(school_id=user.school_id, role='TEACHER')
+            teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher')
             labels = []
             ratings = []
             for teacher in teachers:
@@ -414,7 +414,7 @@ def evaluator_get_teacher_recommendations(request):
             number_of_termination = 0
             number_of_retention = 0
             
-            teachers = models.People.objects.filter(school_id=user.school_id, role='TEACHER')
+            teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher')
             for teacher in teachers:
                 result = my_utils.get_recommendation_result(employee_id=teacher.employee_id)
                 if result == 'PROMOTION':
@@ -459,7 +459,7 @@ def evaluator_get_performance_true_year(request):
             
             
             teacher_performance = {}
-            teachers = models.People.objects.filter(school_id=user.school_id, role='TEACHER')
+            teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher')
             for teacher in teachers:
                 teacher_performance[teacher.employee_id] = {}
                 teacher_performance[teacher.employee_id]['Name'] = teacher.fullname
@@ -576,7 +576,7 @@ def update_rating_sheet(request):
                     'message' : 'User not found',
                     }, status=400)
             
-            # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND TEACHER
+            # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND Teacher
             # TODO : TELL THEM TO ADD IN THE HEADER 'Content-Type': 'application/json'
             """
             {
@@ -669,7 +669,7 @@ def get_iprcf_form_for_evaluator_part_1_of_teacher(request):
                    'message' : 'User not found',
                     }, status=400)
             
-            # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND TEACHER 
+            # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND Teacher 
             
             teacher_id = request.POST.get('teacher_id')
             if not teacher_id:
@@ -710,7 +710,7 @@ def check_teacher_ipcrf_form_part_1_by_evaluator(request):
                     'message' : 'User not found',
                     }, status=400)
             
-            # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND TEACHER
+            # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND Teacher
             """
                 {
                     'ipcrf_id' : 'ipcrf_id',
@@ -784,7 +784,7 @@ def evaluator_check_rpms_attachment(request):
                     'message' : 'User not found',
                     }, status=400)
             
-            # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND TEACHER
+            # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND Teacher
             """
                 {
                     'rpms_id' : 'rpms_id',

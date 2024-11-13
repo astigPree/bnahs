@@ -489,7 +489,7 @@ def all_teacher_recommendations(request):
             number_of_termination = 0
             number_of_retention = 0
             
-            teachers = models.People.objects.filter(role='TEACHER')
+            teachers = models.People.objects.filter(role='Teacher')
             for teacher in teachers:
                 result = my_utils.get_recommendation_result(employee_id=teacher.employee_id)
                 if result == 'PROMOTION':
@@ -677,7 +677,7 @@ def create_rating_sheet(request):
                 }, status=400)
  
 
-            # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND TEACHER
+            # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND Teacher
             # Checking if the data is exist before saving
             # content : dict = json.loads(content)
             # Matatangap na data sa front end
@@ -1220,7 +1220,7 @@ def get_annual_ratings(request):
             for school in schools:
                 school_ratings[school.school_id] = {}
                 school_ratings[school.school_id]['Name'] = school.name
-                teachers = models.People.objects.filter(school_id=user.school_id, role='TEACHER')
+                teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher')
                 teacher_ratings = []
                 for teacher in teachers: 
                     ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()
