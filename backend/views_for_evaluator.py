@@ -379,7 +379,7 @@ def evaluator_get_all_teacher_tenure(request):
             
             # Calculate percentages
             tenure_percentages = {
-                category: (count / total_count) * 100 for category, count in tenure_counts.items()
+                category: (count / total_count) for category, count in tenure_counts.items()
             }
             
             return JsonResponse({
