@@ -204,10 +204,7 @@ def teacher_recommendations(request ):
              
             # 2. rule based classifier for Promotion
             ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').order_by('-created_at')
-            if ipcrf_forms.exists():
-                scores = [ form.getEvaluatorPart1Scores() for form in ipcrf_forms  ]
-            else :
-                scores = []
+            scores = [ form.getEvaluatorPart1Scores() if form else {} for form in ipcrf_forms  ]
             
             # Initialize counters
             
@@ -231,9 +228,8 @@ def teacher_recommendations(request ):
                 #     elif category in ['Very Satisfactory', 'Satisfactory']:
                 #         retention_count += 1
                 #     elif category in ['Unsatisfactory', 'Poor']:
-                #         termination_count += 1
-                # print("Score : ", type(score) , " === ", score)
-                average_score =  0
+                #         termination_count += 1 
+                average_score = score.get('average_score', 0) if score else 0
                 overall_scores.append(average_score)
                 category = my_utils.classify_ipcrf_score(average_score if average_score else 0)
                 detailed_scores.append({
@@ -358,7 +354,7 @@ def teacher_performance(request ):
                 if year not in performances:
                     performances[year] = {'Scores': [], 'Total': 0}
                 
-                scores = attachment.getEvaluatorPart1Scores()
+                scores = attachment.getEvaluatorPart1Scores() if attachment else {}
                 performances[year]['Score'] =  scores.get('average_score', 0) if scores else 0
                 # for key, value in scores.items():
                     # if 'Average' in value:
