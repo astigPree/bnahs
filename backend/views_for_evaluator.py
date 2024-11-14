@@ -877,9 +877,30 @@ def get_all_teacher_in_school(request):
                 }, status=400)
   
             teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher').order_by('-created_at')
-
+            
+            teachers_data = []
+            for teacher in teachers:
+                data = teacher.get_information()
+                ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type="PART 1").first()
+                if ipcrf_1 : 
+                    data['is_evaluated_ipcrf'] = ipcrf_1.is_checked_by_evaluator
+                else:
+                    data['is_evaluated_ipcrf'] = False
+                cot = models.COTForm.objects.filter(evaluated_id=teacher.employee_id).first()
+                if cot : 
+                    data['is_evaluated_cot'] = cot.is_checked
+                else:
+                    data['is_evaluated_cot'] = False
+                rpms = models.RPMSAttachment.objects.filter(employee_id=teacher.employee_id).first()
+                if rpms : 
+                    data['is_evaluated_rpms'] = rpms.is_checked
+                else:
+                    data['is_evaluated_rpms'] = False
+                teachers_data.append(data)
+                    
+            
             return JsonResponse({
-                'teachers' : [teacher.get_information() for teacher in teachers],
+                'teachers' : teachers_data ,
             }, status=200)
     except Exception as e:
         return JsonResponse({
