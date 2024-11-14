@@ -404,7 +404,7 @@ def get_all_teachers(request):
                     'message' : 'User not found',
                 }, status=400)
             
-            teachers = models.People.objects.filter(role="Teacher", school_id=user.school_id)
+            teachers = models.People.objects.filter(is_accepted = True, role="Teacher", school_id=user.school_id)
             if not teachers:
                 return JsonResponse({
                     'message' : 'No teachers found',
@@ -421,83 +421,6 @@ def get_all_teachers(request):
     return JsonResponse({
         'message' : 'Invalid request',
         }, status=400 )
-
-
-@csrf_exempt
-def register_school(request):
-    try:
-        if request.method == 'POST':
-            name = request.POST.get('name')
-            school_id = request.POST.get('school_id')
-            school_name = request.POST.get('school_name')
-            school_address = request.POST.get('school_address')
-            school_type = request.POST.get('school_type')
-            contact_number = request.POST.get('contact_number')
-            email_address = request.POST.get('email_address')
-            password = request.POST.get('password')
-            confirm_password = request.POST.get('confirm_password')
-            school_logo = request.FILES.get('school_logo')
-
-            if password != confirm_password:
-                return JsonResponse({'status': 'error', 'message': 'Passwords do not match'}, status=400)
-            
-            verification =  models.VerificationLink.objects.filter(email=email_address).first()
-            
-            if verification:
-                if not verification.is_expired():
-                    return JsonResponse({'message': 'Please check your email or wait for 30 mins'})
-                else :
-                    verification.delete()
-                    school = models.School.objects.filter(email_address=email_address).first()
-                    if school:
-                        school.delete()
-                
-            
-            # Check if the already school exist
-            if models.School.objects.filter(email_address=email_address).exists():
-                return JsonResponse({ 'message': 'School already exists'}, status=400)
-
-            if models.School.objects.filter(school_id=school_id).exists():
-                return JsonResponse({ 'message': 'School ID already exists'}, status=400)
-            
-
-            school = models.School.objects.create(
-                name=name,
-                school_id=school_id,
-                school_name=school_name,
-                school_address=school_address,
-                school_type=school_type,
-                contact_number=contact_number,
-                email_address=email_address,
-                password=password,
-            )
-            
-            if school_logo:
-                school.school_logo = school_logo
-            
-            school.action_id = str(uuid4())
-            school.save()
-            
-            verification = models.VerificationLink.generate_link(email_address)
-            
-            # verification_code , template , masbate_locker_email , subject
-            Thread(target=my_utils.send_verification_email, args=(
-                email_address, verification , 'email-template.html', settings.EMAIL_HOST_USER, 'School Registration' , request
-            )).start()
-            
-
-            return JsonResponse({
-                'status': 'success',
-                'message': 'Check your email for verification link in order to activate your account',
-            },status=200)
-            
-    except Exception as e:
-        return JsonResponse({
-            'message' : f'Something went wrong : {e}',
-            }, status=500)
-    
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
-
 
 
 @csrf_exempt
@@ -737,7 +660,7 @@ def forgot_password(request):
             user = models.School.objects.filter(email_address=email).first()
             
             if user is None:
-                user = models.People.objects.filter(email_address=email).first()
+                user = models.People.objects.filter(is_accepted = True, email_address=email).first()
                 if user is None:
                     return JsonResponse({
                         'message' : 'User not found',
@@ -822,6 +745,84 @@ def get_user_by_action_id(request):
     return JsonResponse({
         'message' : 'Invalid request',
         }, status=400) 
+
+
+@csrf_exempt
+def register_school(request):
+    try:
+        if request.method == 'POST':
+            name = request.POST.get('name')
+            school_id = request.POST.get('school_id')
+            school_name = request.POST.get('school_name')
+            school_address = request.POST.get('school_address')
+            school_type = request.POST.get('school_type')
+            contact_number = request.POST.get('contact_number')
+            email_address = request.POST.get('email_address')
+            password = request.POST.get('password')
+            confirm_password = request.POST.get('confirm_password')
+            school_logo = request.FILES.get('school_logo')
+
+            if password != confirm_password:
+                return JsonResponse({'status': 'error', 'message': 'Passwords do not match'}, status=400)
+            
+            verification =  models.VerificationLink.objects.filter(email=email_address).first()
+            
+            if verification:
+                if not verification.is_expired():
+                    return JsonResponse({'message': 'Please check your email or wait for 30 mins'})
+                else :
+                    verification.delete()
+                    school = models.School.objects.filter(email_address=email_address).first()
+                    if school:
+                        school.delete()
+                
+            
+            # Check if the already school exist
+            if models.School.objects.filter(email_address=email_address).exists():
+                return JsonResponse({ 'message': 'School already exists'}, status=400)
+
+            if models.School.objects.filter(school_id=school_id).exists():
+                return JsonResponse({ 'message': 'School ID already exists'}, status=400)
+            
+
+            school = models.School.objects.create(
+                name=name,
+                school_id=school_id,
+                school_name=school_name,
+                school_address=school_address,
+                school_type=school_type,
+                contact_number=contact_number,
+                email_address=email_address,
+                password=password,
+            )
+            
+            if school_logo:
+                school.school_logo = school_logo
+            
+            school.action_id = str(uuid4())
+            school.save()
+            
+            verification = models.VerificationLink.generate_link(email_address)
+            
+            # verification_code , template , masbate_locker_email , subject
+            Thread(target=my_utils.send_verification_email, args=(
+                email_address, verification , 'email-template.html', settings.EMAIL_HOST_USER, 'School Registration' , request
+            )).start()
+            
+
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Check your email for verification link in order to activate your account',
+            },status=200)
+            
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+
 
 @csrf_exempt
 def register_people(request):

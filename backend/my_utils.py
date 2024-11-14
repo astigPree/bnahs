@@ -187,7 +187,7 @@ def get_kra_breakdown_of_a_teacher(employee_id : str):
         }
     """
 
-    teacher = models.People.objects.filter(employee_id=employee_id).first()
+    teacher = models.People.objects.filter( is_accepted = True, employee_id=employee_id).first()
     rpms_attachments = models.RPMSAttachment.objects.filter(employee_id=employee_id)
     breakdown = {
         'kra' : [],
@@ -210,7 +210,7 @@ def get_kra_breakdown_of_school(school_id: str):
     }
     """
     school = models.School.objects.filter(school_id=school_id).first()
-    teachers = models.People.objects.filter(school_id=school.id)
+    teachers = models.People.objects.filter(is_accepted = True, school_id=school.id)
     breakdown = {
         'kra': [],
         'averages': []

@@ -81,6 +81,8 @@ def register_people(request):
             people.fullname = f'{people.first_name} {people.middle_name} {people.last_name}'
             job_started_date = my_utils.parse_date_string(job_started)
             people.job_started = job_started_date
+            people.is_accepted = True
+            people.is_verified = True
             
             people.save()
 
@@ -95,6 +97,60 @@ def register_people(request):
         return JsonResponse({'status': 'error', 'message': f'Something went wrong : {e}'}, status=500)
     
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+
+@csrf_exempt
+def add_people_by_school(request):
+    try:
+        if request.method == 'POST':
+            
+            school_user = models.School.objects.filter(email_address=request.user.username).first()
+            if not school_user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            employee_id = request.POST.get('employee_id')
+            if not employee_id:
+                return JsonResponse({
+                    'message' : 'Please provide employee_id',
+                }, status=400)
+            
+            people = models.People.objects.filter(employee_id=employee_id).first()
+            if not people:
+                return JsonResponse({
+                    'message' : 'Pople not found',
+                }, status=400)
+            
+
+            people.is_accepted = True
+            people.action_id = str(uuid4())
+            people.save()
+            
+            user = User.objects.create(
+                username=people.employee_id,
+                password=make_password(people.password),
+            )
+            
+            
+            Thread(target=my_utils.send_account_info_email, args=(
+                people.email_address, people.employee_id, people.password , 'registered-email.html' , settings.EMAIL_HOST_USER, f'{people.role} Registration'
+                )).start()
+            
+            return JsonResponse({
+                'message' : 'People verified successfully',
+            }, status=200)
+            
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
 
 @csrf_exempt
 def login_school(request):
@@ -292,7 +348,7 @@ def get_all_school_faculty(request):
                     'message' : 'User not found',
                     }, status=400)
             
-            people = models.People.objects.filter(school_id=user.school_id).order_by('-created_at')
+            people = models.People.objects.filter(is_accepted = True, school_id=user.school_id).order_by('-created_at')
             people_informations = [person.get_information() for person in people]
             people_informations.append(user.get_school_information())
             return JsonResponse({
@@ -322,7 +378,7 @@ def get_number_of_school_faculty(request):
                     'message' : 'User not found',
                     }, status=400)
 
-            people = models.People.objects.filter(school_id=user.school_id, role="Teacher")
+            people = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role="Teacher")
 
             return JsonResponse({
                 'number_of_school_faculty' : len(people)
@@ -350,7 +406,7 @@ def get_number_of_school_faculty_evaluated(request):
                     'message' : 'User not found',
                     }, status=400)
 
-            people = models.People.objects.filter(school_id=user.school_id, role="Teacher", is_evaluated=True)
+            people = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role="Teacher", is_evaluated=True)
 
             return JsonResponse({
                 'number_of_school_faculty_evaluated' : len(people)
@@ -378,7 +434,7 @@ def get_number_of_school_faculty_not_evaluated(request):
                     'message' : 'User not found',
                     }, status=400)
 
-            people = models.People.objects.filter(school_id=user.school_id, role="Teacher", is_evaluated=False)
+            people = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role="Teacher", is_evaluated=False)
 
             return JsonResponse({
                 'number_of_school_faculty_evaluated' : len(people)
@@ -415,7 +471,7 @@ def search_school_faculty(request):
                     }, status=400)
             
             
-            people = models.People.objects.filter(fullname__icontains=query , school_id=user.school_id).all()
+            people = models.People.objects.filter(is_accepted = True, fullname__icontains=query , school_id=user.school_id).all()
             
             people_information = [person.get_information() for person in people]
             
@@ -455,7 +511,7 @@ def get_search_school_faculty_for_mentioning(request):
                     }, status=400)
                 
             
-            search_people = models.People.objects.filter(school_id=user.school_id, fullname__icontains=query) # Search by name
+            search_people = models.People.objects.filter(is_accepted = True, school_id=user.school_id, fullname__icontains=query) # Search by name
             if not search_people:
                 return JsonResponse({
                     'people' : [],
@@ -548,7 +604,7 @@ def school_get_teacher_recommendations(request):
             number_of_termination = 0
             number_of_retention = 0
             
-            teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher')
+            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher')
             for teacher in teachers:
                 result = my_utils.get_recommendation_result(employee_id=teacher.employee_id)
                 if result == 'PROMOTION':
@@ -593,7 +649,7 @@ def school_get_annual_ratings(request):
                     'message' : 'User not found',
                     }, status=400)
             
-            teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher')
+            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher')
             labels = []
             ratings = []
             for teacher in teachers:
@@ -644,7 +700,7 @@ def school_get_performance_true_year(request):
             
             
             teacher_performance = {}
-            teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher')
+            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher')
             for teacher in teachers:
                 teacher_performance[teacher.employee_id] = {}
                 teacher_performance[teacher.employee_id]['Name'] = teacher.fullname
@@ -685,3 +741,62 @@ def school_get_performance_true_year(request):
     return JsonResponse({
         'message' : 'Invalid request',
         }, status=400)
+
+
+
+@csrf_exempt
+def reject_people_by_school(request):
+    try:
+        if request.method == 'POST':
+            
+            user = models.School.objects.filter(email_address=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            employee_id = request.POST.get('employee_id')
+            reason = request.POST.get('reason')
+            if not employee_id:
+                return JsonResponse({
+                    'message' : 'employee_id is required',
+                }, status=400)
+                
+            if not reason:
+                return JsonResponse({
+                    'message' : 'Reason is required',
+                    'reason' : reason
+                }, status=400)
+            
+            rejected_pople = models.People.objects.filter(employee_id=employee_id , school_id=user.school_id).first()
+            if not rejected_pople:
+                return JsonResponse({
+                    'message' : 'People not found',
+                }, status=400)
+            
+            role = rejected_pople.role 
+            rejected_pople.is_accepted = False
+            rejected_pople.is_declined = True
+            rejected_pople.save()
+            peoples = models.People.objects.filter(is_accepted=True , school_id=user.school_id).order_by('-created_at')
+            
+            Thread(target=my_utils.send_declined_reason, args=(
+                rejected_pople.email_address, reason  , 'email_declined_teacher.html' , settings.EMAIL_HOST_USER, f'{role} Declined', request
+                )).start()
+            
+            return JsonResponse({
+                'message' : 'People rejected successfully',
+                'peoples' : [people.get_information() for people in peoples],
+            }, status=200)
+            
+
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400) 
+
+

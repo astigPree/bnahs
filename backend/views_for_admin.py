@@ -342,7 +342,7 @@ def get_total_number_of_teachers_in_all_school(request):
                     'message' : 'User is not an admin',
                 }, status=400)
 
-            teachers = models.People.objects.filter(role='Teacher')
+            teachers = models.People.objects.filter(is_accepted = True, role='Teacher')
             
             return JsonResponse({
                 'total_teachers' :  teachers.count() if teachers else 0,
@@ -377,7 +377,7 @@ def number_of_evaluation_conducted(request):
                     'message' : 'User is not an admin',
                 }, status=400)
               
-            teachers = models.People.objects.filter(role='Teacher', is_evaluated=True)
+            teachers = models.People.objects.filter(is_accepted = True, role='Teacher', is_evaluated=True)
             
             return JsonResponse({
                 'total_evaluation_conducted' : teachers.count() if teachers else 0,
@@ -411,7 +411,7 @@ def number_of_pending_evaluation(request):
                     'message' : 'User is not an admin',
                 }, status=400)
                 
-            teachers = models.People.objects.filter(role='Teacher', is_evaluated=False)  
+            teachers = models.People.objects.filter(is_accepted = True, role='Teacher', is_evaluated=False)  
 
             return JsonResponse({
                 'total_pending_evaluation' : teachers.count() if teachers else 0,
@@ -449,9 +449,9 @@ def evaluation_submission_rate(request):
             schools = models.School.objects.filter(is_accepted=True)
             for school in schools:
                 data[school.name] = {}
-                data[school.name]['teachers'] = models.People.objects.filter(school_id=school.school_id, role='Teacher').count()
-                data[school.name]['evaluated'] = models.People.objects.filter(school_id=school.school_id, role='Teacher', is_evaluated=True).count()
-                data[school.name]['pending'] = models.People.objects.filter(school_id=school.school_id, role='Teacher', is_evaluated=False).count()
+                data[school.name]['teachers'] = models.People.objects.filter(is_accepted = True, school_id=school.school_id, role='Teacher').count()
+                data[school.name]['evaluated'] = models.People.objects.filter(is_accepted = True, school_id=school.school_id, role='Teacher', is_evaluated=True).count()
+                data[school.name]['pending'] = models.People.objects.filter(is_accepted = True, school_id=school.school_id, role='Teacher', is_evaluated=False).count()
             
             
             return JsonResponse({
@@ -489,7 +489,7 @@ def all_teacher_recommendations(request):
             number_of_termination = 0
             number_of_retention = 0
             
-            teachers = models.People.objects.filter(role='Teacher')
+            teachers = models.People.objects.filter(is_accepted = True, role='Teacher')
             for teacher in teachers:
                 result = my_utils.get_recommendation_result(employee_id=teacher.employee_id)
                 if result == 'PROMOTION':
@@ -761,8 +761,8 @@ def create_rating_sheet(request):
                 }, status=400)
                 
             for school in schools:
-                teachers = models.People.objects.filter(role='Teacher', school_id=school.school_id)
-                evaluator = models.People.objects.filter(role='Evaluator', school_id=school.school_id).first()
+                teachers = models.People.objects.filter(is_accepted = True, role='Teacher', school_id=school.school_id)
+                evaluator = models.People.objects.filter(is_accepted = True, role='Evaluator', school_id=school.school_id).first()
                 
                 for teacher in teachers:
                     #   school : models.School , evaluator : models.People , 
@@ -1135,6 +1135,7 @@ def create_ipcrf_form(request):
             for school in schools:
                 if position == 'Proficient':
                     teachers = models.People.objects.filter(
+                        is_accepted = True, 
                         role='Teacher', 
                         school_id=school.school_id, 
                         position__in=my_utils.position['Proficient']
@@ -1144,6 +1145,7 @@ def create_ipcrf_form(request):
                     
                 elif position == "Highly Proficient":
                     teachers = models.People.objects.filter(
+                        is_accepted = True, 
                         role='Teacher', 
                         school_id=school.school_id, 
                         position__in=my_utils.position['Highly Proficient']
@@ -1218,7 +1220,7 @@ def get_annual_ratings(request):
             for school in schools:
                 school_ratings[school.school_id] = {}
                 school_ratings[school.school_id]['Name'] = school.name
-                teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher')
+                teachers = models.People.objects.filter( is_accepted = True, school_id=user.school_id, role='Teacher')
                 teacher_ratings = []
                 for teacher in teachers: 
                     ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()

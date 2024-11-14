@@ -17,6 +17,8 @@ urlpatterns = [
     
     
     path('register/school/', views.register_school), # WORKING
+    path('register/people/', views.register_people), # NEW API
+    
     
     path('user/forms/get/cot/', views.get_cot_forms),
     path('user/forms/get/ipcrf/part1/proficient/', views.get_form_for_ipcrf_part_1_proficient),
@@ -66,8 +68,9 @@ urlpatterns = [
     path('admin/school/teacher/get/annual/ratings/', views.get_annual_ratings),  
     
     # ============== School Path ================
-    path('login_school/', views.login_school), # WORKING
+    path('login_school/', views.login_school), # WORKING 
     path('school/register/people/', views.register_people), # WORKING
+    path('school/people/add', views.add_people_by_school), # NEW API
     path('school/feeds/', views.get_school_feeds), # WORKING
     path('school/post/', views.school_post), # WORKING
     path('school/faculties/', views.get_all_school_faculty), 
@@ -84,6 +87,9 @@ urlpatterns = [
     
     path('school/teachers/get/annual/ratings/', views.school_get_annual_ratings),  
     path('school/teachers/get/performance/', views.school_get_performance_true_year),  
+    
+    
+    path('school/people/reject/', views.reject_people_by_school), # NEW API
     
     # ============== Evaluator Path ================
     path('login_evaluator/', views.login_evaluator), # WORKING

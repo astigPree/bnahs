@@ -10,7 +10,7 @@ from backend import models
 # Create your views here.
 
 @csrf_exempt
-def verify_school(request, token):
+def verify_school_people(request, token):
     
     try:
         
@@ -33,14 +33,16 @@ def verify_school(request, token):
                 }, status=400)
         
         
-        school = models.School.objects.filter(email_address=verification.email).first()
-        if not school:
-            return JsonResponse({
-                'message' : 'School not found',
-                }, status=400)
+        user = models.School.objects.filter(email_address=verification.email).first()
+        if not user:
+            user = models.People.objects.filter(email_address=verification.email).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400) 
         
-        school.is_verified = True
-        school.save()
+        user.is_verified = True
+        user.save()
         verification.delete()
         
         # return JsonResponse({

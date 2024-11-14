@@ -1207,6 +1207,11 @@ class People(models.Model):
             'grade_level' : self.grade_level,
             'department' : self.department,
             'is_evaluated' : self.is_evaluated,
+            'is_deactivated' : self.is_deactivated,
+            'created_at' : self.created_at,
+            'is_declined' : self.is_declined,
+            'is_verified' : self.is_verified,
+            'is_accepted' : self.is_accepted,
         }
     
     def working_years(self):
