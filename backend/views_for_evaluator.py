@@ -6,9 +6,9 @@ from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import People
-from django.contrib.auth import authenticate, login, logout
-from django.db.models.functions import ExtractYear
-from django.db.models import Count
+from django.contrib.auth import authenticate, login, logout 
+from datetime import datetime, timedelta
+from django.utils import timezone 
 
 from . import models, my_utils
 
@@ -880,25 +880,37 @@ def get_all_teacher_in_school(request):
             
             teachers_data = []
             for teacher in teachers:
-                data = teacher.get_information()
-                ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type="PART 1").first()
-                if ipcrf_1 : 
-                    data['is_evaluated_ipcrf'] = ipcrf_1.is_checked_by_evaluator
-                else:
-                    data['is_evaluated_ipcrf'] = False
-                cot = models.COTForm.objects.filter(evaluated_id=teacher.employee_id).first()
-                if cot : 
-                    data['is_evaluated_cot'] = cot.is_checked
-                else:
-                    data['is_evaluated_cot'] = False
-                rpms = models.RPMSAttachment.objects.filter(employee_id=teacher.employee_id).first()
-                if rpms : 
-                    data['is_evaluated_rpms'] = rpms.is_checked
-                else:
-                    data['is_evaluated_rpms'] = False
+                data = teacher.get_information() 
+                
+                one_year_ago = timezone.now() - timedelta(days=365)
+                ipcrf_forms_last_year = models.IPCRFForm.objects.filter(created_at__gte=one_year_ago , employee_id=teacher.employee_id).order_by('-created_at')
+                data['ipcrf_quarter'] = [  ]
+                if ipcrf_forms_last_year: 
+                    school_year = ""
+                    quarter = 1
+                    for form in ipcrf_forms_last_year:
+                        if len(school_year) == 0:
+                            school_year = form.school_year
+                            
+                        if school_year == form.school_year:
+                            data['ipcrf_quarter'].append({f"Quarter {quarter}" : form.get_information() })
+                            quarter += 1 
+                
+                cot = models.COTForm.objects.filter(created_at__gte=one_year_ago , evaluated_id=teacher.employee_id).order_by('-created_at').first()
+                data['cot_quarter'] = []
+                if cot:
+                    data['cot_quarter'].append({
+                        "Quarter 1" : cot.get_information()
+                    })
+                
+                rpms = models.RPMSAttachment.objects.filter(created_at__gte=one_year_ago , employee_id=teacher.employee_id).order_by('-created_at')
+                data['rpms_quarter'] = []
+                if rpms:
+                    data['rpms_quarter'].append({
+                        "Quarter 1" : [ rpm.get_information() for rpm in rpms]
+                    })
                 teachers_data.append(data)
-                    
-            
+                
             return JsonResponse({
                 'teachers' : teachers_data ,
             }, status=200)
