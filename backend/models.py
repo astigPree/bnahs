@@ -1299,7 +1299,7 @@ class People(models.Model):
             #     count += 1
             # if count > 0:
             #     return total_score / count
-            return scores["average_score"]
+            return scores["average_score"] if scores else 0
         return 0  # Return None if no recent form is found
 
 
