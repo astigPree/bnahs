@@ -725,21 +725,39 @@ def check_teacher_ipcrf_form_part_1_by_evaluator(request):
                 {
                     'ipcrf_id' : 'ipcrf_id',
                     'content' : {...} !Content/Checked of IPCRF form from teacher
+                    'total_score' : 0.328,
+                    'plus_factor' : numbers,
+                    'average_score' numbers,
                 }
             """
             
             connection_to_other = request.POST.get('ipcrf_id')
             content : dict[str , dict] = json.loads(request.POST.get('content', None))
+            rating = request.POST.get('total_score', None)
+            plus_factor = request.POST.get('plus_factor', None)
+            average_score = request.POST.get('average_score', None)
             
+            if not rating:
+                return JsonResponse({
+                    'message' : 'Rating not found',
+                }, status=400)
             if not connection_to_other:
                 return JsonResponse({
-                   'message' : 'Please provide IPCRF ID',
-                    }, status=400)
-            
+                    'message' : 'Connection to other not found',
+                }, status=400)
+            if not plus_factor:
+                return JsonResponse({
+                    'message' : 'Plus Factor score not found',
+                }, status=400)
+            if not average_score:
+                return JsonResponse({
+                    'message' : 'Average score not found',
+                }, status=400)
             if not content:
                 return JsonResponse({
-                    'message' : 'Content is required',
-                    }, status=400)
+                    'message' : 'Content not found',
+                }, status=400)
+             
             
             part_1 = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type="PART 1").order_by('-created_at').first()
             
@@ -760,8 +778,11 @@ def check_teacher_ipcrf_form_part_1_by_evaluator(request):
                     'message' : 'School not found',
                     }, status=400)
                 
-            my_utils.update_iprcf_form_part_1_by_teacher(
-                school=school, teacher=teacher, ipcrf_form=part_1, content=content    
+            part_1.evaluator_rating = rating
+            part_1.evaluator_plus_factor = plus_factor
+            part_1.evaluator_average_score = average_score
+            my_utils.update_ipcrf_form_part_1_by_evaluator(
+                 ipcrf_form=part_1, content=content    
             )
              
             if teacher:

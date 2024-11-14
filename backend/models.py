@@ -436,6 +436,10 @@ class IPCRFForm(models.Model):
     average_score = models.FloatField( blank=True, default=0.0) # Average Score
     plus_factor = models.FloatField( blank=True, default=0.0) # Plus Factor Score
     
+    evaluator_rating = models.FloatField( blank=True, default=0.0) # Rating
+    evaluator_average_score = models.FloatField( blank=True, default=0.0) # Average Score
+    evaluator_plus_factor = models.FloatField( blank=True, default=0.0) # Plus Factor Score
+    
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.created_at}"
     
@@ -452,6 +456,16 @@ class IPCRFForm(models.Model):
             'is_checked' : self.is_checked,
             'connection_to_other' : self.connection_to_other,
             'is_for_teacher_proficient' : self.is_for_teacher_proficient,
+            'status' : self.status,
+            'is_checked_by_evaluator' : self.is_checked_by_evaluator,
+            'is_expired' : self.is_expired,
+            'school_year' : self.school_year,
+            'rating' : self.rating,
+            'average_score' : self.average_score,
+            'plus_factor' : self.plus_factor,
+            'evaluator_rating' : self.evaluator_rating,
+            'evaluator_average_score' : self.evaluator_average_score,
+            'evaluator_plus_factor' : self.evaluator_plus_factor
         }
         
         # Find the evaluator
@@ -528,36 +542,41 @@ class IPCRFForm(models.Model):
             }
         }
         """
-        data = {}
-        content_for_teacher = self.content_for_teacher
-        if content_for_teacher:
-            for key in content_for_teacher:
-                data[key] = {}
-                total = 0
-                rates = []  # List of rates
+        # data = {}
+        # content_for_teacher = self.content_for_teacher
+        # if content_for_teacher:
+        #     for key in content_for_teacher:
+        #         data[key] = {}
+        #         total = 0
+        #         rates = []  # List of rates
                 
-                if 'QUALITY' in self.content_for_teacher[key]:
-                    quality_rate = self.content_for_teacher[key]['QUALITY']['Rate']
-                    data[key]['QUALITY'] = quality_rate
-                    total += int(quality_rate)
-                    rates.append(int(quality_rate))
+        #         if 'QUALITY' in self.content_for_teacher[key]:
+        #             quality_rate = self.content_for_teacher[key]['QUALITY']['Rate']
+        #             data[key]['QUALITY'] = quality_rate
+        #             total += int(quality_rate)
+        #             rates.append(int(quality_rate))
                 
-                if 'EFFICIENCY' in self.content_for_teacher[key]:
-                    efficiency_rate = self.content_for_teacher[key]['EFFICIENCY']['Rate']
-                    data[key]['EFFICIENCY'] = self.content_for_teacher[key]['EFFICIENCY']['Rate']
-                    total += int(efficiency_rate)
-                    rates.append(int(efficiency_rate))
+        #         if 'EFFICIENCY' in self.content_for_teacher[key]:
+        #             efficiency_rate = self.content_for_teacher[key]['EFFICIENCY']['Rate']
+        #             data[key]['EFFICIENCY'] = self.content_for_teacher[key]['EFFICIENCY']['Rate']
+        #             total += int(efficiency_rate)
+        #             rates.append(int(efficiency_rate))
                 
-                if 'TIMELINES' in self.content_for_teacher[key]:
-                    timelines_rate = self.content_for_teacher[key]['TIMELINES']['Rate']
-                    data[key]['TIMELINES'] = self.content_for_teacher[key]['TIMELINES']['Rate']
-                    total += int(timelines_rate)
-                    rates.append(int(timelines_rate))
+        #         if 'TIMELINES' in self.content_for_teacher[key]:
+        #             timelines_rate = self.content_for_teacher[key]['TIMELINES']['Rate']
+        #             data[key]['TIMELINES'] = self.content_for_teacher[key]['TIMELINES']['Rate']
+        #             total += int(timelines_rate)
+        #             rates.append(int(timelines_rate))
                 
-                data[key]['Total'] = total
-                data[key]['Average'] = total / len(rates) if rates else 0  # Avoid division by zero
+        #         data[key]['Total'] = total
+        #         data[key]['Average'] = total / len(rates) if rates else 0  # Avoid division by zero
 
-        return data
+        # return data
+        return {
+            "rating" : self.rating,
+            "average_score" : self.average_score,
+            "plus_factor" : self.plus_factor
+        }
     
     def getTeacherTotalAverage(self):
         if self.form_type == 'PART 1':
@@ -599,36 +618,42 @@ class IPCRFForm(models.Model):
 
         """        
         
-        data = {}
-        content_for_evaluator = self.content_for_evaluator
-        if content_for_evaluator:
-            for key in content_for_evaluator:
-                data[key] = {}
-                total = 0
-                rates = []  # List of rates
+        # data = {}
+        # content_for_evaluator = self.content_for_evaluator
+        # if content_for_evaluator:
+        #     for key in content_for_evaluator:
+        #         data[key] = {}
+        #         total = 0
+        #         rates = []  # List of rates
                 
-                if 'QUALITY' in self.content_for_evaluator[key]:
-                    quality_rate = self.content_for_evaluator[key]['QUALITY']['Rate']
-                    data[key]['QUALITY'] = quality_rate
-                    total += int(quality_rate)
-                    rates.append(int(quality_rate))
+        #         if 'QUALITY' in self.content_for_evaluator[key]:
+        #             quality_rate = self.content_for_evaluator[key]['QUALITY']['Rate']
+        #             data[key]['QUALITY'] = quality_rate
+        #             total += int(quality_rate)
+        #             rates.append(int(quality_rate))
                 
-                if 'EFFICIENCY' in self.content_for_evaluator[key]:
-                    efficiency_rate = self.content_for_evaluator[key]['EFFICIENCY']['Rate']
-                    data[key]['EFFICIENCY'] = self.content_for_evaluator[key]['EFFICIENCY']['Rate']
-                    total += int(efficiency_rate)
-                    rates.append(int(efficiency_rate))
+        #         if 'EFFICIENCY' in self.content_for_evaluator[key]:
+        #             efficiency_rate = self.content_for_evaluator[key]['EFFICIENCY']['Rate']
+        #             data[key]['EFFICIENCY'] = self.content_for_evaluator[key]['EFFICIENCY']['Rate']
+        #             total += int(efficiency_rate)
+        #             rates.append(int(efficiency_rate))
                 
-                if 'TIMELINES' in self.content_for_evaluator[key]:
-                    timelines_rate = self.content_for_evaluator[key]['TIMELINES']['Rate']
-                    data[key]['TIMELINES'] = self.content_for_evaluator[key]['TIMELINES']['Rate']
-                    total += int(timelines_rate)
-                    rates.append(int(timelines_rate))
+        #         if 'TIMELINES' in self.content_for_evaluator[key]:
+        #             timelines_rate = self.content_for_evaluator[key]['TIMELINES']['Rate']
+        #             data[key]['TIMELINES'] = self.content_for_evaluator[key]['TIMELINES']['Rate']
+        #             total += int(timelines_rate)
+        #             rates.append(int(timelines_rate))
                 
-                data[key]['Total'] = total
-                data[key]['Average'] = total / len(rates) if rates else 0  # Avoid division by zero
+        #         data[key]['Total'] = total
+        #         data[key]['Average'] = total / len(rates) if rates else 0  # Avoid division by zero
 
-        return data
+        # return data
+        
+        return {
+            "average_score" : self.evaluator_average_score,
+            "plus_factor" : self.evaluator_plus_factor,
+            "rating" : self.evaluator_rating,
+        }
     
     
     def getEvaluatorTotalAverage(self):
@@ -1267,13 +1292,14 @@ class People(models.Model):
             # Assuming the form has a method to get the average score
             scores = recent_form.getEvaluatorPart1Scores()
             # Calculate the overall average from the scores
-            total_score = 0
-            count = 0
-            for key, value in scores.items():
-                total_score += value['Average']
-                count += 1
-            if count > 0:
-                return total_score / count
+            # total_score = 0
+            # count = 0
+            # for key, value in scores.items():
+            #     total_score += value['Average']
+            #     count += 1
+            # if count > 0:
+            #     return total_score / count
+            return scores["average_score"]
         return 0  # Return None if no recent form is found
 
 

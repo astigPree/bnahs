@@ -213,24 +213,38 @@ def teacher_recommendations(request ):
             termination_count = 0
             overall_scores = []
             detailed_scores = []  # To hold detailed score information
-
+            
             # Classify scores
             for score in scores:
-                for _, value in score.items():
-                    average_score = value['Average']    
-                    overall_scores.append(average_score)
-                    category = my_utils.classify_ipcrf_score(average_score if average_score else 0)
-                    detailed_scores.append({
+                # for _, value in score.items():
+                #     average_score = value['Average']    
+                #     overall_scores.append(average_score)
+                #     category = my_utils.classify_ipcrf_score(average_score if average_score else 0)
+                #     detailed_scores.append({
+                #         'Average': average_score,
+                #         'Category': category
+                #     })
+                #     if category == 'Outstanding':
+                #         promotion_count += 1
+                #     elif category in ['Very Satisfactory', 'Satisfactory']:
+                #         retention_count += 1
+                #     elif category in ['Unsatisfactory', 'Poor']:
+                #         termination_count += 1
+                average_score = score['average_score']
+                overall_scores.append(average_score)
+                category = my_utils.classify_ipcrf_score(average_score if average_score else 0)
+                detailed_scores.append({
                         'Average': average_score,
                         'Category': category
                     })
-                    if category == 'Outstanding':
+                if category == 'Outstanding':
                         promotion_count += 1
-                    elif category in ['Very Satisfactory', 'Satisfactory']:
+                elif category in ['Very Satisfactory', 'Satisfactory']:
                         retention_count += 1
-                    elif category in ['Unsatisfactory', 'Poor']:
+                elif category in ['Unsatisfactory', 'Poor']:
                         termination_count += 1
-
+                
+                
             # Calculate percentages
             total = len(overall_scores)
             promotion_percentage = promotion_count / total * 100 if total > 0 else 0
@@ -342,9 +356,11 @@ def teacher_performance(request ):
                     performances[year] = {'Scores': [], 'Total': 0}
                 
                 scores = attachment.getEvaluatorPart1Scores()
-                for key, value in scores.items():
-                    if 'Average' in value:
-                        performances[year]['Scores'].append(value['Average'])
+                performances[year]['Score'] = scores['average_score']
+                # for key, value in scores.items():
+                    # if 'Average' in value:
+                    #     performances[year]['Scores'].append(value['Average'])
+                    
             
             # Calculate the total for each year
             years = sorted(performances.keys())

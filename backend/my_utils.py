@@ -141,17 +141,26 @@ def get_recommendation_result(employee_id : str):
 
     # Classify scores
     for score in scores:
-        for _, value in score.items():
-            average_score = value['Average']
-            overall_scores.append(average_score)
-            category = classify_ipcrf_score(average_score if average_score else 0) 
-            if category == 'Outstanding':
+        # for _, value in score.items():
+        #     average_score = value['Average']
+        #     overall_scores.append(average_score)
+        #     category = classify_ipcrf_score(average_score if average_score else 0) 
+        #     if category == 'Outstanding':
+        #         promotion_count += 1
+        #     elif category in ['Very Satisfactory', 'Satisfactory']:
+        #         retention_count += 1
+        #     elif category in ['Unsatisfactory', 'Poor']:
+        #         termination_count += 1
+        average_score = score['average_score']
+        overall_scores.append(average_score)
+        category = classify_ipcrf_score(average_score if average_score else 0)
+        if category == 'Outstanding':
                 promotion_count += 1
-            elif category in ['Very Satisfactory', 'Satisfactory']:
+        elif category in ['Very Satisfactory', 'Satisfactory']:
                 retention_count += 1
-            elif category in ['Unsatisfactory', 'Poor']:
+        elif category in ['Unsatisfactory', 'Poor']:
                 termination_count += 1
-
+        
     # Calculate percentages
     total = len(overall_scores)
     promotion_percentage = promotion_count / total * 100 if total > 0 else 0
@@ -421,7 +430,7 @@ def create_ipcrf_form_highly_proficient(school : models.School , teacher : model
 
 
 def update_ipcrf_form_part_1_by_evaluator(
-    school : models.School, teacher : models.People , ipcrf_form : models.IPCRFForm,
+    ipcrf_form : models.IPCRFForm,
     content : dict[str, dict]
     ):
     
