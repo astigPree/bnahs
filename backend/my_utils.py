@@ -138,7 +138,7 @@ def get_recommendation_result(employee_id : str):
     retention_count = 0
     termination_count = 0
     overall_scores = []
-
+    
     # Classify scores
     for score in scores:
         # for _, value in score.items():

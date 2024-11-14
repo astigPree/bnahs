@@ -213,9 +213,10 @@ def teacher_recommendations(request ):
             termination_count = 0
             overall_scores = []
             detailed_scores = []  # To hold detailed score information
-            
+            print("Scores : ", scores)
             # Classify scores
             for score in scores:
+                print("This is the score : ", score)
                 # for _, value in score.items():
                 #     average_score = value['Average']    
                 #     overall_scores.append(average_score)
