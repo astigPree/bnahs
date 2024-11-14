@@ -212,11 +212,9 @@ def teacher_recommendations(request ):
             retention_count = 0
             termination_count = 0
             overall_scores = []
-            detailed_scores = []  # To hold detailed score information
-            print("Scores : ", scores)
+            detailed_scores = []  # To hold detailed score information 
             # Classify scores
-            for score in scores:
-                print("This is the score : ", score)
+            for score in scores: 
                 # for _, value in score.items():
                 #     average_score = value['Average']    
                 #     overall_scores.append(average_score)
@@ -231,7 +229,7 @@ def teacher_recommendations(request ):
                 #         retention_count += 1
                 #     elif category in ['Unsatisfactory', 'Poor']:
                 #         termination_count += 1
-                average_score = score['average_score']
+                average_score = score.get('average_score', 0) if score else 0
                 overall_scores.append(average_score)
                 category = my_utils.classify_ipcrf_score(average_score if average_score else 0)
                 detailed_scores.append({
@@ -357,7 +355,7 @@ def teacher_performance(request ):
                     performances[year] = {'Scores': [], 'Total': 0}
                 
                 scores = attachment.getEvaluatorPart1Scores()
-                performances[year]['Score'] = scores['average_score']
+                performances[year]['Score'] =  scores.get('average_score', 0) if scores else 0
                 # for key, value in scores.items():
                     # if 'Average' in value:
                     #     performances[year]['Scores'].append(value['Average'])
