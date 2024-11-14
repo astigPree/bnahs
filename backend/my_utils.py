@@ -151,7 +151,10 @@ def get_recommendation_result(employee_id : str):
         #         retention_count += 1
         #     elif category in ['Unsatisfactory', 'Poor']:
         #         termination_count += 1
-        average_score = score.get('average_score', 0) if score else 0
+        if score is not None:
+            average_score = score.get('average_score', 0)
+        else :
+            average_score = 0 
         overall_scores.append(average_score)
         category = classify_ipcrf_score(average_score if average_score else 0)
         if category == 'Outstanding':
