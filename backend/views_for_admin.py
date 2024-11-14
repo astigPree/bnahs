@@ -761,23 +761,21 @@ def create_rating_sheet(request):
                 }, status=400)
                 
             for school in schools:
-                observers = models.People.objects.filter(role='Evaluator', school_id=school.school_id) 
-                if not observers:
-                    return JsonResponse({
-                        'message' : 'Observers not found',
-                    }, status=400)
+                teachers = models.People.objects.filter(role='Teacher', school_id=school.school_id)
+                evaluator = models.People.objects.filter(role='Evaluator', school_id=school.school_id).first()
                 
-                for observer in observers:
+                for teacher in teachers:
                     #   school : models.School , evaluator : models.People , 
                     #     subject : str , cot_date : str, quarter : str, cot_type : str, 
                     #     school_year : str ):
                     my_utils.create_cot_form(
-                        school=school, 
-                        evaluator=observer,  
+                        school=school,
+                        evaluator=evaluator, 
+                        teacher=teacher,
                         subject='', 
                         cot_date='', 
                         quarter=f'{quarter}',
-                        cot_type='Proficient' if my_utils.is_proficient_faculty(observer) else 'Highly Proficient',
+                        cot_type='Proficient' if my_utils.is_proficient_faculty(evaluator) else 'Highly Proficient',
                         school_year=school_year
                     )
             
