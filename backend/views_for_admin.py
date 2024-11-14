@@ -629,7 +629,7 @@ def reject_school(request):
             schools = models.School.objects.filter(is_accepted=True).order_by('-created_at')
             
             Thread(target=my_utils.send_declined_reason, args=(
-                rejected_school.email_address, reason  , 'email_declined.html' , settings.EMAIL_HOST_USER, 'School Declined', request
+                rejected_school.email_address, reason  , 'email_declined_school.html' , settings.EMAIL_HOST_USER, 'School Declined', request
                 )).start()
             
             return JsonResponse({

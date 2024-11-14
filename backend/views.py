@@ -823,3 +823,102 @@ def get_user_by_action_id(request):
         'message' : 'Invalid request',
         }, status=400) 
 
+@csrf_exempt
+def register_people(request):
+    try:
+        if request.method == 'POST':
+            # employee_id = request.POST.get('employee_id')
+            # school_id = request.POST.get('school_id')
+            # school_name = request.POST.get('school_name')
+            # school_address = request.POST.get('school_address')
+            # school_type = request.POST.get('school_type')
+            # contact_number = request.POST.get('contact_number')
+            # email_address = request.POST.get('email_address')
+            # password = request.POST.get('password')
+            # confirm_password = request.POST.get('confirm_password')
+            # school_logo = request.FILES.get('school_logo')
+            
+            role = request.POST.get('role')
+            school_id = request.POST.get('school_id')
+            employee_id = request.POST.get('employee_id')
+            first_name = request.POST.get('first_name')
+            middle_name = request.POST.get('middle_name')
+            last_name = request.POST.get('last_name')
+            email_address = request.POST.get('email_address')
+            position = request.POST.get('position')
+            job_started = request.POST.get('job_started')
+            grade_level = request.POST.get('grade_level')
+            department = request.POST.get('department')
+            password = request.POST.get('password')
+            confirm_password = request.POST.get('confirm_password')
+
+
+            if password != confirm_password:
+                return JsonResponse({'status': 'error', 'message': 'Passwords do not match'}, status=400)
+            
+            
+            if not models.School.objects.filter(school_id=school_id).exist():
+                return JsonResponse({ 'message': 'School does not exist'}, status=400)
+            
+            # Check if the already people exist
+            if models.People.objects.filter(email_address=email_address , role=role).exists():
+                return JsonResponse({ 'message': 'School already exists'}, status=400)
+
+            if models.People.objects.filter(school_id=school_id , role=role).exists():
+                return JsonResponse({ 'message': 'People ID already exists'}, status=400)
+            
+            
+            verification =  models.VerificationLink.objects.filter(email=email_address).first()
+            
+            if verification:
+                if not verification.is_expired():
+                    return JsonResponse({'message': 'Please check your email or wait for 30 mins'})
+                else :
+                    verification.delete()
+                    school = models.People.objects.filter(email_address=email_address).first()
+                    if school:
+                        school.delete()
+            
+            people = People.objects.create(
+                role=role,
+                school_id=school_id,
+                employee_id=employee_id,
+                first_name=first_name,
+                middle_name=middle_name,
+                last_name=last_name,
+                email_address=email_address,
+                position=position,
+                grade_level=grade_level,
+                department=department,
+                password=password,  # Storing plain password temporarily
+            )
+            
+            people.action_id = str(uuid4())
+            people.school_id = school_id
+            people.fullname = f'{people.first_name} {people.middle_name} {people.last_name}'
+            job_started_date = my_utils.parse_date_string(job_started)
+            people.job_started = job_started_date
+            
+            people.save()
+            
+             
+            verification = models.VerificationLink.generate_link(email_address)
+            
+            # verification_code , template , masbate_locker_email , subject
+            Thread(target=my_utils.send_verification_email, args=(
+                email_address, verification , 'email-template.html', settings.EMAIL_HOST_USER, f'{role} Registration' , request
+            )).start()
+            
+
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Check your email for verification link in order to activate your account',
+            },status=200)
+            
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
