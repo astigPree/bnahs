@@ -85,10 +85,15 @@ def get_feeds(request):
                     'message' : 'User not found',
                 }, status=400)
             
+            school = models.School.objects.filter(school_id=user.school_id).first()
+            if not school:
+                return JsonResponse({
+                    'message' : 'School not found',
+                }, status=400)
             
             
             feeds = {}
-            posts = models.Post.objects.filter(post_owner=user.school_action_id).order_by('-created_at')
+            posts = models.Post.objects.filter(post_owner=school.action_id).order_by('-created_at')
             for post in posts:
                 comments = models.Comment.objects.filter(post_id=post.post_id).order_by('-created_at')
                 attachments = models.PostAttachment.objects.filter(post_id=post.post_id).order_by('-created_at')

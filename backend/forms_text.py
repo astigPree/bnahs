@@ -379,78 +379,21 @@ def form_for_ipcrf_part_3_proficient():
     plans = {}
     
     plans["A"] = {
-                "Strenghts" : {
-                    "1" : {
-                        "QUALITY" : "",
-                        "EFFICIENCY" : "",
-                        "TIMELINES" : ""
-                    },
-                    "2" : {
-                        "QUALITY" : "",
-                        "EFFICIENCY" : "",
-                        "TIMELINES" : ""
-                    },
-                },
-                "Development Needs" : {
-                    "1" : {
-                        "QUALITY" : "",
-                        "EFFICIENCY" : "",
-                        "TIMELINES" : ""
-                    },
-                    "2" : {
-                        "QUALITY" : "",
-                        "EFFICIENCY" : "",
-                        "TIMELINES" : ""
-                    },
-                },
-                "Learning Objectives": {
-                    "1" : "",
-                    "2" : "",
-                },
-                "Intervention": {
-                    "1" : "",
-                    "2" : "",
-                },
-                "Timeline": {
-                    "1" : "",
-                    "2" : "",
-                },
-                "Resources Needs": {
-                    "1" : "",
-                    "2" : "",
-                },
-                
+                "Strenghts" : [],
+                "Development Needs" : [],
+                "Learning Objectives": "",
+                "Intervention": "",
+                "Timeline": "",
+                "Resources Needs": "", 
             },
     
-    plans["B"] = {
-                "Selections" : {
-                    "1" : {
-                        "Title" : "SELF-MANAGEMENT",
-                        "Selected" : [
-                            "1" , "2", "3"
-                        ]
-                    },
-                    "2" : {
-                        "Title" : "Professionalism and Ethics",
-                        "Selected" : []
-                    },
-                },
-                "Learning Objectives": {
-                    "1" : "Learning Objectives Learning Objectives Learning Objectives.",
-                    "2" : "Learning Objectives Learning Objectives Learning Objectives.",
-                },
-                "Intervention": {
-                    "1" : "Learning Objectives Learning Objectives Learning Objectives.",
-                    "2" : "Learning Objectives Learning Objectives Learning Objectives.",
-                },
-                "Timeline": {
-                    "1" : "Learning Objectives Learning Objectives Learning Objectives.",
-                    "2" : "Learning Objectives Learning Objectives Learning Objectives.",
-                },
-                "Resources Needs": {
-                    "1" : "Learning Objectives Learning Objectives Learning Objectives.",
-                    "2" : "Learning Objectives Learning Objectives Learning Objectives.",
-                },
+    plans["B"] = { 
+                "Strenghts" : [],
+                "Development Needs" : [],
+                "Learning Objectives": "",
+                "Intervention": "",
+                "Timeline": "",
+                "Resources Needs": "", 
             }
      
 
