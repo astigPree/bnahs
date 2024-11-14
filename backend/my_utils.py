@@ -130,7 +130,7 @@ def parse_date_string(date_string):
 
 
 def get_recommendation_result(employee_id : str):
-    ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=employee_id, form_type='PART 1')
+    ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=employee_id, form_type='PART 1').order_by('-created_at')
     scores = [ form.getEvaluatorPart1Scores() for form in ipcrf_forms ]
             
     # Initialize counters

@@ -648,13 +648,19 @@ class IPCRFForm(models.Model):
         #         data[key]['Average'] = total / len(rates) if rates else 0  # Avoid division by zero
 
         # return data
-        
+         
+        average_score = self.evaluator_average_score if self.evaluator_average_score else 0
+        plus_factor = self.evaluator_plus_factor if self.evaluator_plus_factor else 0
+        rating = self.evaluator_rating if self.evaluator_rating else 0
+
+        print(f"average_score: {average_score}, plus_factor: {plus_factor}, rating: {rating}")
+
         return {
-            "average_score" : self.evaluator_average_score if self.evaluator_average_score else 0,
-            "plus_factor" : self.evaluator_plus_factor if self.evaluator_plus_factor else 0,
-            "rating" : self.evaluator_rating if self.evaluator_rating else 0,
+            "average_score": average_score,
+            "plus_factor": plus_factor,
+            "rating": rating,
         }
-    
+
     
     def getEvaluatorTotalAverage(self):
         if self.form_type == 'PART 1':
