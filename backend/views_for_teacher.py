@@ -232,6 +232,7 @@ def teacher_recommendations(request ):
                 #         retention_count += 1
                 #     elif category in ['Unsatisfactory', 'Poor']:
                 #         termination_count += 1
+                print("Score : ", type(score) , " === ", score)
                 average_score = score.get('average_score', 0) if score and type(score) == dict else 0
                 overall_scores.append(average_score)
                 category = my_utils.classify_ipcrf_score(average_score if average_score else 0)
