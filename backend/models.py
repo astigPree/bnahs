@@ -573,9 +573,9 @@ class IPCRFForm(models.Model):
 
         # return data
         return {
-            "rating" : self.rating,
-            "average_score" : self.average_score,
-            "plus_factor" : self.plus_factor
+            "rating" : self.rating if self.rating else 0,
+            "average_score" : self.average_score if self.average_score else 0,
+            "plus_factor" : self.plus_factor if self.plus_factor else 0
         }
     
     def getTeacherTotalAverage(self):
@@ -650,9 +650,9 @@ class IPCRFForm(models.Model):
         # return data
         
         return {
-            "average_score" : self.evaluator_average_score,
-            "plus_factor" : self.evaluator_plus_factor,
-            "rating" : self.evaluator_rating,
+            "average_score" : self.evaluator_average_score if self.evaluator_average_score else 0,
+            "plus_factor" : self.evaluator_plus_factor if self.evaluator_plus_factor else 0,
+            "rating" : self.evaluator_rating if self.evaluator_rating else 0,
         }
     
     
