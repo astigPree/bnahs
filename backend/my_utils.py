@@ -258,7 +258,7 @@ def recommend_rank(teacher : models.People):
     tenure = teacher.working_years()
     current_rank = teacher.position
     recent_form = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1', is_expired=False).order_by('-created_at').first()
-    recent_ipcrf_score = recent_form.average_score  # Assume this method returns the most recent IPCRF score
+    recent_ipcrf_score = recent_form.average_score if recent_form else 0  # Assume this method returns the most recent IPCRF score
     score_classification = classify_ipcrf_score(recent_ipcrf_score)
     
     recommendation = []
