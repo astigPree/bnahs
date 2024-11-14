@@ -133,8 +133,8 @@ urlpatterns = [
     path('teacher/school/get/rpms/folders/', views.teacher_get_rpms_folders),
     path('teacher/school/get/rpms/folder/', views.teacher_get_rpms_folder),
     path('teacher/school/get/rpms/folder/classwork/', views.teacher_get_rpms_work),
-    path('teacher/school/rpms/folder/classwork/turnin', views.teacher_turn_in_rpms_work),
-    path('teacher/school/get/rpms/folder/classwork/submitted', views.teacher_submit_rpms_work),
-    
+    path('teacher/school/rpms/folder/classwork/turnin/', views.teacher_turn_in_rpms_work),
+    path('teacher/school/get/rpms/folder/classwork/submitted/', views.teacher_submit_rpms_work),
+    path('teacher/school/get/rpms/attachment/result/', views.teacher_get_rpms_attachment_result),
 ]
 

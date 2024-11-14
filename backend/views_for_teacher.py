@@ -204,8 +204,8 @@ def teacher_recommendations(request ):
              
             # 2. rule based classifier for Promotion
             ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').order_by('-created_at')
-            scores = [ form.getEvaluatorPart1Scores() for form in ipcrf_forms  ]
-            
+            # scores = [ form.getEvaluatorPart1Scores() for form in ipcrf_forms  ]
+            scores = []
             # Initialize counters
             
             promotion_count = 0
@@ -229,10 +229,11 @@ def teacher_recommendations(request ):
                 #         retention_count += 1
                 #     elif category in ['Unsatisfactory', 'Poor']:
                 #         termination_count += 1 
-                if score is not None:
-                    average_score = score.get('average_score', 0) 
-                else :
-                    average_score = 0
+                # if score is not None:
+                #     average_score = score.get('average_score', 0) 
+                # else :
+                #     average_score = 0
+                average_score = 0   
                 overall_scores.append(average_score)
                 category = my_utils.classify_ipcrf_score(average_score if average_score else 0)
                 detailed_scores.append({
@@ -1033,7 +1034,51 @@ def teacher_submit_rpms_work(request):
 
 
 
+@csrf_exempt
+def teacher_get_rpms_attachment_result(request):
+    try:
+        if request.method == "POST":
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            
+            if 'Teacher' != user.role:
+                return JsonResponse({
+                    'message' : 'User not found',
+                },status=400)
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+                
+            rpms_folder_id = request.POST.get('rpms_folder_id')
+            school_year = request.POST.get('school_year')
+            
+            if not rpms_folder_id:
+                return JsonResponse({
+                    'message' : 'rpms_folder_id not found',
+                },status=400)
+            if not school_year:
+                return JsonResponse({
+                    'message' : 'school_year not found',
+                },status=400)
 
+            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id ).order_by('-created_at').first()
+            if not rpms_folder:
+                return JsonResponse({
+                    'message' : 'RPMS Folder not found',
+                },status=400)
+
+            
+    
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
 
 
 
