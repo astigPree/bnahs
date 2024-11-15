@@ -481,7 +481,7 @@ def update_iprcf_form_part_1_by_teacher(
     
     part_3.save()
     
-    ipcrf_form.content_for_teacher = content
+    ipcrf_form.content_for_teacher = content 
     ipcrf_form.save()
 
 

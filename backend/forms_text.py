@@ -15,14 +15,7 @@ def form_for_ipcrf_part_1_proficient():
     domains['Content Knowledge and Pedagogy'] = {
         "1" : {
             "Question" : "Applied knowledge of content within and across curriculum teaching areas (PPST 1.1.2)",
-            "QUALITY" : {
-                "1" : "Demonstrated Level 3 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 4 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms",
-                "3" : "Demonstrated Level 5 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms",
-                "4" : "Demonstrated Level 6 in Objective 1 as  shown in COT rating sheets / inter-observer agreement forms",
-                "5" : "Demonstrated Level 7 in Objective 1 as shown in COT rating sheets / inter-observer agreement forms",
-                "Rate" : "0"
-            },
+            
             "EFFICIENCY" : {
                 "1" : "No acceptable evidence was shown", 
                 "3" : "Objective was met but instruction exceeded the allotted time", 
@@ -32,14 +25,6 @@ def form_for_ipcrf_part_1_proficient():
         },
         "2" : {
             "Question" : "Used a range of teaching strategies that enhance learner achievement in literacy and numeracy skills (PPST 1.4.2)",
-            "QUALITY" : {
-                "1" : "Demonstrated Level 3 in the objective as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 4 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "3" : "Demonstrated Level 5 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "4" : "Demonstrated Level 6 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "5" : "Demonstrated Level 7 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "Rate" : "0"
-            },
             "EFFICIENCY" : {
                 "1" : "No acceptable evidence was shown", 
                 "3" : "Objective was met but instruction exceeded the allotted time", 
@@ -49,14 +34,7 @@ def form_for_ipcrf_part_1_proficient():
         },
         "3" : {
             "Question" : "Applied a range of teaching strategies to develop critical and creative thinking, as well as other higher-order thinking skills (PPST 1.5.2)",
-            "QUALITY" : {
-                "1" : "Demonstrated Level 3 in the objective as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 4 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "3" : "Demonstrated Level 5 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "4" : "Demonstrated Level 6 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "5" : "Demonstrated Level 7 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "Rate" : "0"
-            },
+
             "EFFICIENCY" : {
                 "1" : "No acceptable evidence was shown", 
                 "3" : "Objective was met but instruction exceeded the allotted time", 
@@ -66,14 +44,7 @@ def form_for_ipcrf_part_1_proficient():
         },
         "4" : {
             "Question" : "Displayed proficient use of Mother Tongue, Filipino and English to facilitate teaching and learning (PPST 1.6.2)",
-            "QUALITY" : {
-                "1" : "Demonstrated Level 3 in the objective as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 4 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "3" : "Demonstrated Level 5 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "4" : "Demonstrated Level 6 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "5" : "Demonstrated Level 7 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "Rate" : "0"
-            },
+
             "EFFICIENCY" : {
                 "1" : "No acceptable evidence was shown", 
                 "3" : "Objective was met but instruction exceeded the allotted time", 
@@ -87,14 +58,6 @@ def form_for_ipcrf_part_1_proficient():
     domains['Learning Environment & Diversity of Learners'] = {
         "5" : {
             "Question" : "Established safe and secure learning environments to enhance learning through the consistent implementation of policies",
-            "QUALITY" : {
-                "1" : "Demonstrated Level 3 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 4 as shown in COT rating sheets / inter-observer agreement forms",
-                "3" : "Demonstrated Level 5 as shown in COT rating sheets / inter-observer agreement forms",
-                "4" : "Demonstrated Level 6 as shown in COT rating sheets / inter-observer agreement forms",
-                "5" : "Demonstrated Level 7 as shown in COT rating sheets / inter-observer agreement forms",
-                "Rate" : "0"
-            },
             "EFFICIENCY" : {
                 "1" : "No acceptable evidence was shown", 
                 "3" : "Objective was met but instruction exceeded the allotted time", 
@@ -104,14 +67,7 @@ def form_for_ipcrf_part_1_proficient():
         },
         "6" : {
             "Question" : "Maintained learning environment that promote fairness, respect and care to encourage learning (PPST 2.2.2)",
-            "QUALITY" : {
-                "1" : "Demonstrated Level 3 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 4 as shown in COT rating sheets / inter-observer agreement forms",
-                "3" : "Demonstrated Level 5 as shown in COT rating sheets / inter-observer agreement forms",
-                "4" : "Demonstrated Level 6 in the objective as shown in COT rating sheets / inter-observer agreement forms",
-                "5" : "Demonstrated Level 7as shown in COT rating sheets / inter-observer agreement forms",
-                "Rate" : "0"
-            },
+
             "EFFICIENCY" : {
                 "1" : "No acceptable evidence was shown", 
                 "3" : "Objective was met but instruction exceeded the allotted time", 
@@ -121,14 +77,7 @@ def form_for_ipcrf_part_1_proficient():
         },
         "7" : {
             "Question" : "Established a learner - centered culture by using teaching strategies that respond to their linguistic, cultural, socioeconomic and religious",
-            "QUALITY" : {
-                "1" : "Demonstrated Level 3 as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrated Level 4 as shown in COT rating sheets / inter-observer agreement forms",
-                "3" : "Demonstrated Level 5 as shown in COT rating sheets / inter-observer agreement forms",
-                "4" : "Demonstrated Level 6 as shown in COT rating sheets / inter-observer agreement forms",
-                "5" : "Demonstrated Level 7 as shown in COT rating sheets / inter-observer agreement forms",
-                "Rate" : "0"
-            },
+
             "EFFICIENCY" : {
                 "1" : "No acceptable evidence was shown", 
                 "3" : "Objective was met but instruction exceeded the allotted time", 
@@ -138,14 +87,6 @@ def form_for_ipcrf_part_1_proficient():
         },
         "8" : {
             "Question" : "Adapted and used culturally appropriate teaching strategies to address the needs of learners from indigenous groups (PPST 3.5.2) ",
-            "QUALITY" : {
-                "1" : "Demonstrated Level 3 in the objective as shown in COT rating sheets / inter-observer agreement forms or No acceptable evidence was shown or in the lesson plan and annotation provided",
-                "2" : "Demonstrated Level 4 in the objective as shown in COT rating sheets / inter-observer agreement forms or in the lesson plan and annotation provided",
-                "3" : "Demonstrated Level 5 in the objective as shown in COT rating sheets / inter-observer agreement forms or in the lesson plan and annotation provided",
-                "4" : "Demonstrated Level 6 in the objective as shown in COT rating sheets / inter-observer agreement forms or in the lesson plan and annotation provided",
-                "5" : "Demonstrated Level 7 as shown in COT rating sheets / inter-observer agreement forms or in the lesson plan and annotation provided",
-                "Rate" : "0"
-            },
             "EFFICIENCY" : {
                 "1" : "No acceptable evidence was shown", 
                 "3" : "Objective was met but instruction exceeded the allotted time", 
@@ -177,14 +118,7 @@ def form_for_ipcrf_part_1_proficient():
         },
         "10" : {
             "Question" : "Used strategies for  providing timely, accurate and constructive feedback to improve learner performance  (PPST 5.3.2)",
-            "QUALITY" : {
-                "1" : "Demonstrate Level 6 in the objective as shown in COT rating sheet / inter-observer agreement forms or No acceptable evidence was shown",
-                "2" : "Demonstrate Level 4 in the objective as shown in COT rating sheet / inter-observer agreement forms",
-                "3" : "Demonstrate Level 5 in the objective as shown in COT rating sheet / inter-observer agreement forms",
-                "4" : "Demonstrate Level 6 in the objective as shown in COT rating sheet / inter-observer agreement forms",
-                "5" : "Demonstrate Level 7 in the objective as shown in COT rating sheet / inter-observer agreement forms",
-                "Rate" : "0"
-            },
+
             "EFFICIENCY" : {
                 "1" : "No acceptable evidence was shown", 
                 "3" : "Objective was met but instruction exceeded the allotted time", 
