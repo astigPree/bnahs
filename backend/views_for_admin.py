@@ -453,7 +453,6 @@ def evaluation_submission_rate(request):
                 data[school.name]['evaluated'] = models.People.objects.filter(is_accepted = True, school_id=school.school_id, role='Teacher', is_evaluated=True).count()
                 data[school.name]['pending'] = models.People.objects.filter(is_accepted = True, school_id=school.school_id, role='Teacher', is_evaluated=False).count()
             
-            
             return JsonResponse({
                 'data' : data
             }, status=200)
@@ -538,7 +537,7 @@ def get_tenure_of_all_teachers(request):
                     'message' : 'User is not an admin',
                 }, status=400)
         
-            people = People.objects.filter(role='Teacher')
+            people = People.objects.filter( is_accepted = True, role='Teacher')
             total_count = people.count()
             
             if total_count == 0:
@@ -554,11 +553,12 @@ def get_tenure_of_all_teachers(request):
                 '3-5 years': 0,
                 '5+ years': 0
             }
-
+             
             for person in people:
                 tenure_category = person.get_tenure_category()
                 if tenure_category in tenure_counts:
                     tenure_counts[tenure_category] += 1
+                    
             
             # Calculate percentages
             tenure_percentages = {
