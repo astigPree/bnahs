@@ -49,7 +49,7 @@ def verify_school_people(request, token):
         #     'message' : 'School verified successfully, Wait for admin approval',
         #     }, status=200)
         
-        return redirect("https://www.youtube.com/")
+        return redirect("http://www.deped-performance-evaluation-system3211.online/")
     
     except Exception as e:
         return JsonResponse({
@@ -117,7 +117,7 @@ def verify_changes_password(request, token):
         user.save()
         verification.delete()
         
-        return redirect("https://www.youtube.com/")
+        return redirect("http://www.deped-performance-evaluation-system3211.online/")
 
     except Exception as e:
         return JsonResponse({
