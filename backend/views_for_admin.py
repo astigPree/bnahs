@@ -1077,14 +1077,26 @@ def create_ipcrf_form(request):
             position = request.POST.get('position') # Check what position does the admin want to create for (Proficient or Highly Proficient)
             if not position:
                 return JsonResponse({
-                    'message' : 'Position is required',
+                    'message' : "'Position is required ['Proficient', 'Highly Proficient']",
                 }, status=400)
+            
+            if position not in ['Proficient', 'Highly Proficient']:
+                return JsonResponse({
+                    'message' : "Position is invalid ['Proficient', 'Highly Proficient'] ",
+                }, status=400)
+            
             
             school_year = request.POST.get("school_year")
             if not school_year:
                 return JsonResponse({
                     'message' : 'School year is required',
                 }, status=400)
+            
+            if models.IPCRFForm.objects.filter(school_year=school_year).exists():
+                return JsonResponse({
+                    'message' : 'IPCRF form school_year already exists',
+                }, status=400)
+            
             
             schools = models.School.objects.filter(is_accepted=True)
             for school in schools:
