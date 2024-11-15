@@ -843,8 +843,10 @@ class RPMSFolder(models.Model):
             'rpms_folder_name' : self.rpms_folder_name,
             'rpms_folder_school_year' : self.rpms_folder_school_year,
             'rpms_folder_id' : self.rpms_folder_id,
-            'rpms_folder_background' : '' ,
-            'is_for_teacher_proficient' : self.is_for_teacher_proficient
+            'rpms_folder_background' : None ,
+            'is_for_teacher_proficient' : self.is_for_teacher_proficient,
+            'rpms_folder_color' : self.rpms_folder_color,
+            'rpms_folder_created_at' : self.created_at
         }
         
         if self.background_image is not None:
