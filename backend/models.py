@@ -1227,6 +1227,7 @@ class People(models.Model):
             'is_declined' : self.is_declined,
             'is_verified' : self.is_verified,
             'is_accepted' : self.is_accepted,
+            'fullname' : self.fullname
         }
     
     def working_years(self):
