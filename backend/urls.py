@@ -57,7 +57,6 @@ urlpatterns = [
     path('admin/school/evaluator/create/cot/', views.create_rating_sheet),
     path('admin/school/evaluator/get/cot/<str:type_proficient>/', views.get_rating_sheet_folder),
     
-    path('admin/forms/rpms/folders/create/', views.create_rpms_folder),
     path('admin/fomrs/rpms/folder/get/', views.get_rpms_folder_by_id),
     path('admin/forms/rpms/folder/change/image/', views.update_rpms_folder_background),
     path('admin/forms/rpms/folders/', views.get_all_rpms_folders),
@@ -91,7 +90,10 @@ urlpatterns = [
     path('school/teachers/get/recommendations', views.school_get_teacher_recommendations), # NEED TO TEST 
     
     path('school/teachers/get/annual/ratings/', views.school_get_annual_ratings),  
-    path('school/teachers/get/performance/', views.school_get_performance_true_year),  
+    path('school/teachers/get/performance/', views.school_get_performance_true_year),
+    
+    
+    path('school/forms/rpms/folders/create/', views.create_rpms_folder),
     
     
     path('school/people/reject/', views.reject_people_by_school), # NEW API

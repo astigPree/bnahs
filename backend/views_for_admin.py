@@ -669,11 +669,7 @@ def create_rating_sheet(request):
                 return JsonResponse({
                     'message' : 'school_year is required',
                 }, status=400)
-            
-            if models.COTForm.objects.filter(school_year=school_year).exists():
-                return JsonResponse({
-                    'message' : 'School year already exists',
-                }, status=400)
+
             
             # quarter = request.POST.get('quarter')
             # if not quarter:
@@ -691,7 +687,17 @@ def create_rating_sheet(request):
                 return JsonResponse({
                     'message' : 'type_proficient is required [ "Proficient" , "Highly Proficient" ] ',
                 }, status=400)
-                
+            
+                        
+            if for_proficient == 'Proficient' and models.COTForm.objects.filter(school_year=school_year, is_for_teacher_proficient=True).exists():
+                return JsonResponse({
+                    'message' : 'School year already exists',
+                }, status=400)
+            
+            if for_proficient == 'Highly Proficient' and models.COTForm.objects.filter(school_year=school_year, is_for_teacher_proficient=False).exists():
+                return JsonResponse({
+                    'message' : 'School year already exists',
+                }, status=400)
 
             schools = models.School.objects.filter(is_accepted=True)
             if not schools:
@@ -761,84 +767,6 @@ def create_rating_sheet(request):
         }, status=400) 
 
 
-@csrf_exempt
-def create_rpms_folder(request):
-    try:
-        if request.method == 'POST':
-            user = models.MainAdmin.objects.filter(username=request.user.username).first()
-            if not user:
-                return JsonResponse({
-                    'message' : 'User not found',
-                }, status=400)
-
-            if user.role != 'ADMIN':
-                return JsonResponse({
-                    'message' : 'User is not an admin',
-                }, status=400)
-            
-            
-            folder_name = request.POST.get('folder_name')
-            rpms_folder_school_year = request.POST.get('school_year')
-            position_rpms = request.POST.get('position_rpms') # (Proficient and Highly Proficient)
-            
-            if not folder_name:
-                return JsonResponse({
-                    'message' : 'Folder name is required',
-                    'folder_name' : folder_name,
-                }, status=400)
-            
-            
-            if not rpms_folder_school_year:
-                return JsonResponse({
-                    'message' : 'School year is required',
-                    'school_year' : rpms_folder_school_year,
-                }, status=400)
-                
-            if not position_rpms:
-                return JsonResponse({
-                    'message' : 'Position RPMS is required',
-                    'position_rpms' : position_rpms,
-                }, status=400)
-            
-            if position_rpms not in ['Proficient', 'Highly Proficient']:
-                return JsonResponse({
-                    'message' : 'Position RPMS must be Proficient or Highly Proficient',
-                    'position_rpms' : position_rpms,
-                }, status=400)
-            
-            rpms_folder_id = str(uuid4())
-            
-            rpms_folder = models.RPMSFolder.objects.create(
-                rpms_folder_name = folder_name,
-                rpms_folder_school_year = rpms_folder_school_year
-            )
-            rpms_folder.rpms_folder_id = rpms_folder_id
-            
-            rpms_folder.is_for_teacher_proficient = True if position_rpms == 'Proficient' else False
-            
-            rpms_folder.save()
-
-            # Create a rpms_classwork folder when the folder is created
-            if position_rpms == 'Proficient':
-                my_utils.create_rpms_class_works_for_proficient(rpms_folder_id=rpms_folder_id)
-            elif position_rpms == 'Highly Proficient':
-                my_utils.create_rpms_class_works_for_highly_proficient(rpms_folder_id=rpms_folder_id)
-            
-            return JsonResponse({
-                'message' : 'RPMS folder created successfully',
-                'rpms_name' : rpms_folder.rpms_folder_name,
-                'rpms_school_year' : rpms_folder.rpms_folder_school_year,
-            }, status=200)
-            
-            
-    except Exception as e:
-        return JsonResponse({
-            'message' : f'Something went wrong : {e}',
-            }, status=500)
-        
-    return JsonResponse({
-        'message' : 'Invalid request',
-        }, status=400)
 
 @csrf_exempt
 def get_all_rpms_folders(request):
@@ -1092,11 +1020,15 @@ def create_ipcrf_form(request):
                     'message' : 'School year is required',
                 }, status=400)
             
-            if models.IPCRFForm.objects.filter(school_year=school_year).exists():
+            if position == 'Proficient' and models.IPCRFForm.objects.filter(school_year=school_year, is_for_teacher_proficient=True).exists():
                 return JsonResponse({
                     'message' : 'IPCRF form school_year already exists',
                 }, status=400)
             
+            if position == 'Highly Proficient' and models.IPCRFForm.objects.filter(school_year=school_year, is_for_teacher_proficient=False).exists():
+                return JsonResponse({
+                    'message' : 'IPCRF form school_year already exists',
+                }, status=400)
             
             schools = models.School.objects.filter(is_accepted=True)
             for school in schools:
