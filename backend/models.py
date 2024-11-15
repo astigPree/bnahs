@@ -441,7 +441,7 @@ class IPCRFForm(models.Model):
     evaluator_plus_factor = models.FloatField( blank=True, default=0.0) # Plus Factor Score
     
     def __str__(self):
-        return f"{self.school_id} - {self.employee_id} - {self.created_at}"
+        return f"{self.school_id} - {self.employee_id} - {self.form_type} - {self.evaluator_id}"
     
     def get_information(self):
         data =  {
@@ -716,7 +716,7 @@ class COTForm(models.Model):
     quarter = models.CharField(max_length=255, blank=True, default='')
 
     def __str__(self):
-        return f"{self.school_id} - {self.employee_id} - {self.created_at}"
+        return f"{self.school_id} - {self.employee_id} - {self.evaluated_id}"
     
    
     def get_information(self):
