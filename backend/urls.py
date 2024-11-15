@@ -90,9 +90,9 @@ urlpatterns = [
     path('school/forms/rpms/folders/create/', views.create_rpms_folder),
     path('school/forms/rpms/folder/get/', views.get_rpms_folder_by_id),
     path('school/forms/rpms/folder/change/image/', views.update_rpms_folder_background),
-    path('admin/forms/rpms/folders/<str:type_proficient>/', views.get_all_rpms_folders),
-    path('admin/forms/rpms/classworks/', views.get_rpms_classworks), 
-    path('admin/forms/rpms/classwork/get/', views.get_rpms_classwork_by_id),
+    path('school/forms/rpms/folders/<str:type_proficient>/', views.get_all_rpms_folders),
+    path('school/forms/rpms/classworks/', views.get_rpms_classworks), 
+    path('school/forms/rpms/classwork/get/', views.get_rpms_classwork_by_id),
     
     
     
