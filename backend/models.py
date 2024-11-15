@@ -1166,13 +1166,7 @@ class People(models.Model):
                 ('Senior High School', 'Senior High School'),
             )
                                    )
-    department = models.CharField(max_length=255, blank=True, default='',
-            choices=(
-                ('Science', 'Science'),
-                ('Filipino', 'Filipino'),
-                ('Mathematics', 'Mathematics'),
-                ('English', 'English'),
-            ))
+    department = models.CharField(max_length=255, blank=True, default='')
     password = models.CharField(max_length=255, blank=True, default='')
     confirm_password = models.CharField(max_length=255, blank=True, default='')
     
