@@ -1019,7 +1019,7 @@ def teacher_turn_in_rpms_work(request):
 
 
 @csrf_exempt
-def teacher_get_rpms_work(request):
+def teacher_get_rpms_work_attachments(request):
     try:
         
         if request.method == 'POST':
