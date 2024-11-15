@@ -1216,7 +1216,7 @@ def get_annual_ratings(request):
 
 
 @csrf_exempt
-def get_rating_sheet_folder(request):
+def get_rating_sheet_folder(request , type_proficient : str):
     try:
         if request.method == 'GET':
             user = models.MainAdmin.objects.filter(username=request.user.username).first()
@@ -1225,8 +1225,21 @@ def get_rating_sheet_folder(request):
                 return JsonResponse({
                     'message' : 'User not found',
                     }, status=400)
+            
+            if not type_proficient :
+                return JsonResponse({
+                    'message' : 'Must add to url "admin/school/evaluator/get/cot/<str:type_proficient>" is required [ "proficient", "highly_proficient" ] ',
+                    }, status=400)
+            
+            if type_proficient not in ['proficient', 'highly_proficient']:
+                return JsonResponse({
+                    'message' : 'Must add to url "admin/school/evaluator/get/cot/<str:type_proficient>" is required [ "proficient", "highly_proficient" ] ',
+                    }, status=400)
                 
-            cots = models.COTForm.objects.all()
+            if type_proficient == 'proficient':
+                cots = models.COTForm.objects.filter( is_for_teacher_proficient=True)
+            else:
+                cots = models.COTForm.objects.filter( is_for_teacher_proficient=False) 
             school_year = ""
             school_years = []
             for cot in cots:

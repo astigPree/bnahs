@@ -55,7 +55,7 @@ urlpatterns = [
     path('admin/school/reject/', views.reject_school),
     
     path('admin/school/evaluator/create/cot/', views.create_rating_sheet),
-    path('admin/school/evaluator/get/cot/', views.get_rating_sheet_folder),
+    path('admin/school/evaluator/get/cot/<str:type_proficient>', views.get_rating_sheet_folder),
     
     path('admin/forms/rpms/folders/create/', views.create_rpms_folder),
     path('admin/fomrs/rpms/folder/get/', views.get_rpms_folder_by_id),
