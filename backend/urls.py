@@ -19,6 +19,7 @@ urlpatterns = [
     path('register/school/', views.register_school), # WORKING
     path('register/people/', views.register_people), # NEW API
     
+    path('user/get/schools/', views.user_get_list_of_schools), # NEW API
     
     path('user/forms/get/cot/', views.get_cot_forms),
     path('user/forms/get/ipcrf/part1/proficient/', views.get_form_for_ipcrf_part_1_proficient),

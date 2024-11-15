@@ -923,3 +923,18 @@ def register_people(request):
     
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
+
+
+def user_get_list_of_schools(request):
+    try:
+        if request.method == 'GET':
+            schools = models.School.objects.filter(is_accepted=True).order_by('-created_at')
+            return JsonResponse({
+                'schools' : [school.get_school_information() for school in schools],
+            },status=200)
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
