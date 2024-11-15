@@ -673,9 +673,14 @@ def create_rating_sheet(request):
             quarter = request.POST.get('quarter')
             if not quarter:
                 return JsonResponse({
-                    'message' : 'quarter is required',
+                    'message' : 'quarter is required [ "Quarter 1" , "Quarter 2" , "Quarter 3" , "Quarter 4" ] ',
                 }, status=400)
- 
+
+            for_proficient = request.POST.get('type_proficient')
+            if not for_proficient:
+                return JsonResponse({
+                    'message' : 'type_proficient is required [ "Proficient" , "Highly Proficient" ] ',
+                }, status=400)
 
             # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND Teacher
             # Checking if the data is exist before saving
@@ -768,16 +773,30 @@ def create_rating_sheet(request):
                     #   school : models.School , evaluator : models.People , 
                     #     subject : str , cot_date : str, quarter : str, cot_type : str, 
                     #     school_year : str ):
-                    my_utils.create_cot_form(
-                        school=school,
-                        evaluator=evaluator, 
-                        teacher=teacher,
-                        subject='', 
-                        cot_date='', 
-                        quarter=f'{quarter}',
-                        cot_type='Proficient' if my_utils.is_proficient_faculty(evaluator) else 'Highly Proficient',
-                        school_year=school_year
-                    )
+                    if for_proficient == 'Proficient':
+                        if my_utils.is_proficient_faculty(teacher):
+                            my_utils.create_cot_form(
+                                school=school,
+                                evaluator=evaluator, 
+                                teacher=teacher,
+                                subject='', 
+                                cot_date='', 
+                                quarter=f'{quarter}',
+                                cot_type='Proficient' if my_utils.is_proficient_faculty(evaluator) else 'Highly Proficient',
+                                school_year=school_year
+                            )
+                    elif for_proficient == 'Highly Proficient':
+                        if my_utils.is_highly_proficient_faculty(evaluator):
+                            my_utils.create_cot_form(
+                                school=school,
+                                evaluator=evaluator, 
+                                teacher=teacher,
+                                subject='', 
+                                cot_date='', 
+                                quarter=f'{quarter}',
+                                cot_type='Proficient' if my_utils.is_proficient_faculty(evaluator) else 'Highly Proficient',
+                                school_year=school_year
+                            )
             
             
             # my_utils.create_cot_form(
