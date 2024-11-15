@@ -682,88 +682,17 @@ def create_rating_sheet(request):
             #     }, status=400)
 
             for_proficient = request.POST.get('type_proficient')
-            if not for_proficient:
+            if not for_proficient :
                 return JsonResponse({
                     'message' : 'type_proficient is required [ "Proficient" , "Highly Proficient" ] ',
                 }, status=400)
-
-            # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND Teacher
-            # Checking if the data is exist before saving
-            # content : dict = json.loads(content)
-            # Matatangap na data sa front end
             
-            # UPDATE FOR CREATION ONLY
-            
-            """
-            
-                {
-                    "COT Type" : "Proficient", ! Used to identify what rating type of form
-                    "Observer ID" : "Evaluator ID",
-                    "Observer Name" : "Evaluator Name", ! Pwede blanko pagpasa
-                    "Teacher Name" : "Evaluated Name", ! Pwede blanko pagpasa
-                    "Teacher ID" : "Evaluated ID",
-                    "Subject & Grade Level" : "Subject & Grade 7",
-                    "Date : "September 05, 2023", 
-                    "Quarter": "1st Quarter"
-                }
+            if for_proficient not in ['Proficient', 'Highly Proficient']:
+                return JsonResponse({
+                    'message' : 'type_proficient is required [ "Proficient" , "Highly Proficient" ] ',
+                }, status=400)
                 
-            """
-            
-            
-            # content = {
-            #         "COT Type" : "",  
-            #         "Observer ID" : "",
-            #         "Observer Name" : "",  
-            #         "Teacher Name" : "", 
-            #         "Teacher ID" : "",
-            #         "Subject & Grade Level" : "",
-            #         "Date" : "", 
-            #         "Quarter": ""
-            #     }
-            
-            # cot_type = content['COT Type']
-            # observer = content['Observer ID']
-            # teacher_observed = content['Teacher ID']
-            # taught = content['Subject & Grade Level'] 
-            # date = content['Date']
-            # quarter = content['Quarter']
-            
-            # Check for evaluator
-            # search_observer = models.People.objects.filter(employee_id=observer, role='Evaluator').first()
-            # if not search_observer:
-            #     return JsonResponse({
-            #         'message' : 'Observer not found',
-            #     }, status=400)
-            
-            # if cot_type == 'Proficient':
-            #     if not my_utils.is_proficient_faculty(search_observer):
-            #         return JsonResponse({
-            #             'message' : 'Observer is not a proficient faculty',
-            #         }, status=400)
-            # elif cot_type == 'Highly Proficient':
-            #     if not my_utils.is_highly_proficient_faculty(search_observer):
-            #         return JsonResponse({
-            #             'message' : 'Observer is not a highly proficient faculty',
-            #         }, status=400)
-            # else :
-            #     return JsonResponse({
-            #         'message' : 'COT type not found',
-            #     }, status=400)
-            
-            
-            # search_teacher = models.People.objects.filter(employee_id=teacher_observed , role='Teacher').first()
-            # if not search_teacher:
-            #     return JsonResponse({
-            #         'message' : 'Teacher observed not found',
-            #     }, status=400)
-            
-            
-            # school = models.School.objects.filter(school_id=search_observer.school_id).first()
-            # if not school:
-            #     return JsonResponse({
-            #         'message' : 'School not found',
-            #     }, status=400)
-            
+
             schools = models.School.objects.filter(is_accepted=True)
             if not schools:
                 return JsonResponse({
@@ -778,7 +707,7 @@ def create_rating_sheet(request):
                     #   school : models.School , evaluator : models.People , 
                     #     subject : str , cot_date : str, quarter : str, cot_type : str, 
                     #     school_year : str ):
-                    if for_proficient == 'Proficient':
+                    if for_proficient == 'Proficient' and teacher:
                         if my_utils.is_proficient_faculty(teacher):
                             for quarter in [ "Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4" ]:
                                 my_utils.create_cot_form(
@@ -788,11 +717,11 @@ def create_rating_sheet(request):
                                     subject='', 
                                     cot_date='', 
                                     quarter=f'{quarter}',
-                                    cot_type='Proficient' if my_utils.is_proficient_faculty(evaluator) else 'Highly Proficient',
+                                    cot_type='Proficient' if my_utils.is_proficient_faculty(teacher) else 'Highly Proficient',
                                     school_year=school_year
                                 )
-                    elif for_proficient == 'Highly Proficient':
-                        if my_utils.is_highly_proficient_faculty(evaluator):
+                    elif for_proficient == 'Highly Proficient' and teacher:
+                        if my_utils.is_highly_proficient_faculty(teacher):
                             for quarter in [ "Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4" ]:
                                 my_utils.create_cot_form(
                                     school=school,
@@ -801,7 +730,7 @@ def create_rating_sheet(request):
                                     subject='', 
                                     cot_date='', 
                                     quarter=f'{quarter}',
-                                    cot_type='Proficient' if my_utils.is_proficient_faculty(evaluator) else 'Highly Proficient',
+                                    cot_type='Proficient' if my_utils.is_proficient_faculty(teacher) else 'Highly Proficient',
                                     school_year=school_year
                                 )
             
