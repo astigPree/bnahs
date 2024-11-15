@@ -818,7 +818,7 @@ class RPMSFolder(models.Model):
     Args:
         models (_type_): _description_
     """
-    school_id = models.CharField(max_length=255, blank=True, default='') # I don't know where to use it, but just stay there
+    school_id = models.CharField(max_length=255, blank=True, default='') # Identify what school created this folder
     employee_id = models.CharField(max_length=255, blank=True, default='') # I don't know where to use it, but just stay there
     
     
@@ -835,7 +835,7 @@ class RPMSFolder(models.Model):
     rpms_folder_background_color = models.CharField(max_length=255, blank=True, default='') # Background Color of the folder
     
     def __str__(self):
-        return f"{self.school_id} - {self.employee_id} - {self.created_at}"
+        return f"{self.school_id} - {self.rpms_folder_name} - {'Proficient' if self.is_for_teacher_proficient else 'Highly Proficient'} - {self.rpms_folder_school_year} - {self.employee_id} - {self.created_at}"
     
     
     def get_rpms_folder_information(self):
@@ -847,7 +847,8 @@ class RPMSFolder(models.Model):
             'is_for_teacher_proficient' : self.is_for_teacher_proficient,
             'rpms_folder_color' : self.rpms_folder_color,
             'rpms_folder_background_color' : self.rpms_folder_background_color,
-            'rpms_folder_created_at' : self.created_at
+            'rpms_folder_created_at' : self.created_at,
+            'school_id' : self.school_id
         }
         
         if self.background_image is not None:
@@ -912,7 +913,7 @@ class RPMSClassWork(models.Model):
     """
 
     def __str__(self):
-        return f"{self.school_id} - {self.employee_id} - {self.created_at}"
+        return f"{self.rpms_folder_id} - {self.created_at}"
 
     def get_rpms_classwork_information(self):
         return {
@@ -982,7 +983,7 @@ class RPMSAttachment(models.Model):
     is_for_teacher_proficient = models.BooleanField(default=False)
     school_year = models.CharField(max_length=255, blank=True, default='')
     def __str__(self):
-        return f"{self.school_id} - {self.employee_id} - {self.created_at}"
+        return f"{self.class_work_id} - {self.employee_id} - {self.evaluator_id} - {self.attachment_id}" 
     
     def get_information(self):
         data =  {

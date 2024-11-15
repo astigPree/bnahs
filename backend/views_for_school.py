@@ -869,6 +869,7 @@ def create_rpms_folder(request):
                 rpms_folder_school_year = rpms_folder_school_year,
                 rpms_folder_color = color,
                 rpms_folder_background_color = background_color,
+                school_id = user.school_id
             )
             rpms_folder.rpms_folder_id = rpms_folder_id
             
