@@ -1078,26 +1078,43 @@ def teacher_get_rpms_attachment_result(request):
                 }, status=400)
                 
             rpms_folder_id = request.POST.get('rpms_folder_id')
-            school_year = request.POST.get('school_year')
             
             if not rpms_folder_id:
                 return JsonResponse({
                     'message' : 'rpms_folder_id not found',
-                },status=400)
-            if not school_year:
-                return JsonResponse({
-                    'message' : 'school_year not found',
-                },status=400)
+                },status=400) 
 
-            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id ).order_by('-created_at').first()
+            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id , school_id=user.school_id  ).order_by('-created_at').first()
             if not rpms_folder:
                 return JsonResponse({
                     'message' : 'RPMS Folder not found',
                 },status=400)
 
+            classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpms_folder_id).order_by('-created_at')
+            if not classworks:
+                return JsonResponse({
+                    'message' : 'Classworks not found',
+                },status=400)
+                
+            rpms_attachments = models.RPMSAttachment.objects.filter(class_work_id__in=[classwork.class_work_id for classwork in classworks], employee_id=user.employee_id).order_by('-created_at')
+            titles = []
+            each_attachment_in_rpms = []
+            for rpms_attachment in rpms_attachments:
+                title = rpms_attachment.title
+                if title not in titles:
+                    titles.append(title)
+                    each_attachment_in_rpms.append(
+                        {
+                            "title" : title,
+                            "grade" : rpms_attachment.getGradeSummary()
+                        }
+                    )
             
-    
-    
+            return JsonResponse({
+                'rpms_folder_id' : rpms_folder_id,
+                'scores' : each_attachment_in_rpms
+            }, status=200)
+            
     except Exception as e:
         return JsonResponse({
             'message' : f'Something went wrong : {e}',
