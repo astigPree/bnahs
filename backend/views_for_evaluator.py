@@ -745,7 +745,7 @@ def get_iprcf_form_for_evaluator_part_1_of_teacher(request):
                    'message' : 'Teacher ID is required',
                     }, status=400)
             
-            part_1 = models.IPCRFForm.objects.filter( employee_id=teacher_id , form_type="PART 1").order_by('-created_at').first()
+            part_1 = models.IPCRFForm.objects.filter( employee_id=teacher_id , school_id=user.school_id , form_type="PART 1").order_by('-created_at').first()
             
             if not part_1:
                 return JsonResponse({
@@ -753,9 +753,7 @@ def get_iprcf_form_for_evaluator_part_1_of_teacher(request):
                     }, status=400)
             
             
-            return JsonResponse({
-                'evaluator content' : part_1.content_for_evaluator,
-            }, status=200)
+            return JsonResponse(part_1.get_information(), status=200)
     
     except Exception as e:
         return JsonResponse({   

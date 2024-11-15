@@ -95,7 +95,6 @@ urlpatterns = [
     path('school/forms/rpms/classwork/get/', views.get_rpms_classwork_by_id),
     
     
-    
     path('school/people/reject/', views.reject_people_by_school), # NEW API
     
     # ============== Evaluator Path ================
