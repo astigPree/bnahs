@@ -984,6 +984,7 @@ class RPMSAttachment(models.Model):
     is_for_teacher_proficient = models.BooleanField(default=False)
     school_year = models.CharField(max_length=255, blank=True, default='')
     
+    is_submitted = model.BooleanField(default=False) # Used to identify if submitted
     post_id = models.CharField(max_length=255, blank=True, default='') # Used to identify the comment 
     
     def __str__(self):

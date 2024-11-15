@@ -984,7 +984,8 @@ def teacher_turn_in_rpms_work(request):
                     school_id=user.school_id,
                     employee_id=user.employee_id,
                     class_work_id=class_work_id, # IDENTIFIER FOR WHAT TYPE OF CLASSWORK
-                    file=file
+                    file=file,
+                    is_submitted = True
                 )
                 
                 
@@ -1049,7 +1050,6 @@ def teacher_submit_rpms_work(request):
     return JsonResponse({
         'message' : 'Invalid request',
         }, status=400)
-
 
 
 
