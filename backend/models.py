@@ -470,13 +470,14 @@ class IPCRFForm(models.Model):
             'evaluator_average_score' : self.evaluator_average_score,
             'evaluator_plus_factor' : self.evaluator_plus_factor,
             'is_submitted' : self.is_submitted,
+            'rater' : None
         }
         
         # Find the evaluator
-        # if self.evaluator_id or self.evaluator_id != '':
-        #     evaluator = People.objects.filter(school_id=self.school_id, employee_id=self.evaluator_id).first()
-        #     if evaluator:
-        #         data['evaluator'] = evaluator.get_information()
+        if self.evaluator_id or self.evaluator_id != '':
+            evaluator = People.objects.filter(school_id=self.school_id, employee_id=self.evaluator_id).first()
+            if evaluator:
+                data['rater'] = evaluator.fullname
         
         # if self.form_type == 'PART 1':
         #     """
