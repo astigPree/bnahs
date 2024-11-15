@@ -857,8 +857,10 @@ def register_people(request):
             if password != confirm_password:
                 return JsonResponse({'status': 'error', 'message': 'Passwords do not match'}, status=400)
             
+            if not my_utils.parse_date_string(job_started):
+                return JsonResponse({'status': 'error', 'message': 'Invalid date format'}, status=400)
             
-            if not models.School.objects.filter(school_id=school_id).exist():
+            if not models.School.objects.filter(school_id=school_id).exists():
                 return JsonResponse({ 'message': 'School does not exist'}, status=400)
             
             # Check if the already people exist
