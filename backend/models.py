@@ -154,6 +154,7 @@ class Comment(models.Model):
     post_id = models.CharField(max_length=255, blank=True, default='') # post_id of post where comment is posted
     comment_owner = models.CharField(max_length=255, blank=True, default='') # Action ID of owner of comment
 
+    is_private = models.BooleanField(default=False) # Used to identify if it private
     replied_to = models.CharField(max_length=255, blank=True, default='') # Action ID where comment is replied
     is_seen = models.JSONField(default=list, blank=True)
     """
@@ -982,6 +983,9 @@ class RPMSAttachment(models.Model):
     is_checked = models.BooleanField(default=False) 
     is_for_teacher_proficient = models.BooleanField(default=False)
     school_year = models.CharField(max_length=255, blank=True, default='')
+    
+    post_id = models.CharField(max_length=255, blank=True, default='') # Used to identify the comment 
+    
     def __str__(self):
         return f"{self.class_work_id} - {self.employee_id} - {self.evaluator_id} - {self.attachment_id}" 
     
@@ -997,7 +1001,8 @@ class RPMSAttachment(models.Model):
             'streams_type' : self.streams_type,
             'title' : self.title,
             'grade' : self.grade,
-            'is_checked' : self.is_checked
+            'is_checked' : self.is_checked,
+            "post_id" : self.post_id
         }
         """
         {
