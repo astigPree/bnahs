@@ -998,7 +998,7 @@ def get_all_rpms_folders(request, type_proficient : str):
                     'message' : 'Type proficient is required in "admin/forms/rpms/folders/<str:type_proficient>/" [ "proficient" , "highly_proficient" ]',
                     }, status=400)
                 
-            rpms_folders = models.RPMSFolder.objects.filter(is_for_teacher_proficient=True if type_proficient == 'proficient' else False).order_by('-created_at')
+            rpms_folders = models.RPMSFolder.objects.filter( school_id=user.school_id, is_for_teacher_proficient=True if type_proficient == 'proficient' else False).order_by('-created_at')
             
             return JsonResponse({
                 'rpms_folders' : [

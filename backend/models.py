@@ -851,7 +851,7 @@ class RPMSFolder(models.Model):
             'school_id' : self.school_id
         }
         
-        if self.background_image is not None:
+        if self.background_image:
             data['rpms_folder_background'] = self.background_image.url
         
         return data
