@@ -869,7 +869,7 @@ def teacher_get_rpms_folder(request):
             classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpms_folder_id).order_by('-created_at')
             
             return JsonResponse({
-                'rpms_folder' : rpms_folder,
+                'rpms_folder' : rpms_folder.get_rpms_folder_information(),
                 'rpms_classworks' : [work.get_rpms_classwork_information() for work in classworks]
             },status=200)
             
