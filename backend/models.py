@@ -914,7 +914,7 @@ class RPMSClassWork(models.Model):
     """
 
     def __str__(self):
-        return f"{self.rpms_folder_id} - {self.created_at}"
+        return f"{self.rpms_folder_id} - {self.class_work_id} - {self.created_at}"
 
     def get_rpms_classwork_information(self):
         return {
