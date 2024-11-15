@@ -668,6 +668,64 @@ def update_rating_sheet(request):
         }, status=400)
 
 
+
+
+
+@csrf_exempt
+def get_iprcf_form_for_evaluator_part_1_of_all_teacher(request):
+    try:
+        
+        if request.method == "GET":
+                        
+            user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username, role='Evaluator').first()
+            if not user:
+                return JsonResponse({
+                   'message' : 'User not found',
+                    }, status=400)
+            
+            
+            ipcrf_forms_for_proficient = models.IPCRFForm.objects.filter( school_id=user.school_id , is_for_teacher_proficient=True , form_type="PART 1").order_by('-created_at')
+            
+            proficient_employee_ids = []
+            ipcrf_forms_data_proficient = []
+            for ipcrf_form in ipcrf_forms_for_proficient:
+                if ipcrf_form.employee_id not in proficient_employee_ids:
+                    teacher = models.People.objects.filter(is_accepted = True, employee_id=ipcrf_form.employee_id, role='Teacher').first()
+                    if teacher:
+                        proficient_employee_ids.append(ipcrf_form.employee_id)
+                        ipcrf_forms_data_proficient.append({
+                            'teacher' : teacher.get_information(),
+                            'ipcrf_form' : ipcrf_form.get_information(),
+                        })
+            
+            ipcrf_forms_for_highly_proficient = models.IPCRFForm.objects.filter( school_id=user.school_id , is_for_teacher_proficient=False , form_type="PART 1").order_by('-created_at')
+            highly_proficient_employee_ids = []
+            ipcrf_forms_data_highly_proficient = []
+            for ipcrf_form in ipcrf_forms_for_highly_proficient:
+                if ipcrf_form.employee_id not in highly_proficient_employee_ids:
+                    teacher = models.People.objects.filter(is_accepted = True, employee_id=ipcrf_form.employee_id, role='Teacher').first()
+                    if teacher:
+                        highly_proficient_employee_ids.append(ipcrf_form.employee_id)
+                        ipcrf_forms_data_highly_proficient.append({
+                            'teacher' : teacher.get_information(),
+                            'ipcrf_form' : ipcrf_form.get_information(),
+                        })
+
+            return JsonResponse({
+                'message' : 'IPRCF forms for evaluator',
+                'ipcrf_forms_data_proficient' : ipcrf_forms_data_proficient,
+                'ipcrf_forms_data_highly_proficient' : ipcrf_forms_data_highly_proficient,
+                }, status=200)
+            
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
 @csrf_exempt
 def get_iprcf_form_for_evaluator_part_1_of_teacher(request):
     try:
@@ -922,3 +980,9 @@ def get_all_teacher_in_school(request):
     return JsonResponse({
         'message' : 'Invalid request',
         }, status=400) 
+    
+    
+    
+
+    
+    

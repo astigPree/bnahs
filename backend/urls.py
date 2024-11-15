@@ -116,6 +116,7 @@ urlpatterns = [
     path('evaluator/school/get/cot/', views.get_rating_sheet),
     path('evaluator/school/update/cot/', views.update_rating_sheet),
     
+    path('evaluator/school/get/all/ipcrf/part1/', views.get_iprcf_form_for_evaluator_part_1_of_all_teacher),
     path('evaluator/school/get/ipcrf/part1/', views.get_iprcf_form_for_evaluator_part_1_of_teacher),
     path('evaluator/school/check/ipcrf/part1/', views.check_teacher_ipcrf_form_part_1_by_evaluator),
     
