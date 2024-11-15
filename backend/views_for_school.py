@@ -817,6 +817,7 @@ def create_rpms_folder(request):
             rpms_folder_school_year = request.POST.get('school_year')
             position_rpms = request.POST.get('position_rpms') # (Proficient and Highly Proficient)
             background_color = request.POST.get('background_color')
+            color = request.POST.get('color')
             
             
             if not folder_name:
@@ -829,6 +830,12 @@ def create_rpms_folder(request):
                 return JsonResponse({
                     'message' : 'Background color is required',
                     'background_color' : background_color,
+                }, status=400)
+            
+            if not color:
+                return JsonResponse({
+                    'message' : 'Color is required',
+                    'color' : color,
                 }, status=400)
             
             if not rpms_folder_school_year:
@@ -856,7 +863,8 @@ def create_rpms_folder(request):
             rpms_folder = models.RPMSFolder.objects.create(
                 rpms_folder_name = folder_name,
                 rpms_folder_school_year = rpms_folder_school_year,
-                rpms_folder_color = background_color
+                rpms_folder_color = color,
+                rpms_folder_background_color = background_color,
             )
             rpms_folder.rpms_folder_id = rpms_folder_id
             

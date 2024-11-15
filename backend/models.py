@@ -832,7 +832,7 @@ class RPMSFolder(models.Model):
 
     rpms_folder_id = models.CharField(max_length=255, blank=True, default='') # Unique ID of the folder
     rpms_folder_color = models.CharField(max_length=255, blank=True, default='') # Color of the folder
-    
+    rpms_folder_background_color = models.CharField(max_length=255, blank=True, default='') # Background Color of the folder
     
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.created_at}"
@@ -846,6 +846,7 @@ class RPMSFolder(models.Model):
             'rpms_folder_background' : None ,
             'is_for_teacher_proficient' : self.is_for_teacher_proficient,
             'rpms_folder_color' : self.rpms_folder_color,
+            'rpms_folder_background_color' : self.rpms_folder_background_color,
             'rpms_folder_created_at' : self.created_at
         }
         
