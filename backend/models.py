@@ -831,6 +831,8 @@ class RPMSFolder(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     rpms_folder_id = models.CharField(max_length=255, blank=True, default='') # Unique ID of the folder
+    rpms_folder_color = models.CharField(max_length=255, blank=True, default='') # Color of the folder
+    
     
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.created_at}"
