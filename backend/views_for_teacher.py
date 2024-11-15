@@ -819,7 +819,7 @@ def teacher_get_rpms_folders(request):
                 }, status=400)
             
             rpms_folders = models.RPMSFolder.objects.filter(
-                employee_id=user.employee_id, 
+                school_id=user.school_id,
                 is_for_teacher_proficient=my_utils.is_proficient_faculty(user)
                 ).order_by('-created_at')
             
