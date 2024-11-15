@@ -942,8 +942,15 @@ def teacher_turn_in_rpms_work(request):
                     'message' : 'User not found',
                 }, status=400)
             
+            files = []
             class_work_id = request.POST.get('class_work_id')
-            rpms_attachment = request.FILES.get('rpms_attachment')
+            i = 0
+            while True:
+                file = request.FILES.get(f'file{i}')
+                if not file:
+                    break
+                files.append(file)
+                i += 1
             
             
             if not class_work_id:
@@ -951,9 +958,9 @@ def teacher_turn_in_rpms_work(request):
                     'message' : 'class_work_id not found',
                 },status=400)
             
-            if not rpms_attachment:
+            if not files or len(files) < 1:
                 return JsonResponse({
-                    'message' : 'rpms_attachment not found',
+                    'message' : 'files not found or empty files used name convention "file0",... ',
                 },status=400)
             
             classwork = models.RPMSClassWork.objects.filter(class_work_id=class_work_id).order_by('-created_at').first()
@@ -961,22 +968,35 @@ def teacher_turn_in_rpms_work(request):
                 return JsonResponse({
                     'message' : 'Class Work not found',
                 },status=400)
-
+                
+            folder = models.RPMSFolder.objects.filter(rpms_folder_id=classwork.rpms_folder_id).order_by('-created_at').first()
+            if not folder:
+                return JsonResponse({
+                    'message' : 'Folder not found',
+                },status=400)
             
-            attachment = models.RPMSAttachment.objects.create(
-                school_id=user.school_id,
-                employee_id=user.employee_id,
-                class_work_id=class_work_id, # IDENTIFIER FOR WHAT TYPE OF CLASSWORK
-                file=rpms_attachment
-            )
             
-            attachment.title = classwork.title
-            attachment.grade = classwork.get_grade()
-            attachment.attachment_id = str(uuid4())
-            attachment.save()
+            attachment_id = str(uuid4())
+            post_id = str(uuid4())
+            
+            for file in files:
+                attachment = models.RPMSAttachment.objects.create(
+                    school_id=user.school_id,
+                    employee_id=user.employee_id,
+                    class_work_id=class_work_id, # IDENTIFIER FOR WHAT TYPE OF CLASSWORK
+                    file=file
+                )
+                
+                
+                attachment.is_for_teacher_proficient = my_utils.is_proficient_faculty(user)
+                attachment.title = classwork.title
+                attachment.grade = classwork.get_grade()
+                attachment.attachment_id = attachment_id
+                attachment.post_id = post_id
+                attachment.save()
             
             return JsonResponse({
-                'message' : 'File uploaded successfully',
+                'message' : 'Files uploaded successfully',
             },status=200)
     
     except Exception as e:

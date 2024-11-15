@@ -927,7 +927,7 @@ class RPMSClassWork(models.Model):
         }
 
     def get_grade(self):
-        return self.objectives.get('Grade', '')
+        return self.objectives.get('Grade', {})
 
 class RPMSAttachment(models.Model):
     """
