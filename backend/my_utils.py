@@ -482,7 +482,9 @@ def update_iprcf_form_part_1_by_teacher(
     part_3.save()
     
     ipcrf_form.is_submitted = True
+    ipcrf_form.is_checked = True
     ipcrf_form.content_for_teacher = content 
+    
     ipcrf_form.save()
 
 
@@ -510,6 +512,7 @@ def update_ipcrf_form_part_2_by_teacher(
     
     
     ipcrf_form.is_submitted = True
+    ipcrf_form.is_checked = True
     ipcrf_form.content_for_teacher = content
     ipcrf_form.save()
 
@@ -526,13 +529,13 @@ def update_ipcrf_form_part_3_by_teacher(
     ipcrf_form.save()
     
     
-    part_1 = models.IPCRFForm.objects.filter(connection_to_other=ipcrf_form.connection_to_other, form_type='PART 1').order_by('-created_at').first()
-    part_1.is_checked = True
-    part_1.save()
+    # part_1 = models.IPCRFForm.objects.filter(connection_to_other=ipcrf_form.connection_to_other, form_type='PART 1').order_by('-created_at').first()
+    # part_1.is_checked = True
+    # part_1.save()
     
-    part_2 = models.IPCRFForm.objects.filter(connection_to_other=ipcrf_form.connection_to_other, form_type='PART 2').order_by('-created_at').first()
-    part_2.is_checked = True
-    part_2.save()
+    # part_2 = models.IPCRFForm.objects.filter(connection_to_other=ipcrf_form.connection_to_other, form_type='PART 2').order_by('-created_at').first()
+    # part_2.is_checked = True
+    # part_2.save()
 
 
 
