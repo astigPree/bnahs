@@ -835,7 +835,7 @@ class RPMSFolder(models.Model):
     rpms_folder_background_color = models.CharField(max_length=255, blank=True, default='') # Background Color of the folder
     
     def __str__(self):
-        return f"{self.school_id} - {self.rpms_folder_name} - {'Proficient' if self.is_for_teacher_proficient else 'Highly Proficient'} - {self.rpms_folder_school_year} - {self.employee_id} - {self.created_at}"
+        return f"{self.school_id} - {self.rpms_folder_name} - {'Proficient' if self.is_for_teacher_proficient else 'Highly Proficient'} - {self.rpms_folder_school_year} - {self.employee_id} - {self.rpms_folder_id}"
     
     
     def get_rpms_folder_information(self):
