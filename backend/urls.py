@@ -66,7 +66,7 @@ urlpatterns = [
     
     path('admin/forms/ipcrf/create/', views.create_ipcrf_form),
     path('admin/forms/ipcrf/count/', views.get_number_of_ipcrf_forms),
-    path('admin/forms/ipcrf/get/<str:type_proficient>/' , views.get_ipcrf_form_by_admin).
+    path('admin/forms/ipcrf/get/<str:type_proficient>/' , views.get_ipcrf_form_by_admin),
     
     path('admin/school/teacher/get/annual/ratings/', views.get_annual_ratings),
     
