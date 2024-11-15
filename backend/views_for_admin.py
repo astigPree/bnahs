@@ -670,6 +670,11 @@ def create_rating_sheet(request):
                     'message' : 'school_year is required',
                 }, status=400)
             
+            if models.COTForm.objects.filter(school_year=school_year).exists():
+                return JsonResponse({
+                    'message' : 'School year already exists',
+                }, status=400)
+            
             # quarter = request.POST.get('quarter')
             # if not quarter:
             #     return JsonResponse({
