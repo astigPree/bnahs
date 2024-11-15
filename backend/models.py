@@ -433,6 +433,8 @@ class IPCRFForm(models.Model):
     is_expired = models.BooleanField(default=False) # Used to check if the form is expired
     school_year = models.CharField(max_length=255, blank=True, default='') # School year
     
+    is_submitted = models.BooleanField(default=False) # Used to identify it already submmited
+    
     rating = models.FloatField( blank=True, default=0.0) # Rating
     average_score = models.FloatField( blank=True, default=0.0) # Average Score
     plus_factor = models.FloatField( blank=True, default=0.0) # Plus Factor Score
@@ -466,7 +468,8 @@ class IPCRFForm(models.Model):
             'plus_factor' : self.plus_factor,
             'evaluator_rating' : self.evaluator_rating,
             'evaluator_average_score' : self.evaluator_average_score,
-            'evaluator_plus_factor' : self.evaluator_plus_factor
+            'evaluator_plus_factor' : self.evaluator_plus_factor,
+            'is_submitted' : self.is_submitted,
         }
         
         # Find the evaluator

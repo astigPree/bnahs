@@ -481,6 +481,7 @@ def update_iprcf_form_part_1_by_teacher(
     
     part_3.save()
     
+    ipcrf_form.is_submitted = True
     ipcrf_form.content_for_teacher = content 
     ipcrf_form.save()
 
@@ -508,6 +509,7 @@ def update_ipcrf_form_part_2_by_teacher(
     part_3.save()
     
     
+    ipcrf_form.is_submitted = True
     ipcrf_form.content_for_teacher = content
     ipcrf_form.save()
 
@@ -519,6 +521,7 @@ def update_ipcrf_form_part_3_by_teacher(
     
     ipcrf_form.content_for_teacher = content
     
+    ipcrf_form.is_submitted = True
     ipcrf_form.is_checked = True
     ipcrf_form.save()
     
