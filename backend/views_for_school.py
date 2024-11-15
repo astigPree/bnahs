@@ -844,7 +844,6 @@ def create_rpms_folder(request):
                     'school_year' : rpms_folder_school_year,
                 }, status=400)
             
-            
             if not position_rpms:
                 return JsonResponse({
                     'message' : 'Position RPMS is required',
@@ -857,6 +856,11 @@ def create_rpms_folder(request):
                     'position_rpms' : position_rpms,
                 }, status=400)
 
+            if models.RPMSFolder.objects.filter(is_for_teacher_proficient=True if position_rpms == 'Proficient' else False, rpms_folder_school_year=rpms_folder_school_year).exists():
+                return JsonResponse({
+                    'message' : 'RPMS folder already exists',
+                    'rpms_folder_school_year' : rpms_folder_school_year,
+                }, status=400)
             
             rpms_folder_id = str(uuid4())
             
