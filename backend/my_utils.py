@@ -60,7 +60,8 @@ def send_verification_email(user_email, verification_code , template , masbate_l
     # Render the HTML template 
     html_content = render_to_string(template, {
         'verification_code': verification_code ,
-        'deped_logo' : deped_logo_url
+        'deped_logo' : deped_logo_url,
+        'verification_for' : subject
     })
     text_content = strip_tags(html_content)  # Create a plain text version
 
