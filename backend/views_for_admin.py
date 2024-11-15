@@ -670,11 +670,11 @@ def create_rating_sheet(request):
                     'message' : 'school_year is required',
                 }, status=400)
             
-            quarter = request.POST.get('quarter')
-            if not quarter:
-                return JsonResponse({
-                    'message' : 'quarter is required [ "Quarter 1" , "Quarter 2" , "Quarter 3" , "Quarter 4" ] ',
-                }, status=400)
+            # quarter = request.POST.get('quarter')
+            # if not quarter:
+            #     return JsonResponse({
+            #         'message' : 'quarter is required [ "Quarter 1" , "Quarter 2" , "Quarter 3" , "Quarter 4" ] ',
+            #     }, status=400)
 
             for_proficient = request.POST.get('type_proficient')
             if not for_proficient:
@@ -775,28 +775,30 @@ def create_rating_sheet(request):
                     #     school_year : str ):
                     if for_proficient == 'Proficient':
                         if my_utils.is_proficient_faculty(teacher):
-                            my_utils.create_cot_form(
-                                school=school,
-                                evaluator=evaluator, 
-                                teacher=teacher,
-                                subject='', 
-                                cot_date='', 
-                                quarter=f'{quarter}',
-                                cot_type='Proficient' if my_utils.is_proficient_faculty(evaluator) else 'Highly Proficient',
-                                school_year=school_year
-                            )
+                            for quarter in [ "Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4" ]:
+                                my_utils.create_cot_form(
+                                    school=school,
+                                    evaluator=evaluator, 
+                                    teacher=teacher,
+                                    subject='', 
+                                    cot_date='', 
+                                    quarter=f'{quarter}',
+                                    cot_type='Proficient' if my_utils.is_proficient_faculty(evaluator) else 'Highly Proficient',
+                                    school_year=school_year
+                                )
                     elif for_proficient == 'Highly Proficient':
                         if my_utils.is_highly_proficient_faculty(evaluator):
-                            my_utils.create_cot_form(
-                                school=school,
-                                evaluator=evaluator, 
-                                teacher=teacher,
-                                subject='', 
-                                cot_date='', 
-                                quarter=f'{quarter}',
-                                cot_type='Proficient' if my_utils.is_proficient_faculty(evaluator) else 'Highly Proficient',
-                                school_year=school_year
-                            )
+                            for quarter in [ "Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4" ]:
+                                my_utils.create_cot_form(
+                                    school=school,
+                                    evaluator=evaluator, 
+                                    teacher=teacher,
+                                    subject='', 
+                                    cot_date='', 
+                                    quarter=f'{quarter}',
+                                    cot_type='Proficient' if my_utils.is_proficient_faculty(evaluator) else 'Highly Proficient',
+                                    school_year=school_year
+                                )
             
             
             # my_utils.create_cot_form(
