@@ -55,6 +55,7 @@ urlpatterns = [
     path('admin/school/reject/', views.reject_school),
     
     path('admin/school/evaluator/create/cot/', views.create_rating_sheet),
+    path('admin/school/evaluator/get/cot/', views.get_rating_sheet_folder),
     
     path('admin/forms/rpms/folders/create/', views.create_rpms_folder),
     path('admin/fomrs/rpms/folder/get/', views.get_rpms_folder_by_id),
@@ -66,7 +67,9 @@ urlpatterns = [
     path('admin/forms/ipcrf/create/', views.create_ipcrf_form),
     path('admin/forms/ipcrf/count/', views.get_number_of_ipcrf_forms),
     
-    path('admin/school/teacher/get/annual/ratings/', views.get_annual_ratings),  
+    path('admin/school/teacher/get/annual/ratings/', views.get_annual_ratings),
+    
+    
     
     # ============== School Path ================
     path('login_school/', views.login_school), # WORKING 

@@ -1215,4 +1215,33 @@ def get_annual_ratings(request):
 
 
 
-
+@csrf_exempt
+def get_rating_sheet_folder(request):
+    try:
+        if request.method == 'GET':
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            # TODO : IDENTIFY IF THE USER IS EVALUATOR OR NOT
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+                
+            cots = models.COTForm.objects.all()
+            school_year = ""
+            school_years = []
+            for cot in cots:
+                school_year = cot.school_year
+                if school_year not in school_years:
+                    school_years.append(school_year)
+            return JsonResponse({
+                'school_years' : school_years
+            },status=200)
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}'
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request method',
+    }, status=400)
