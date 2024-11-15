@@ -1270,3 +1270,48 @@ def get_rating_sheet_folder(request , type_proficient : str):
     return JsonResponse({
         'message' : 'Invalid request method',
     }, status=400)
+
+
+@csrf_exempt
+def get_ipcrf_form_by_admin(request , type_proficient : str ):
+    try:
+        if request.method == 'GET':
+            user = models.MainAdmin.objects.filter(username=request.user.username).first()
+            # TODO : IDENTIFY IF THE USER IS EVALUATOR OR NOT
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            if not type_proficient :
+                return JsonResponse({
+                    'message' : 'Must add to url "admin/forms/ipcrf/get/<str:type_proficient>/" is required [ "proficient", "highly_proficient" ] ',
+                    }, status=400)
+            
+            if type_proficient not in ['proficient', 'highly_proficient']:
+                return JsonResponse({
+                    'message' : 'Must add to url "admin/forms/ipcrf/get/<str:type_proficient>/" is required [ "proficient", "highly_proficient" ] ',
+                    }, status=400)
+                
+            if type_proficient == 'proficient':
+                ipcrfs = models.IPCRFForm.objects.filter( is_for_teacher_proficient=True , form_type='PART 1')
+            else:
+                ipcrfs = models.IPCRFForm.objects.filter( is_for_teacher_proficient=False, form_type='PART 1') 
+            school_year = ""
+            school_years = []
+            for ipcrf in ipcrfs:
+                school_year = ipcrf.school_year
+                if school_year not in school_years:
+                    school_years.append(school_year)
+            return JsonResponse({
+                'school_years' : school_years
+            },status=200)
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}'
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request method',
+    }, status=400)
