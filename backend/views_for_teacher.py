@@ -582,16 +582,15 @@ def teacher_update_ipcrf_part_1(request):
                 }, status=400)
             
             
-            
             ipcrf = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type='PART 1').order_by('-created_at').first()
             if not ipcrf:
                 return JsonResponse({
                     'message' : 'IPCRF Form not found',
                 }, status=400)
             
-            if not content:
+            if ipcrf.is_checked:
                 return JsonResponse({
-                    'message' : 'Content not found',
+                    'message' : 'IPCRF Form is already checked',
                 }, status=400)
             
             ipcrf.rating = rating
@@ -680,16 +679,33 @@ def teacher_update_ipcrf_part_2(request):
             connection_to_other = request.POST.get('ipcrf_id')
             content : dict[str , dict] = json.loads(request.POST.get('content', None))
             
+            if not content:
+                return JsonResponse({
+                    'message' : 'Content not found',
+                }, status=400)
+            
             ipcrf = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type='PART 2').order_by('-created_at').first()
             if not ipcrf:
                 return JsonResponse({
                     'message' : 'IPCRF Form not found',
                 }, status=400)
-            
-            if not content:
+                
+            if ipcrf.is_checked:
                 return JsonResponse({
-                    'message' : 'Content not found',
+                    'message' : 'IPCRF Form is already checked',
                 }, status=400)
+                
+            part_1_ipcrf = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type='PART 1').order_by('-created_at').first()
+            if not part_1_ipcrf:
+                return JsonResponse({
+                    'message' : 'IPCRF Form PART 1 not found',
+                }, status=400)
+            
+            if not part_1_ipcrf.is_checked:
+                return JsonResponse({
+                    'message' : 'IPCRF Form PART 1 is not checked',
+                }, status=400)
+            
                 
             my_utils.update_ipcrf_form_part_2_by_teacher(ipcrf, content)
             
@@ -774,15 +790,42 @@ def teacher_update_ipcrf_part_3(request):
             connection_to_other = request.POST.get('ipcrf_id')
             content : dict[str , dict] = json.loads(request.POST.get('content', None))
             
+            if not content:
+                return JsonResponse({
+                    'message' : 'Content not found',
+                }, status=400)
+                
             ipcrf = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type='PART 3').order_by('-created_at').first()
             if not ipcrf:
                 return JsonResponse({
                     'message' : 'IPCRF Form not found',
                 }, status=400)
             
-            if not content:
+            if ipcrf.is_checked:
                 return JsonResponse({
-                    'message' : 'Content not found',
+                    'message' : 'IPCRF Form is already checked',
+                }, status=400)
+            
+            part_1_ipcrf = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type="PART 1").first()
+            if not part_1_ipcrf:
+                return JsonResponse({
+                    'message' : 'IPCRF Form PART 1 not found',
+                }, status=400)
+            
+            if not part_1_ipcrf.is_checked:
+                return JsonResponse({
+                    'message' : 'IPCRF Form PART 1 is not checked',
+                }, status=400)
+            
+            part_2_ipcrf = models.IPCRFForm.objects.filter(connection_to_other=connection_to_other, form_type="PART 2").first()
+            if not part_2_ipcrf:
+                return JsonResponse({
+                    'message' : 'IPCRF Form PART 2 not found',
+                }, status=400)
+            
+            if not part_2_ipcrf.is_checked:
+                return JsonResponse({
+                    'message' : 'IPCRF Form PART 2 is not checked',
                 }, status=400)
                 
             my_utils.update_ipcrf_form_part_3_by_teacher(ipcrf, content)
