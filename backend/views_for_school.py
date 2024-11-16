@@ -822,31 +822,31 @@ def create_rpms_folder(request):
             
             if not folder_name:
                 return JsonResponse({
-                    'message' : 'Folder name is required',
+                    'message' : 'folder_name is required',
                     'folder_name' : folder_name,
                 }, status=400)
                         
             if not background_color:
                 return JsonResponse({
-                    'message' : 'Background color is required',
+                    'message' : 'background_color is required',
                     'background_color' : background_color,
                 }, status=400)
             
             if not color:
                 return JsonResponse({
-                    'message' : 'Color is required',
+                    'message' : 'color is required',
                     'color' : color,
                 }, status=400)
             
             if not rpms_folder_school_year:
                 return JsonResponse({
-                    'message' : 'School year is required',
+                    'message' : 'rpms_folder_school_year is required',
                     'school_year' : rpms_folder_school_year,
                 }, status=400)
             
             if not position_rpms:
                 return JsonResponse({
-                    'message' : 'Position RPMS is required',
+                    'message' : 'position_rpms is required (Proficient and Highly Proficient)',
                     'position_rpms' : position_rpms,
                 }, status=400)
             
