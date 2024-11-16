@@ -27,7 +27,7 @@ import json
 # ================================= School Views ============================== # 
 
 @csrf_exempt
-def register_people(request):
+def register_people_by_school(request):
     try:
         # TODO : CHECK IF THE SCHOOL ADMIN IS LOGIN
         if request.method == 'POST':

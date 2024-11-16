@@ -67,7 +67,7 @@ urlpatterns = [
     
     # ============== School Path ================
     path('login_school/', views.login_school), # WORKING 
-    path('school/register/people/', views.register_people), # WORKING
+    path('school/register/people/', views.register_people_by_school), # WORKING
     path('school/people/add', views.add_people_by_school), # NEW API
     path('school/feeds/', views.get_school_feeds), # WORKING
     path('school/post/', views.school_post), # WORKING
