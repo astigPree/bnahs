@@ -124,19 +124,19 @@ def teacher_evaluation(request ):
                 'overall' : False
             }
             
-            cots_1 = models.COTForm.objects.filter(evaluated_id=user.employee_id, form_type="QUARTER 1").first()
+            cots_1 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="QUARTER 1").first()
             if cots_1:
                 cots_data['quarter_1'] = cots_1.is_checked 
                 
-            cots_2 = models.COTForm.objects.filter(evaluated_id=user.employee_id, form_type="QUARTER 2").first()
+            cots_2 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="QUARTER 2").first()
             if cots_2:
                 cots_data['quarter_2'] = cots_2.is_checked 
                 
-            cots_3 = models.COTForm.objects.filter(evaluated_id=user.employee_id, form_type="QUARTER 3").first()
+            cots_3 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="QUARTER 3").first()
             if cots_3:
                 cots_data['quarter_3'] = cots_3.is_checked 
                 
-            cots_4 = models.COTForm.objects.filter(evaluated_id=user.employee_id, form_type="QUARTER 4").first()
+            cots_4 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="QUARTER 4").first()
             if cots_4:
                 cots_data['quarter_4'] = cots_4.is_checked 
                 
