@@ -691,13 +691,11 @@ def get_iprcf_form_for_evaluator_part_1_of_all_teacher(request):
             for ipcrf_form in ipcrf_forms_for_proficient:
                 if ipcrf_form.employee_id not in proficient_employee_ids:
                     teacher = models.People.objects.filter(is_accepted = True, employee_id=ipcrf_form.employee_id, role='Teacher').first()
-                    evalutor = models.People.objects.filter(school_id=teacher.school_id, employee_id=ipcrf_form.evaluator_id, role='Evaluator').first()
                     if teacher:
                         proficient_employee_ids.append(ipcrf_form.employee_id)
                         ipcrf_forms_data_proficient.append({
                             'teacher' : teacher.get_information(),
                             'ipcrf_form' : ipcrf_form.get_information(),
-                            'evalutor' : evalutor.get_information() if evalutor else None,
                         })
             
             ipcrf_forms_for_highly_proficient = models.IPCRFForm.objects.filter( school_id=user.school_id , is_for_teacher_proficient=False , form_type="PART 1").order_by('-created_at')
@@ -706,13 +704,11 @@ def get_iprcf_form_for_evaluator_part_1_of_all_teacher(request):
             for ipcrf_form in ipcrf_forms_for_highly_proficient:
                 if ipcrf_form.employee_id not in highly_proficient_employee_ids:
                     teacher = models.People.objects.filter(is_accepted = True, employee_id=ipcrf_form.employee_id, role='Teacher').first()
-                    evalutor = models.People.objects.filter(school_id=teacher.school_id, employee_id=ipcrf_form.evaluator_id, role='Evaluator').first()
                     if teacher:
                         highly_proficient_employee_ids.append(ipcrf_form.employee_id)
                         ipcrf_forms_data_highly_proficient.append({
                             'teacher' : teacher.get_information(),
-                            'ipcrf_form' : ipcrf_form.get_information(),
-                            'evalutor' : evalutor.get_information() if evalutor else None,
+                            'ipcrf_form' : ipcrf_form.get_information(), 
                         })
 
             return JsonResponse({
