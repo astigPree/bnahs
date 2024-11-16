@@ -541,11 +541,12 @@ def update_ipcrf_form_part_3_by_teacher(
 
 
 # TODO : UPDATE THE CONTENT OF THE RPMS CLASS WORKS HERE  
-def create_rpms_class_works_for_proficient(rpms_folder_id : str):
+def create_rpms_class_works_for_proficient(rpms_folder_id : str , school_id : str):
     # Create KRA 1
     kra_1 = models.RPMSClassWork.objects.create(
         rpms_folder_id = rpms_folder_id,
         title = 'KRA 1: Content Knowledge and Pedagogy',
+        school_id=school_id
     )
     kra_1.class_work_id = str(uuid4())
     
@@ -557,6 +558,7 @@ def create_rpms_class_works_for_proficient(rpms_folder_id : str):
     kra_2 = models.RPMSClassWork.objects.create(
         rpms_folder_id = rpms_folder_id,
         title = 'KRA 2: Learning Environment and Diversity of Learners',
+        school_id=school_id
     )
     kra_2.class_work_id = str(uuid4())
     
@@ -569,6 +571,7 @@ def create_rpms_class_works_for_proficient(rpms_folder_id : str):
     kra_3 = models.RPMSClassWork.objects.create(
         rpms_folder_id = rpms_folder_id,
         title = 'KRA 3: Curriculum and Planning',
+        school_id=school_id
     )
     
     kra_3.class_work_id = str(uuid4())
@@ -582,6 +585,7 @@ def create_rpms_class_works_for_proficient(rpms_folder_id : str):
     kra_4 = models.RPMSClassWork.objects.create(
         rpms_folder_id = rpms_folder_id,
         title = 'KRA 4:  Curriculum and Planning & Assessment and Reporting',
+        school_id=school_id
     )
     
     kra_4.class_work_id = str(uuid4())
@@ -594,6 +598,7 @@ def create_rpms_class_works_for_proficient(rpms_folder_id : str):
     plus_factor = models.RPMSClassWork.objects.create(
         rpms_folder_id = rpms_folder_id,
         title = 'PLUS FACTOR',
+        school_id=school_id
     )
     
     plus_factor.class_work_id = str(uuid4())
@@ -603,11 +608,12 @@ def create_rpms_class_works_for_proficient(rpms_folder_id : str):
     plus_factor.save()
     
   
-def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str):
+def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str, school_id : str):
     # Create KRA 1
     kra_1 = models.RPMSClassWork.objects.create(
         rpms_folder_id = rpms_folder_id,
         title = 'KRA 1: Content Knowledge and Pedagogy',
+        school_id=school_id
     )
     kra_1.class_work_id = str(uuid4())
     
@@ -619,6 +625,7 @@ def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str):
     kra_2 = models.RPMSClassWork.objects.create(
         rpms_folder_id = rpms_folder_id,
         title = 'KRA 2: Learning Environment and Diversity of Learners',
+        school_id=school_id
     )
     kra_2.class_work_id = str(uuid4())
     
@@ -631,6 +638,7 @@ def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str):
     kra_3 = models.RPMSClassWork.objects.create(
         rpms_folder_id = rpms_folder_id,
         title = 'KRA 3: Curriculum and Planning',
+        school_id=school_id
     )
     
     kra_3.class_work_id = str(uuid4())
@@ -644,6 +652,7 @@ def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str):
     kra_4 = models.RPMSClassWork.objects.create(
         rpms_folder_id = rpms_folder_id,
         title = 'KRA 4:  Curriculum and Planning & Assessment and Reporting',
+        school_id=school_id
     )
     
     kra_4.class_work_id = str(uuid4())
@@ -656,6 +665,7 @@ def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str):
     plus_factor = models.RPMSClassWork.objects.create(
         rpms_folder_id = rpms_folder_id,
         title = 'PLUS FACTOR',
+        school_id=school_id
     )
     
     plus_factor.class_work_id = str(uuid4())

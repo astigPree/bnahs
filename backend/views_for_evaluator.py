@@ -889,67 +889,6 @@ def check_teacher_ipcrf_form_part_1_by_evaluator(request):
         }, status=400)
 
 
-def evaluator_check_rpms_attachment(request):
-    try:
-        
-        if request.method == 'POST':
-            
-            user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
-            if not user:
-                return JsonResponse({
-                    'message' : 'User not found',
-                    }, status=400)
-            
-            # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND Teacher
-            """
-                {
-                    'rpms_id' : 'rpms_id',
-                    'content' : {...} !Content/Checked of RPMS form from teacher
-                }
-            """
-            
-            rpms_id = request.POST.get('rpms_id')
-            content : dict[str , dict] = json.loads(request.POST.get('content', None))
-            
-            if not rpms_id:
-                return JsonResponse({
-                   'message' : 'Please provide RPMS ID',
-                    }, status=400)
-            
-            if not content:
-                return JsonResponse({
-                    'message' : 'Content is required',
-                    }, status=400)
-            
-            rpms = models.RPMSAttachment.objects.filter(attachment_id=rpms_id).order_by('-created_at').first()
-            if not rpms:
-                return JsonResponse({
-                    'message' : 'Invalid RPMS ID',
-                    }, status=400)
-            
-            my_utils.update_rpms_attachment(rpms=rpms, content=content)
-            
-            teacher = models.People.objects.filter(is_accepted = True, employee_id=rpms.employee_id, role='Teacher').first()
-            if teacher:
-                teacher.update_is_evaluted()
-            
-            return JsonResponse({
-                'message' : 'Form updated successfully',
-            },status=200)
-            
-        
-        
-    except Exception as e:
-        return JsonResponse({
-            'message' : f'Something went wrong : {e}',
-            }, status=500)
-        
-    return JsonResponse({
-        'message' : 'Invalid request',
-        }, status=400)
-
-
-
 @csrf_exempt
 def get_all_teacher_in_school(request):
     try:
@@ -1049,4 +988,147 @@ def get_rating_sheet_for_all_teacher(request):
         'message' : 'Invalid request',
         }, status=400)
     
+
+
+@csrf_exempt
+def evaluator_check_rpms_attachment(request):
+    try:
+        
+        if request.method == 'POST':
+            
+            user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND Teacher
+            """
+                {
+                    'rpms_id' : 'rpms_id',
+                    'content' : {...} !Content/Checked of RPMS form from teacher
+                }
+            """
+            
+            rpms_id = request.POST.get('rpms_id')
+            content : dict[str , dict] = json.loads(request.POST.get('content', None))
+            
+            if not rpms_id:
+                return JsonResponse({
+                   'message' : 'Please provide RPMS ID',
+                    }, status=400)
+            
+            if not content:
+                return JsonResponse({
+                    'message' : 'Content is required',
+                    }, status=400)
+            
+            rpms = models.RPMSAttachment.objects.filter(attachment_id=rpms_id).order_by('-created_at').first()
+            if not rpms:
+                return JsonResponse({
+                    'message' : 'Invalid RPMS ID',
+                    }, status=400)
+            
+            my_utils.update_rpms_attachment(rpms=rpms, content=content)
+            
+            teacher = models.People.objects.filter(is_accepted = True, employee_id=rpms.employee_id, role='Teacher').first()
+            if teacher:
+                teacher.update_is_evaluted()
+            
+            return JsonResponse({
+                'message' : 'Form updated successfully',
+            },status=200)
+            
+        
+        
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+@csrf_exempt
+def evaluator_get_list_of_rpms_takers(request):
+    try:
+        
+        if request.method == 'GET':
+            user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+                
+            # Get the latest folder
+            folders = models.RPMSFolder.objects.filter(school_id=user.school_id).order_by('-created_at')
+            if not folders:
+                return JsonResponse({
+                    'message' : 'No folders found',
+                    }, status=400)
+
+            teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher').order_by('-created_at')
+            
+            
+            teachers_rpms = []
+            """
+            [
+                {
+                    'teacher' : {...},
+                    'rater' : '',
+                    'status' : 'Pending'
+                }
+            ]
+            
+            STATUS: 
+            “Pending” (Action - Review)
+            Kapag hindi pa tapos gradan ni Evaluator lahat ng attachments.
+
+            “Submitted” (Action - Reviewed)
+            Once na tapos nang masagutan ni evaluator lahat ng pinasa ni teacher. And once na nireturn na rin ni Evaluator yung scores.
+
+            “No Attachments” (Action - Blank)
+            Kapag wala pa ni isang attachment na pinasa si teacher
+            """
+            
+            for teacher in teachers:
+                teacher_data = {
+                    'teacher' : teacher.get_information(),
+                    'rater' : None,
+                    'status' : 'Pending'
+                }
+                # TODO : FIX IT SOON
+                # contain_atleast_one_rpms = False
+                
+                # for folder in folders:
+                #     classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=folder.rpms_folder_id).order_by('-created_at')
+                #     for classwork in classworks:
+                #         rpms_attachments = models.RPMSAttachment.objects.filter(
+                #             class_work_id=classwork.class_work_id, 
+                #             employee_id=teacher.employee_id).order_by('-created_at')
+                        
+                #         if rpms_attachments:
+                #             contain_atleast_one_rpms = True
+                #             for rpms_attachment in rpms_attachments:
+                #                 if rpms_attachment.is_checked:
+                
+                # if not contain_atleast_one_rpms:
+                #     teacher_data['status'] = 'No Attachments'
+                
+                teachers_rpms.append(teacher_data)
+            
+            return JsonResponse(teachers_rpms, status=200)
+                
     
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+    
+        

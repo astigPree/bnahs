@@ -879,9 +879,9 @@ def create_rpms_folder(request):
 
             # Create a rpms_classwork folder when the folder is created
             if position_rpms == 'Proficient':
-                my_utils.create_rpms_class_works_for_proficient(rpms_folder_id=rpms_folder_id)
+                my_utils.create_rpms_class_works_for_proficient(rpms_folder_id=rpms_folder_id , school_id=user.school_id)
             elif position_rpms == 'Highly Proficient':
-                my_utils.create_rpms_class_works_for_highly_proficient(rpms_folder_id=rpms_folder_id)
+                my_utils.create_rpms_class_works_for_highly_proficient(rpms_folder_id=rpms_folder_id, school_id=user.school_id)
             
             return JsonResponse({
                 'message' : 'RPMS folder created successfully',

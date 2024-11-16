@@ -883,7 +883,7 @@ class RPMSClassWork(models.Model):
         A class to represent a classwork created by Head Adminstrator. 
         This where the RPMS Attachement is uploaded.
     """
-    school_id = models.CharField(max_length=255, blank=True, default='') # I don't know where to use it, but just stay there
+    school_id = models.CharField(max_length=255, blank=True, default='') # Identify what school
     employee_id = models.CharField(max_length=255, blank=True, default='') # I don't know where to use it, but just stay there
     
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -1344,8 +1344,16 @@ class People(models.Model):
         return 0  # Return None if no recent form is found
 
 
-    
-    
+    def get_rpms_attachments_by_folder_id(self , folder_id : str ):
+        classworks = RPMSClassWork.objects.filter(rpms_folder_id=folder_id).order_by('-created_at')
+        data = {}
+        
+        for classwork in classworks: 
+            attachments = RPMSAttachment.objects.filter(school_id=classwork.school_id ,class_work_id=classwork.class_work_id).order_by('-created_at')
+            data[classwork.title] = [ attachment for attachment in attachments ]
+        
+        return data
+
     
 # 1. title and scores for KBA BREAKDOWN
 # 2. rule based classifier for Promotion

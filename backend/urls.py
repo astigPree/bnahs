@@ -120,7 +120,8 @@ urlpatterns = [
     path('evaluator/school/get/ipcrf/part1/', views.get_iprcf_form_for_evaluator_part_1_of_teacher),
     path('evaluator/school/check/ipcrf/part1/', views.check_teacher_ipcrf_form_part_1_by_evaluator),
     
-    path('evaluator/school/check/rpms/attachment/', views.evaluator_check_rpms_attachment),  
+    path('evaluator/school/check/rpms/attachment/', views.evaluator_check_rpms_attachment),
+    path('evaluator/school/get/all/rpms/attachment/', views.evaluator_get_list_of_rpms_takers), 
     
     path('evaluator/school/get/teachers/', views.get_all_teacher_in_school), # NEW API
     
