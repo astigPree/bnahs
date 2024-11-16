@@ -103,16 +103,16 @@ def teacher_evaluation(request ):
             }
             ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type="PART 1").first()
             if ipcrf_1:
-                ipcrf_data['part 1'] = ipcrf_1.is_checked
-                ipcrf_data['part 1 rater'] = ipcrf_1.is_checked_by_evaluator               
+                ipcrf_data['part_1'] = ipcrf_1.is_checked
+                ipcrf_data['part_1_rater'] = ipcrf_1.is_checked_by_evaluator               
             
             ipcrf_2 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type="PART 2").first()
             if ipcrf_2:
-                ipcrf_data['part 2'] = ipcrf_2.is_checked 
+                ipcrf_data['part_2'] = ipcrf_2.is_checked 
             
             ipcrf_3 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type="PART 3").first()
             if ipcrf_3:
-                ipcrf_data['part 3'] = ipcrf_3.is_checked 
+                ipcrf_data['part_3'] = ipcrf_3.is_checked 
                 
             ipcrf_data['overall'] = all([ipcrf_data['part_1'], ipcrf_data['part_1_rater'], ipcrf_data['part_2'], ipcrf_data['part_3']])
 
