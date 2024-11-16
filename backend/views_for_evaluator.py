@@ -1037,7 +1037,7 @@ def evaluator_check_rpms_attachment(request):
             
             
             
-            my_utils.update_rpms_attachment(rpms=rpms, content=content , comment=comment)
+            my_utils.update_rpms_attachment(rpms_attachment=rpms, content=content , comment=comment)
             
             teacher = models.People.objects.filter(is_accepted = True, employee_id=rpms.employee_id, role='Teacher').first()
             if teacher:
