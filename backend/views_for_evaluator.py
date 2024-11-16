@@ -565,10 +565,10 @@ def get_rating_sheet(request):
                     'message' : 'Teacher not found',
                     }, status=400)
 
-            cots = models.COTForm.objects.filter(school_id=evaluator.school_id, quarter=quarter , employee_id=teacher_id).order_by('-created_at').first()
+            cots = models.COTForm.objects.filter(school_id=evaluator.school_id, quarter=quarter , evaluated_id=teacher_id).order_by('-created_at').first()
             
             return JsonResponse({
-                'cot' : cots.get_information(),
+                'cot' : cots.get_information() if cots else {},
                 'teacher' : teacher.get_information(),
             },status=200)
             
