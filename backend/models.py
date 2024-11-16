@@ -1059,7 +1059,7 @@ class RPMSAttachment(models.Model):
                     overall_score += total
             data['Overall Score'] = overall_score
         except Exception as e:
-            pass
+            data['error'] = str(e)
         
         
         
