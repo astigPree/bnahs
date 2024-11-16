@@ -1022,7 +1022,8 @@ class RPMSAttachment(models.Model):
             'title' : self.title,
             'grade' : self.grade,
             'is_checked' : self.is_checked,
-            "post_id" : self.post_id
+            "post_id" : self.post_id,
+            'comment' : None
         }
         """
         {
@@ -1036,6 +1037,12 @@ class RPMSAttachment(models.Model):
         
         """
         try:
+            
+            comment = Comment.objects.filter(post_id=self.post_id).first()
+            if comment:
+                data['comment'] = comment.get_comment()
+            
+            
             data['file'] = self.file.url if self.file else None
             
             overall_score = 0
@@ -1079,6 +1086,7 @@ class RPMSAttachment(models.Model):
     
 
 class MainAdmin(models.Model):
+    
     username = models.CharField(max_length=255, blank=True, default='')
     password = models.CharField(max_length=255, blank=True, default='')
     
