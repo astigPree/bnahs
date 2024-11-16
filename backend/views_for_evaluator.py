@@ -631,13 +631,15 @@ def update_rating_sheet(request):
                     }, status=400)
             
              
-            content = json.loads(request.body)
+            content = json.loads(request.POST.get('content'))
+            content['Observer ID'] = user.employee_id
             evaluator_id = content['Observer ID']
             evaluated_id = content['Teacher ID']
             questions = content['Questions']
             comments = content['Comments']
             cot_id = content['COT ID']
-            
+            quarter = content['Quarter']
+                
             for i in range(8):
                 # used to check if the data still exist
                 question_content = questions[f"{i+1}"]
@@ -658,7 +660,8 @@ def update_rating_sheet(request):
             
             cot_form = models.COTForm.objects.filter(
                 employee_id=evaluator_id,
-                cot_form_id=cot_id
+                cot_form_id=cot_id,
+                quarter=quarter
             ).order_by('-created_at').first()
             
             if not cot_form:
