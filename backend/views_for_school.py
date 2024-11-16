@@ -218,10 +218,8 @@ def get_school_information(request):
                 return JsonResponse({
                     'message' : 'User not found',
                     }, status=400)
-            
-            return JsonResponse({
-                'school' : user.get_school_information()
-            },status=200)
+        
+            return JsonResponse(user.get_school_information(),status=200)
         
     except Exception as e:
         return JsonResponse({

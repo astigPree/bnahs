@@ -940,3 +940,12 @@ def user_get_list_of_schools(request):
             }, status=500)
     
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+
+
+
+
+
+
+
+
