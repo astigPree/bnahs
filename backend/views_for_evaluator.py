@@ -1264,12 +1264,7 @@ def evaluator_get_rpms_work_attachments(request):
         
         if request.method == 'POST':
             user = models.People.objects.filter(employee_id=request.user.username).first()
-            
-            if 'Teacher' != user.role:
-                return JsonResponse({
-                    'message' : 'User not found',
-                },status=400)
-            
+             
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
