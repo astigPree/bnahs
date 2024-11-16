@@ -719,6 +719,7 @@ class COTForm(models.Model):
     
     # New Added
     quarter = models.CharField(max_length=255, blank=True, default='')
+    subject = models.CharField(max_length=255, blank=True, default='')
 
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.evaluated_id}"

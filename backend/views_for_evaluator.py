@@ -613,6 +613,17 @@ def update_rating_sheet(request):
             }
             
             """
+            
+            
+            
+            subject = request.POST.get('subject')
+            if not subject:
+                return JsonResponse({
+                    'message' : 'Subject is required',
+                    'subject' : subject
+                    }, status=400)
+            
+             
             content = json.loads(request.body)
             evaluator_id = content['Observer ID']
             evaluated_id = content['Teacher ID']
