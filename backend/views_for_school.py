@@ -1098,6 +1098,44 @@ def get_rpms_classwork_by_id(request):
 
 
 
+@csrf_exempt
+def school_summary(request):
+    try:
+        
+        if request.method == "GET":
+            user = models.School.objects.filter(email_address=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher')
+            teacher_count = teachers.count()
+            evaluated_teacher_count = teachers.filter(is_evaluated = True).count()
+            un_evaluated_teacher_count = teachers.filter(is_evaluated = False).count()
+            
+            
+            
+            return JsonResponse({
+                'teachers': [teacher.get_information() for teacher in teachers],
+                'teacher_count' : teacher_count,
+                'evaluated_teacher_count' : evaluated_teacher_count,
+                'un_evaluated_teacher_count' : un_evaluated_teacher_count
+            }, status=200)
+            
+            
+                
+                
+                
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
 
 
 

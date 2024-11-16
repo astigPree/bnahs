@@ -96,6 +96,7 @@ urlpatterns = [
     
     
     path('school/people/reject/', views.reject_people_by_school), # NEW API
+    path('school/summary/', views.school_summary),
     
     # ============== Evaluator Path ================
     path('login_evaluator/', views.login_evaluator), # WORKING
