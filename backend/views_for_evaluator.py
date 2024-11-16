@@ -559,7 +559,7 @@ def get_rating_sheet(request):
                     'message' : 'Quarter is required',
                     }, status=400)
             
-            teacher = models.People.objects.filter(is_accepted = True, employee_id=teacher_id , role='Teacher').first()
+            teacher = models.People.objects.filter(is_accepted = True, school_id=evaluator.school_id, employee_id=teacher_id , role='Teacher').first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',
