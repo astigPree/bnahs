@@ -99,12 +99,15 @@ def teacher_evaluation(request ):
                 'part_1_rater' : False,
                 'part_2' : False,
                 'part_3' : False,
-                'overall' : False
+                'overall' : False,
+                'rater' : None,
             }
             ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type="PART 1").first()
             if ipcrf_1:
                 ipcrf_data['part_1'] = ipcrf_1.is_checked
-                ipcrf_data['part_1_rater'] = ipcrf_1.is_checked_by_evaluator               
+                ipcrf_data['part_1_rater'] = ipcrf_1.is_checked_by_evaluator
+                if ipcrf_1.is_checked_by_evaluator:
+                    ipcrf_data['rater'] = models.People.objects.filter(employee_id=ipcrf_1.evaluator_id).first()
             
             ipcrf_2 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type="PART 2").first()
             if ipcrf_2:
@@ -115,7 +118,8 @@ def teacher_evaluation(request ):
                 ipcrf_data['part_3'] = ipcrf_3.is_checked 
                 
             ipcrf_data['overall'] = all([ipcrf_data['part_1'], ipcrf_data['part_1_rater'], ipcrf_data['part_2'], ipcrf_data['part_3']])
-
+            
+            
             cots_data = {
                 'quarter_1': False,
                 'quarter_2' : False,
@@ -147,9 +151,10 @@ def teacher_evaluation(request ):
             }
             
             return JsonResponse({ 
-              'ipcrf' : ipcrf_data,
-              'cots' : cots_data,
-              'rpms' : rpms_data, 
+                'teacher' : user.get_information(),
+                'ipcrf' : ipcrf_data,
+                'cots' : cots_data,
+                'rpms' : rpms_data, 
             },status=200)
         
     
