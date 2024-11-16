@@ -94,21 +94,62 @@ def teacher_evaluation(request ):
                     'message' : 'User is not a teacher',
                     }, status=400)
             
-            # Fetch filtered data
-            ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').order_by('-created_at')  # Apply your filters here
-            cot_forms = models.COTForm.objects.filter(employee_id=user.employee_id).order_by('-created_at')  # Apply your filters here
-            rpms_attachments = models.RPMSAttachment.objects.filter(employee_id=user.employee_id).order_by('-created_at')  # Apply your filters here
-
-            # Combine data
-            combined_data = list(ipcrf_forms) + list(cot_forms) + list(rpms_attachments)
-
-            # Sort combined data by 'created_at'
-            sorted_data = sorted(combined_data, key=lambda x: x.created_at, reverse=True)
+            ipcrf_data = {
+                'part_1' : False,
+                'part_1_rater' : False,
+                'part_2' : False,
+                'part_3' : False,
+                'overall' : False
+            }
+            ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type="PART 1").first()
+            if ipcrf_1:
+                ipcrf_data['part 1'] = ipcrf_1.is_checked
+                ipcrf_data['part 1 rater'] = ipcrf_1.is_checked_by_evaluator               
             
+            ipcrf_2 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type="PART 2").first()
+            if ipcrf_2:
+                ipcrf_data['part 2'] = ipcrf_2.is_checked 
             
-            return JsonResponse({
-                'user' : user.get_information(),
-                'forms' : [form.get_information() for form in sorted_data]
+            ipcrf_3 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type="PART 3").first()
+            if ipcrf_3:
+                ipcrf_data['part 3'] = ipcrf_3.is_checked 
+                
+            ipcrf_data['overall'] = all([ipcrf_data['part_1'], ipcrf_data['part_1_rater'], ipcrf_data['part_2'], ipcrf_data['part_3']])
+
+            cots_data = {
+                'quarter_1': False,
+                'quarter_2' : False,
+                'quarter_3' : False,
+                'quarter_4' : False,
+                'overall' : False
+            }
+            
+            cots_1 = models.COTForm.objects.filter(evaluated_id=user.employee_id, form_type="QUARTER 1").first()
+            if cots_1:
+                cots_data['quarter_1'] = cots_1.is_checked 
+                
+            cots_2 = models.COTForm.objects.filter(evaluated_id=user.employee_id, form_type="QUARTER 2").first()
+            if cots_2:
+                cots_data['quarter_2'] = cots_2.is_checked 
+                
+            cots_3 = models.COTForm.objects.filter(evaluated_id=user.employee_id, form_type="QUARTER 3").first()
+            if cots_3:
+                cots_data['quarter_3'] = cots_3.is_checked 
+                
+            cots_4 = models.COTForm.objects.filter(evaluated_id=user.employee_id, form_type="QUARTER 4").first()
+            if cots_4:
+                cots_data['quarter_4'] = cots_4.is_checked 
+                
+            cots_data['overall'] = all([cots_data['quarter_1'], cots_data['quarter_2'], cots_data['quarter_3'], cots_data['quarter_4']])
+            
+            rpms_data = {
+                
+            }
+            
+            return JsonResponse({ 
+              'ipcrf' : ipcrf_data,
+              'cots' : cots_data,
+              'rpms' : rpms_data, 
             },status=200)
         
     
