@@ -1119,7 +1119,7 @@ def evaluator_get_list_of_rpms_takers(request):
                 
                 teachers_rpms.append(teacher_data)
             
-            return JsonResponse(teachers_rpms, status=200)
+            return JsonResponse({ 'teachers' : teachers_rpms}, status=200)
                 
     
     except Exception as e:
