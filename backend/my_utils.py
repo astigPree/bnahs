@@ -400,7 +400,7 @@ def create_ipcrf_form_proficient( school : models.School , teacher : models.Peop
     
 
 
-def create_ipcrf_form_highly_proficient(school : models.School , teacher : models.People ):
+def create_ipcrf_form_highly_proficient(school : models.School , teacher : models.People, school_year : str ):
      # Currently walang evaluator
     
     connection_to_other = str(uuid4())
@@ -410,6 +410,7 @@ def create_ipcrf_form_highly_proficient(school : models.School , teacher : model
         school_id = school.school_id,
         employee_id = teacher.employee_id,
         form_type = 'PART 1',
+        school_year = school_year,
     )
     
     
@@ -423,6 +424,7 @@ def create_ipcrf_form_highly_proficient(school : models.School , teacher : model
         school_id = school.school_id,
         employee_id = teacher.employee_id,
         form_type = 'PART 2',
+        school_year = school_year,
     )
     
     ipcrf_form_part_2.content_for_teacher = forms_text.form_for_ipcrf_part_2_proficient()
@@ -434,6 +436,7 @@ def create_ipcrf_form_highly_proficient(school : models.School , teacher : model
         school_id = school.school_id,
         employee_id = teacher.employee_id,
         form_type = 'PART 3',
+        school_year = school_year,
     )
     
     
