@@ -867,7 +867,7 @@ def register_people(request):
             if models.People.objects.filter(email_address=email_address , role=role).exists():
                 return JsonResponse({ 'message': 'People already exists'}, status=400)
 
-            if models.People.objects.filter(school_id=school_id , role=role).exists():
+            if models.People.objects.filter(employee_id=employee_id , role=role).exists():
                 return JsonResponse({ 'message': 'People ID already exists'}, status=400)
             
             
