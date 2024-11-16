@@ -622,11 +622,16 @@ def update_rating_sheet(request):
             """
             
             
+            cot_id = request.POST.get('cot_form_id')
+            if not cot_id:
+                return JsonResponse({
+                    'message' : 'cot_form_id is required',
+                    }, status=400)
             
             subject = request.POST.get('subject')
             if not subject:
                 return JsonResponse({
-                    'message' : 'Subject is required',
+                    'message' : 'subject is required',
                     'subject' : subject
                     }, status=400)
             
@@ -636,8 +641,7 @@ def update_rating_sheet(request):
             evaluator_id = content['Observer ID']
             evaluated_id = content['Teacher ID']
             questions = content['Questions']
-            comments = content['Comments']
-            cot_id = content['COT ID']
+            comments = content['Comments'] 
             quarter = content['Quarter']
                 
             for i in range(8):
