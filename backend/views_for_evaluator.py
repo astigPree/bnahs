@@ -548,9 +548,15 @@ def get_rating_sheet(request):
                     }, status=400)
 
             teacher_id = request.POST.get('teacher_id')
+            quarter = request.POST.get('quarter')
             if not teacher_id:
                 return JsonResponse({
                     'message' : 'Teacher ID is required',
+                    }, status=400)
+            
+            if not quarter:
+                return JsonResponse({
+                    'message' : 'Quarter is required',
                     }, status=400)
             
             teacher = models.People.objects.filter(is_accepted = True, employee_id=teacher_id , role='Teacher').first()
@@ -559,10 +565,11 @@ def get_rating_sheet(request):
                     'message' : 'Teacher not found',
                     }, status=400)
 
-            cots = models.COTForm.objects.filter(evaluated_id=evaluator.employee_id , employee_id=teacher_id).order_by('-created_at').first()
+            cots = models.COTForm.objects.filter(evaluated_id=evaluator.employee_id, quarter=quarter , employee_id=teacher_id).order_by('-created_at').first()
             
             return JsonResponse({
-                'rating_sheet' : cots.get_information(),
+                'cot' : cots.get_information(),
+                'teacher' : teacher.get_information(),
             },status=200)
             
         
