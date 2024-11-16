@@ -719,7 +719,7 @@ class COTForm(models.Model):
     
     # New Added
     quarter = models.CharField(max_length=255, blank=True, default='')
-    subject = models.CharField(max_length=255, blank=True, default='')
+    subject = models.CharField(max_length=255, blank=True, default='Not Assigned')
 
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.evaluated_id}"
@@ -739,7 +739,8 @@ class COTForm(models.Model):
             'quarter' : self.quarter,
             'evaluated_id' : self.evaluated_id,
             'rater' : None,
-            'total' : 0 
+            'total' : 0 ,
+            'subject' : self.subject
         }
         try:
             
