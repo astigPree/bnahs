@@ -674,6 +674,7 @@ def update_rating_sheet(request):
                 }, status=400)
             
             
+            cot_form.subject = subject
             cot_form.employee_id = user.employee_id
             my_utils.update_cot_form(cot_form=cot_form, comment=comments, questions=questions , content=content)
              
