@@ -1023,6 +1023,7 @@ class RPMSAttachment(models.Model):
             'grade' : self.grade,
             'is_checked' : self.is_checked,
             "post_id" : self.post_id,
+            'is_submitted' : self.is_submitted,
             'comment' : None
         }
         """

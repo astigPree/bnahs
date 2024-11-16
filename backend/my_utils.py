@@ -687,7 +687,7 @@ def update_rpms_attachment( rpms_attachment : models.RPMSAttachment, content : d
             content = comment,
             is_private = True,
         )
-    
+    rpms_attachment.is_submitted = True
     rpms_attachment.grade = content
     rpms_attachment.is_checked = True
     rpms_attachment.save()
