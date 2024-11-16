@@ -121,6 +121,11 @@ urlpatterns = [
     path('evaluator/school/check/ipcrf/part1/', views.check_teacher_ipcrf_form_part_1_by_evaluator),
     
     path('evaluator/school/get/all/rpms/folders/', views.evaluator_get_rpms_folders),
+    path('evaluator/school/get/rpms/folder/', views.evaluator_get_rpms_folder),
+    path('evaluator/school/get/rpms/folder/classwork/', views.evaluator_get_rpms_work),
+    path('evaluator/school/get/rpms/folder/classwork/attachments/', views.evaluator_get_rpms_work_attachments),
+    path('evaluator/school/get/rpms/attachment/result/', views.teacher_get_rpms_attachment_result),
+    
     path('evaluator/school/check/rpms/attachment/', views.evaluator_check_rpms_attachment),
     path('evaluator/school/get/all/rpms/attachment/', views.evaluator_get_list_of_rpms_takers), 
     

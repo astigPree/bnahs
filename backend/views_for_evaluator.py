@@ -1173,3 +1173,203 @@ def evaluator_get_rpms_folders(request):
     },status=400)
 
 
+
+@csrf_exempt
+def evaluator_get_rpms_work(request):
+    try:
+        
+        if request.method == 'POST':
+            
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+                
+            class_work_id = request.POST.get('class_work_id')
+            if not class_work_id:
+                return JsonResponse({
+                    'message' : 'class_work_id not found',
+                }, status=400)
+                
+            classwork = models.RPMSClassWork.objects.filter(class_work_id=class_work_id).first()
+            if not classwork:
+                return JsonResponse({
+                    'message' : 'Class Work not found',
+                }, status=400)
+            
+            
+            return JsonResponse({
+                    'classwork' : classwork.get_rpms_classwork_information(),
+                },status=200)
+            
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}'
+        },status=400)
+
+    return JsonResponse({
+        'message' : 'Invalid Request'
+    },status=400)
+
+ 
+
+@csrf_exempt
+def evaluator_get_rpms_folder(request):
+    try:
+        if request.method == 'POST':
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            rpms_folder_id = request.POST.get('rpms_folder_id')
+            if not rpms_folder_id:
+                return JsonResponse({
+                    'message' : 'rpms_folder_id not found',
+                }, status=400)
+            
+            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id).order_by('-created_at').first()
+            if not rpms_folder:
+                return JsonResponse({
+                    'message' : 'RPMS Folder not found',
+                }, status=400)
+                
+            classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpms_folder_id).order_by('-created_at')
+            
+            return JsonResponse({
+                'rpms_folder' : rpms_folder.get_rpms_folder_information(),
+                'rpms_classworks' : [work.get_rpms_classwork_information() for work in classworks]
+            },status=200)
+            
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+    },status=400)
+
+ 
+
+@csrf_exempt
+def evaluator_get_rpms_work_attachments(request):
+    try:
+        
+        if request.method == 'POST':
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            
+            if 'Teacher' != user.role:
+                return JsonResponse({
+                    'message' : 'User not found',
+                },status=400)
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            class_work_id = request.POST.get('class_work_id')
+            teacher_id = request.POST.get('teacher_id')
+            
+            if not class_work_id:
+                return JsonResponse({
+                    'message' : 'class_work_id not found',
+                },status=400)
+            
+            
+            if not teacher_id:
+                return JsonResponse({
+                    'message' : 'teacher_id not found',
+                },status=400)
+            
+            
+            submitted_attachments = models.RPMSAttachment.objects.filter( is_submitted=True, class_work_id=class_work_id, employee_id=teacher_id).order_by('-created_at')
+            unsubmitted_attachments = models.RPMSAttachment.objects.filter( is_submitted=False, class_work_id=class_work_id, employee_id=teacher_id).order_by('-created_at')
+            
+            return JsonResponse({
+                    'submitted' : [attachment.get_information() for attachment in submitted_attachments],
+                    'unsumitted' : [ attachment.get_information() for attachment in unsubmitted_attachments]
+                },status=200)
+            
+            
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+
+@csrf_exempt
+def teacher_get_rpms_attachment_result(request):
+    try:
+        if request.method == "POST":
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+             
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+                
+            rpms_folder_id = request.POST.get('rpms_folder_id')
+            teacher_id = request.POST.get('teacher_id')
+            
+            if not rpms_folder_id:
+                return JsonResponse({
+                    'message' : 'rpms_folder_id not found',
+                },status=400) 
+            
+            if not teacher_id:
+                return JsonResponse({
+                    'message' : 'teacher_id not found',
+                },status=400)
+
+            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id , school_id=user.school_id  ).order_by('-created_at').first()
+            if not rpms_folder:
+                return JsonResponse({
+                    'message' : 'RPMS Folder not found',
+                },status=400)
+
+            classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpms_folder_id).order_by('-created_at')
+            if not classworks:
+                return JsonResponse({
+                    'message' : 'Classworks not found',
+                },status=400)
+                
+            rpms_attachments = models.RPMSAttachment.objects.filter(class_work_id__in=[classwork.class_work_id for classwork in classworks], employee_id=teacher_id).order_by('-created_at')
+            titles = []
+            each_attachment_in_rpms = []
+            for rpms_attachment in rpms_attachments:
+                title = rpms_attachment.title
+                if title not in titles:
+                    titles.append(title)
+                    each_attachment_in_rpms.append(
+                        {
+                            "title" : title,
+                            "grade" : rpms_attachment.getGradeSummary()
+                        }
+                    )
+            
+            return JsonResponse({
+                'rpms_folder_id' : rpms_folder_id,
+                'scores' : each_attachment_in_rpms
+            }, status=200)
+            
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
