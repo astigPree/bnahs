@@ -1284,11 +1284,16 @@ def evaluator_get_rpms_work_attachments(request):
                     'message' : 'teacher_id not found',
                 },status=400)
             
-            
+            teacher = models.People.objects.filter(employee_id=teacher_id).first()
+            if not teacher:
+                return JsonResponse({
+                    'message' : 'Teacher not found',
+                },status=400)
             submitted_attachments = models.RPMSAttachment.objects.filter( is_submitted=True, class_work_id=class_work_id, employee_id=teacher_id).order_by('-created_at')
             unsubmitted_attachments = models.RPMSAttachment.objects.filter( is_submitted=False, class_work_id=class_work_id, employee_id=teacher_id).order_by('-created_at')
             
             return JsonResponse({
+                    'teacher' : teacher.get_information(),
                     'submitted' : [attachment.get_information() for attachment in submitted_attachments],
                     'unsumitted' : [ attachment.get_information() for attachment in unsubmitted_attachments]
                 },status=200)
