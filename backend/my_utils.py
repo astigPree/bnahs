@@ -29,6 +29,11 @@ position = {
     'Highly Proficient' : ('Master Teacher I', 'Master Teacher II', 'Master Teacher III', 'Master Teacher IV'),
 }
 
+evaluator_positions = {
+    'Proficient' : ('Teacher I', 'Teacher II', 'Teacher III'  ),
+    'Highly Proficient' : ('Master Teacher I', 'Master Teacher II', 'Master Teacher III', 'Master Teacher IV'),
+}
+
 client = Client()
 
 def generate_text(promt : str):

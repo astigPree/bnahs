@@ -47,6 +47,10 @@ def login_teacher(request):
                     }, status=400)
             
             # TODO : CHECK IF THE USER IS TEACHER OR NOT
+            if user.role != 'Teacher':
+                return JsonResponse({
+                    'message' : 'User is not a teacher',
+                    }, status=400)
             
             
             user_authenticated = authenticate(request, username=employee_id, password=password)
