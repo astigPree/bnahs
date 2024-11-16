@@ -1311,7 +1311,7 @@ def evaluator_get_rpms_work_attachments(request):
 
 
 @csrf_exempt
-def teacher_get_rpms_attachment_result(request):
+def evaluator_get_rpms_attachment_result(request):
     try:
         if request.method == "POST":
             user = models.People.objects.filter(employee_id=request.user.username).first()

@@ -124,7 +124,7 @@ urlpatterns = [
     path('evaluator/school/get/rpms/folder/', views.evaluator_get_rpms_folder),
     path('evaluator/school/get/rpms/folder/classwork/', views.evaluator_get_rpms_work),
     path('evaluator/school/get/rpms/folder/classwork/attachments/', views.evaluator_get_rpms_work_attachments),
-    path('evaluator/school/get/rpms/attachment/result/', views.teacher_get_rpms_attachment_result),
+    path('evaluator/school/get/rpms/attachment/result/', views.evaluator_get_rpms_attachment_result),
     
     path('evaluator/school/check/rpms/attachment/', views.evaluator_check_rpms_attachment),
     path('evaluator/school/get/all/rpms/attachment/', views.evaluator_get_list_of_rpms_takers), 
