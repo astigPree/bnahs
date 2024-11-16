@@ -1012,15 +1012,21 @@ def evaluator_check_rpms_attachment(request):
             
             rpms_id = request.POST.get('rpms_id')
             content : dict[str , dict] = json.loads(request.POST.get('content', None))
+            comment = request.POST.get('comment', None)
             
             if not rpms_id:
                 return JsonResponse({
-                   'message' : 'Please provide RPMS ID',
+                   'message' : 'Please provide rpms_id',
                     }, status=400)
             
             if not content:
                 return JsonResponse({
-                    'message' : 'Content is required',
+                    'message' : 'content is required',
+                    }, status=400)
+            
+            if not comment:
+                return JsonResponse({
+                    'message' : 'comment is required',
                     }, status=400)
             
             rpms = models.RPMSAttachment.objects.filter(attachment_id=rpms_id).order_by('-created_at').first()
@@ -1029,7 +1035,9 @@ def evaluator_check_rpms_attachment(request):
                     'message' : 'Invalid RPMS ID',
                     }, status=400)
             
-            my_utils.update_rpms_attachment(rpms=rpms, content=content)
+            
+            
+            my_utils.update_rpms_attachment(rpms=rpms, content=content , comment=comment)
             
             teacher = models.People.objects.filter(is_accepted = True, employee_id=rpms.employee_id, role='Teacher').first()
             if teacher:
