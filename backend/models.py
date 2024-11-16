@@ -737,14 +737,25 @@ class COTForm(models.Model):
             'is_for_teacher_proficient' : self.is_for_teacher_proficient,
             'quarter' : self.quarter,
             'evaluated_id' : self.evaluated_id,
+            'rater' : None,
+            'total' : 0 
         }
         try:
+            
+            rater = People.objects.filter(school_id=self.school_id, employee_id=self.employee_id).first()
+            if rater:
+                data['rater'] = rater.fullname
+            
+            
             if self.content:
                 total = 0
                 for key, values in self.content.items():
                     if key == 'Questions':
                         for question_key, question_values in values.items():
                             total += int(question_values['Selected'])
+                
+                data['total'] = total
+                
         except Exception as e :
             data['Error'] = str(e)
         
