@@ -734,7 +734,9 @@ class COTForm(models.Model):
             'status' : self.status,
             'cot_form_id' : self.cot_form_id,
             'is_checked' : self.is_checked,
-            'is_for_teacher_proficient' : self.is_for_teacher_proficient
+            'is_for_teacher_proficient' : self.is_for_teacher_proficient,
+            'quarter' : self.quarter,
+            'evaluated_id' : self.evaluated_id,
         }
         try:
             if self.content:

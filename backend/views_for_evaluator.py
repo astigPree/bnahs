@@ -982,6 +982,43 @@ def get_all_teacher_in_school(request):
     
     
     
+@csrf_exempt
+def get_rating_sheet_for_all_teacher(request):
+    try:
+        if request.method == 'GET':
+            
+            user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username, role='Evaluator').first()
+            if not user:
+                return JsonResponse({
+                   'message' : 'User not found',
+                    }, status=400)
+            
+            quarters = {
+                "Quarter 1" : [],
+                "Quarter 2" : [],
+                "Quarter 3" : [],
+                "Quarter 4" : [],
+            }
+            
+            for quarter in quarters:
+                cots = models.COTForm.objects.filter(quarter=quarter , school_id=user.school_id).order_by('-created_at')
+                for cot in cots:
+                    teacher = models.People.objects.filter(school_id=user.school_id, employee_id=cot.evaluated_id).first()
+                    if teacher:
+                        quarters[quarter].append({
+                            'teacher' : teacher.get_information(),
+                            'cot' : cot.get_information()
+                        })
 
+            return JsonResponse(quarters, status=200)
+        
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
     
     
