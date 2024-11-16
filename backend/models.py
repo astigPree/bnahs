@@ -173,14 +173,11 @@ class Comment(models.Model):
             'created_at' : self.created_at,
             'post_id' : self.post_id,
             'comment_owner' : self.comment_owner,
-            'replied_to' : self.replied_to,
-            'attachment' : '',
+            'replied_to' : self.replied_to, 
             'created_at' : self.created_at,
+            'is_private' : self.is_private,
         }
-        
-        if self.attachment or self.attachment != "":
-            data['attachment'] = self.attachment.url
-        
+         
         if action_id:
             if action_id in self.is_seen:
                 data['is_seen'] = True 
