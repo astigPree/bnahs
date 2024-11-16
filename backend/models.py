@@ -722,7 +722,7 @@ class COTForm(models.Model):
     subject = models.CharField(max_length=255, blank=True, default='Not Assigned')
 
     def __str__(self):
-        return f"{self.school_id} - {self.employee_id} - {self.evaluated_id}"
+        return f"{self.school_id} - {self.employee_id} - {self.evaluated_id} - {self.quarter} - {self.subject}"
     
    
     def get_information(self):
