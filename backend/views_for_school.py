@@ -1138,4 +1138,216 @@ def school_summary(request):
 
 
 
+@csrf_exempt
+def school_summary_recommendations(request):
+    try:
+        
+        if request.method == "POST":
+            user = models.School.objects.filter(email_address=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            teacher_id = request.POST.get('teacher_id')
+            if not teacher_id:
+                return JsonResponse({
+                    'message' : 'teacher_id is required',
+                    }, status=400)
+            
+            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            if not teacher:
+                return JsonResponse({
+                    'message' : 'Teacher not found',
+                    }, status=400)
+            
+            
+            result = my_utils.get_recommendation_result_with_percentage(employee_id=teacher.employee_id)
+            
+            return JsonResponse({
+                'message' : 'Recommendation result found successfully',
+                'result' : result,
+            }, status=200)
+
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+
+
+@csrf_exempt
+def school_summary_performance(request):
+    try:
+        
+        if request.method == "POST":
+            user = models.School.objects.filter(email_address=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            teacher_id = request.POST.get('teacher_id')
+            if not teacher_id:
+                return JsonResponse({
+                    'message' : 'teacher_id is required',
+                    }, status=400)
+
+            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            if not teacher:
+                return JsonResponse({
+                    'message' : 'Teacher not found',
+                    }, status=400)
+                
+            
+            result = my_utils.get_performance_by_years(employee_id=teacher.employee_id)
+            
+            return JsonResponse({
+                'message' : 'Performance result found successfully',
+                'result' : result,
+            }, status=200)
+            
+        
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+
+@csrf_exempt
+def school_summary_rpms(request):
+    try:
+        
+        if request.method == "POST":
+            user = models.School.objects.filter(email_address=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            teacher_id = request.POST.get('teacher_id')
+            if not teacher_id:
+                return JsonResponse({
+                    'message' : 'teacher_id is required',
+                    }, status=400)
+
+            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            if not teacher:
+                return JsonResponse({
+                    'message' : 'Teacher not found',
+                    }, status=400)
+
+            
+            return JsonResponse( my_utils.get_kra_breakdown_of_a_teacher(employee_id=teacher.employee_id) , status=200)
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+@csrf_exempt
+def school_summary_swot(request):
+    try:
+        if request.method == "POST":
+            user = models.School.objects.filter(email_address=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            teacher_id = request.POST.get('teacher_id')
+            if not teacher_id:
+                return JsonResponse({
+                    'message' : 'teacher_id is required',
+                    }, status=400)
+
+            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            if not teacher:
+                return JsonResponse({
+                    'message' : 'Teacher not found',
+                    }, status=400)
+
+            strength = "The teacher has not been rated yet."
+            weakness = "The teacher has not been rated yet."
+            opportunity = "The teacher has not been rated yet."
+            threat = "The teacher has not been rated yet."
+
+            latest_cot = None
+            cot_1 = models.COTForm.objects.filter(evaluated_id=teacher.employee_id, quarter="Quarter 1").order_by('-created_at').first()
+            if cot_1:
+                if cot_1.is_checked:
+                    latest_cot = cot_1
+            
+            cot_2 = models.COTForm.objects.filter(evaluated_id=teacher.employee_id, quarter="Quarter 2").order_by('-created_at').first()
+            if cot_2:
+                if cot_2.is_checked:
+                    latest_cot = cot_2
+            
+            cot_3 = models.COTForm.objects.filter(evaluated_id=teacher.employee_id, quarter="Quarter 3").order_by('-created_at').first()
+            if cot_3:
+                if cot_3.is_checked:
+                    latest_cot = cot_3
+            
+            cot_4 = models.COTForm.objects.filter(evaluated_id=teacher.employee_id, quarter="Quarter 4").order_by('-created_at').first()
+            if cot_4:
+                if cot_4.is_checked:
+                    latest_cot = cot_4
+            
+            if latest_cot:
+                if not latest_cot.isAlreadyAIGenerated():
+                    data = latest_cot.generatePromtTemplate() 
+                    strength = my_utils.generate_text(data['strengths'])
+                    weakness = my_utils.generate_text(data['weaknesses'])
+                    opportunity = my_utils.generate_text(data['opportunities'])
+                    threat = my_utils.generate_text(data['threats'])
+                    
+                    latest_cot.strengths_prompt = strength
+                    latest_cot.weaknesses_prompt = weakness
+                    latest_cot.opportunities_prompt = opportunity
+                    latest_cot.threats_prompt = threat
+                    latest_cot.save()
+                     
+                else :
+                    strength = latest_cot.strengths_prompt
+                    weakness = latest_cot.weaknesses_prompt
+                    opportunity = latest_cot.opportunities_prompt
+                    threat = latest_cot.threats_prompt
+            
+            
+            return JsonResponse({ 
+                'strength' : strength,
+                'weakness' : weakness,
+                'opportunity' : opportunity,
+                'threat' : threat,
+            }, status=200)
+            
+            
+            
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
 

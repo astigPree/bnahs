@@ -19,6 +19,14 @@ from curl_cffi import requests as cf_reqs  # Import curl_cffi after requests
 from g4f.client import Client
 from uuid import uuid4
 from . import models, forms_text
+from django.db.models import Count
+
+
+
+
+
+
+
 
 # import openai
 
@@ -154,6 +162,91 @@ def parse_date_string(date_string):
         return None
 
 
+def get_ipcrf_forms_by_years(employee_id : str ):  
+
+    # Group by year
+    ipcrf_forms_by_year = models.IPCRFForm.objects.filter(
+        employee_id=employee_id, form_type='PART 1'
+    ).annotate(
+        year=ExtractYear('created_at')
+    ).order_by('created_at')
+
+    # Initialize the dictionary with a default list
+    ipcrf_yearly_dict = defaultdict(list)
+
+    # Populate the dictionary
+    for index, entry in enumerate(ipcrf_forms_by_year):
+        year_label = f'Year {index + 1}'
+        ipcrf_yearly_dict[year_label].append(entry)
+
+    # Convert defaultdict to regular dict
+    ipcrf_yearly_dict = dict(ipcrf_yearly_dict)
+
+    # Example dictionary structure
+    # {
+    #     'Year 1': [<IPCRFForm: IPCRFForm object (1)>, <IPCRFForm: IPCRFForm object (2)>],
+    #     'Year 2': [<IPCRFForm: IPCRFForm object (3)>, <IPCRFForm: IPCRFForm object (4)>],
+    #     ...
+    # }
+
+    return ipcrf_yearly_dict
+
+
+def get_rpms_forms_by_title(employee_id : str):
+    
+    # Filter and group by title
+    grouped_attachments = (models.RPMSAttachment.objects
+                        .filter(is_checked=True, is_submitted=True , employee_id=employee_id)
+                        .values('title')
+                        .annotate(count=Count('id')))
+
+    # Create the dictionary
+    result_dict = {}
+    for index, entry in enumerate(grouped_attachments, start=1):
+        key = f'Group {index}'
+        result_dict[key] = {
+            'Title': entry['title'],
+            'Count': entry['count'],
+            'Attachments': list(models.RPMSAttachment.objects.filter(title=entry['title'],
+                                                            is_checked=True,
+                                                            is_submitted=True))
+        }
+ 
+    # Example of what the result might look like:
+    # {
+    #     'Group 1': {
+    #         'Title': 'Classwork 1',
+    #         'Count': 3,
+    #         'Attachments': [<RPMSAttachment: RPMSAttachment object (1)>, <RPMSAttachment: RPMSAttachment object (2)>, <RPMSAttachment: RPMSAttachment object (3)>]
+    #     },
+    #     'Group 2': {
+    #         'Title': 'Classwork 2',
+    #         'Count': 2,
+    #         'Attachments': [<RPMSAttachment: RPMSAttachment object (4)>, <RPMSAttachment: RPMSAttachment object (5)>]
+    #     }
+    # }
+    
+    return result_dict
+    
+
+
+def get_performance_by_years( employee_id : str):
+    forms = get_ipcrf_forms_by_years(employee_id)
+    data = {
+        "labels" : [],
+        "values" : []
+    }
+    
+    for year, forms in forms.items():
+        data["labels"].append(year)
+        value = 0.0
+        for form in forms:
+            value += form.evaluator_rating
+        data["values"].append((value / len(forms)) if len(forms) > 0 else 0.0)
+    return data
+
+
+
 def get_recommendation_result(employee_id : str):
     ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=employee_id, form_type='PART 1').order_by('-created_at')
     scores = [ form.evaluator_rating for form in ipcrf_forms ]
@@ -189,6 +282,50 @@ def get_recommendation_result(employee_id : str):
         return 'Termination'
 
 
+
+def get_recommendation_result_with_percentage(employee_id : str):
+    ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=employee_id, form_type='PART 1').order_by('-created_at')
+    scores = [ form.evaluator_rating for form in ipcrf_forms ]
+            
+    # Initialize counters
+    promotion_count = 0
+    retention_count = 0
+    termination_count = 0
+    overall_scores = []
+    
+    # Classify scores
+    for score in scores: 
+        overall_scores.append(score)
+        category = classify_ipcrf_score(score)
+        if category == 'Outstanding':
+                promotion_count += 1
+        elif category in ['Very Satisfactory', 'Satisfactory']:
+                retention_count += 1
+        elif category in ['Unsatisfactory', 'Poor']:
+                termination_count += 1
+        
+    # Calculate percentages
+    total = len(overall_scores)
+    promotion_percentage = promotion_count / total * 100 if total > 0 else 0
+    retention_percentage = retention_count / total * 100 if total > 0 else 0
+    termination_percentage = termination_count / total * 100 if total > 0 else 0
+
+    result = {
+        "result" : "",
+        'promotion_percentage' : promotion_percentage,
+        'retention_percentage' : retention_percentage,
+        'termination_percentage' : termination_percentage
+    }
+    if promotion_percentage > retention_percentage and promotion_percentage > termination_percentage:
+        result["result"] = 'Promotion'
+    elif retention_percentage > termination_percentage:
+        result["result"] = 'Retention'
+    else:
+        result["result"] = 'Termination'
+    
+    return result
+
+
 def get_kra_breakdown_of_a_teacher(employee_id : str):
     """
         Return dictionary of the RPMSAttachment of the teacher
@@ -198,16 +335,25 @@ def get_kra_breakdown_of_a_teacher(employee_id : str):
         }
     """
 
-    teacher = models.People.objects.filter( is_accepted = True, employee_id=employee_id).first()
-    rpms_attachments = models.RPMSAttachment.objects.filter(employee_id=employee_id)
     breakdown = {
         'kra' : [],
         'averages' : []
     }
-    for rpms_attachment in rpms_attachments:
-        data = rpms_attachment.getGradeSummary()
-        breakdown['kra'].append(data['Title'])
-        breakdown['averages'].append(data['Average'])
+    
+    results = get_rpms_forms_by_title(employee_id)
+    for key, value in results.items():
+        if key not in breakdown['kra']:
+            breakdown['kra'].append(key)
+            
+        scores = 0.0
+        for attachment in value['Attachments']:
+            scores += attachment.getGradeSummary().get('Total', 0)
+        
+        if len(value['Attachments']) > 0:
+            breakdown['averages'].append(scores / len(value['Attachments']))
+        else:
+            breakdown['averages'].append(0.0)
+    
     
     return breakdown
 

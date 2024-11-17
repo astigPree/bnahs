@@ -96,7 +96,13 @@ urlpatterns = [
     
     
     path('school/people/reject/', views.reject_people_by_school), # NEW API
-    path('school/summary/', views.school_summary),
+    
+    
+    path('school/summary/teacher/recommendation/', views.school_summary_recommendations),
+    path('school/summary/teacher/tenure/', views.school_summary_performance),
+    path('school/summary/teacher/kra/', views.school_summary_rpms),
+    path('school/summary/teacher/swot/', views.school_summary_swot),
+    
     
     # ============== Evaluator Path ================
     path('login_evaluator/', views.login_evaluator), # WORKING

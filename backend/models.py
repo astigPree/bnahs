@@ -753,6 +753,13 @@ class COTForm(models.Model):
     quarter = models.CharField(max_length=255, blank=True, default='') # Quarter 1, Quarter 2, Quarter 3, Quarter 4
     subject = models.CharField(max_length=255, blank=True, default='Not Assigned')
 
+    strengths_prompt = models.TextField(blank=True, default='')
+    weaknesses_prompt = models.TextField(blank=True, default='')
+    opportunities_prompt = models.TextField(blank=True, default='')
+    threats_prompt = models.TextField(blank=True, default='')
+
+
+
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.evaluated_id} - {self.quarter} - {self.subject}"
     
@@ -861,7 +868,20 @@ class COTForm(models.Model):
             'threats' : threats_prompt
         }
 
-
+    def getOldAIPromt(self):
+        return {
+            'strengths' : self.strengths_prompt,
+            'weaknesses' : self.weaknesses_prompt,
+            'opportunities' : self.opportunities_prompt,
+            'threats' : self.threats_prompt
+        }
+    
+    def isAlreadyAIGenerated(self):
+        if len(self.strengths_prompt) > 0:
+            return True
+        return False
+        
+        
 class RPMSFolder(models.Model):
     """_summary_
     A class to represent a folder in the RPMS system. Created by Head Administrator.
@@ -1100,23 +1120,35 @@ class RPMSAttachment(models.Model):
     def getGradeSummary(self) -> dict:
         
         data = {
-            'Title' : self.title,
-            'Total' : 0,
-            'Average' : 0
+            'Title': self.title,
+            'Total': 0,
+            'Average': 0
         }
-        
+
         total = 0
         number_of_scores = 0
+
         for key, value in self.grade.items():
             for subkey, subvalue in value.items():
                 if subkey == 'Score':
-                    total += int(subvalue)
-                    number_of_scores += 1
+                    try:
+                        total += int(subvalue)
+                        number_of_scores += 1
+                    except ValueError:
+                        # print(f"Non-numeric score encountered: {subvalue}")
+                        continue
+
         data['Total'] = total
-        data['Average'] = total / number_of_scores
+
+        # Check to prevent division by zero
+        if number_of_scores > 0:
+            data['Average'] = total / number_of_scores
+        else:
+            data['Average'] = 0  # or you can keep it as the initialized value
+
         return data
-        
-    
+
+ 
 
 class MainAdmin(models.Model):
     
