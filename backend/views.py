@@ -864,15 +864,15 @@ def register_people(request):
             
             if not my_utils.parse_date_string(job_started):
                 return JsonResponse({'status': 'error', 'message': 'Invalid date format'}, status=400)
-            
-            if not models.School.objects.filter(school_id=school_id).exists():
+            school = models.School.objects.filter(school_id=school_id).first()
+            if not school:
                 return JsonResponse({ 'message': 'School does not exist'}, status=400)
             
             # Check if the already people exist
             if models.People.objects.filter(email_address=email_address , role=role).exists():
                 return JsonResponse({ 'message': 'People Email already exists'}, status=400)
 
-            if models.People.objects.filter(employee_id=employee_id , role=role).exists():
+            if models.People.objects.filter(employee_id=employee_id, school_id=school.school_id , role=role).exists():
                 return JsonResponse({ 'message': 'People ID already exists'}, status=400)
             
             

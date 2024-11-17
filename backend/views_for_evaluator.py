@@ -477,38 +477,46 @@ def evaluator_get_teacher_recommendations(request):
             
             # FOR ALL TEACHER
             teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher')
+            proficient_count = 0
+            highly_proficient_count = 0
             for teacher in teachers:
                 result = my_utils.get_recommendation_result(employee_id=teacher.employee_id)
                 if result == 'Promotion':
                     if my_utils.is_proficient_faculty(people=teacher):
                         data["proficient"]["number_of_promotion"] += 1
+                        proficient_count += 1
                     else:
                         data["highly_proficient"]["number_of_promotion"] += 1
+                        highly_proficient_count += 1
                     data["all"]["number_of_promotion"] += 1
                 elif result == 'Termination':
                     if my_utils.is_proficient_faculty(people=teacher):
                         data["proficient"]["number_of_termination"] += 1
+                        proficient_count += 1
                     else:
                         data["highly_proficient"]["number_of_termination"] += 1
+                        highly_proficient_count += 1
                     data["all"]["number_of_termination"] += 1
                 elif result == 'Retention':
                     if my_utils.is_proficient_faculty(people=teacher):
                         data["proficient"]["number_of_retention"] += 1
+                        proficient_count += 1
                     else:
                         data["highly_proficient"]["number_of_retention"] += 1
+                        highly_proficient_count += 1
                     data["all"]["number_of_retention"] += 1
             
             data["all"]["number_of_promotion_by_percentage"] = (data["all"]["number_of_promotion"] / teachers.count()) * 100 if teachers.count() > 0 else 0
             data["all"]["number_of_termination_by_percentage"] = (data["all"]["number_of_termination"] / teachers.count()) * 100 if teachers.count() > 0 else 0
             data["all"]["number_of_retention_by_percentage"] = (data["all"]["number_of_retention"] / teachers.count()) * 100 if teachers.count() > 0 else 0
             
-            data["proficient"]["number_of_promotion_by_percentage"] = (data["proficient"]["number_of_promotion"] / teachers.count()) * 100 if teachers.count() > 0 else 0
-            data["proficient"]["number_of_termination_by_percentage"] = (data["proficient"]["number_of_termination"] / teachers.count()) * 100 if teachers.count() > 0 else 0
-            data["proficient"]["number_of_retention_by_percentage"] = (data["proficient"]["number_of_retention"] / teachers.count()) * 100 if teachers.count() > 0 else 0
+            data["proficient"]["number_of_promotion_by_percentage"] = (data["proficient"]["number_of_promotion"] / proficient_count) * 100 if proficient_count > 0 else 0
+            data["proficient"]["number_of_termination_by_percentage"] = (data["proficient"]["number_of_termination"] / proficient_count) * 100 if proficient_count > 0 else 0
+            data["proficient"]["number_of_retention_by_percentage"] = (data["proficient"]["number_of_retention"] / proficient_count) * 100 if proficient_count > 0 else 0
             
-            data["highly_proficient"]["number_of_promotion_by_percentage"] = (data["highly_proficient"]["number_of_promotion"] / teachers.count()) * 100 if teachers.count() > 0 else 0
-            data["highly_proficient"]["number_of_termination_by_percentage"] = (data["highly_proficient"]["number_of_termination"] / teachers.count()) * 100 if teachers.count() > 0 else 0
-            data["highly_proficient"]["number_of_retention_by_percentage"] = (data["highly_proficient"]["number_of_retention"] / teachers.count()) * 100 if teachers.count() > 0 else 0
+            data["highly_proficient"]["number_of_promotion_by_percentage"] = (data["highly_proficient"]["number_of_promotion"] / highly_proficient_count) * 100 if highly_proficient_count > 0 else 0
+            data["highly_proficient"]["number_of_termination_by_percentage"] = (data["highly_proficient"]["number_of_termination"] / highly_proficient_count) * 100 if highly_proficient_count > 0 else 0
+            data["highly_proficient"]["number_of_retention_by_percentage"] = (data["highly_proficient"]["number_of_retention"] / highly_proficient_count) * 100 if highly_proficient_count > 0 else 0
             
             return JsonResponse(data, status=200)
             
