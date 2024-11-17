@@ -447,7 +447,8 @@ def evaluation_submission_rate(request):
             
             data = {
                 'labels': [],
-                'values': []
+                'values': [],
+                'values_100' : []
             }
             
             schools = models.School.objects.filter(is_accepted=True).order_by('-created_at')
@@ -464,7 +465,8 @@ def evaluation_submission_rate(request):
                     else:
                         total_rating += 0.0
                 data['values'].append(total_rating / number_of_teacher)
-                
+                data['values_100'].append( (total_rating / number_of_teacher) * 100) 
+
             
             
             return JsonResponse({
