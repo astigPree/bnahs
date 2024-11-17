@@ -476,7 +476,7 @@ class IPCRFForm(models.Model):
     evaluator_plus_factor = models.FloatField( blank=True, default=0.0) # Plus Factor Score
     
     def __str__(self):
-        return f"{self.school_id} - {self.employee_id} - {self.form_type} - {self.evaluator_id}"
+        return f"{self.school_id} - {self.employee_id} - {self.form_type} - {self.evaluator_id} - {self.connection_to_other}"
     
     def get_information(self):
         data =  {
