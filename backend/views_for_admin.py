@@ -445,13 +445,27 @@ def evaluation_submission_rate(request):
                     'message' : 'User is not an admin',
                 }, status=400)
             
-            data = {}
-            schools = models.School.objects.filter(is_accepted=True)
+            data = {
+                'labels': [],
+                'values': []
+            }
+            
+            schools = models.School.objects.filter(is_accepted=True).order_by('-created_at')
             for school in schools:
-                data[school.name] = {}
-                data[school.name]['teachers'] = models.People.objects.filter(is_accepted = True, school_id=school.school_id, role='Teacher').count()
-                data[school.name]['evaluated'] = models.People.objects.filter(is_accepted = True, school_id=school.school_id, role='Teacher', is_evaluated=True).count()
-                data[school.name]['pending'] = models.People.objects.filter(is_accepted = True, school_id=school.school_id, role='Teacher', is_evaluated=False).count()
+                data['labels'].append(school.name)
+                total_rating = 0.0
+                
+                teachers = models.People.objects.filter(is_accepted=True , school_id=school.school_id, role='Teacher').order_by('-created_at')
+                number_of_teacher = teachers.count() if teachers.count() > 0 else 1 
+                for teacher in teachers:
+                    ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()
+                    if ipcrf_1:
+                        total_rating += ipcrf_1.evaluator_rating
+                    else:
+                        total_rating += 0.0
+                data['values'].append(total_rating / number_of_teacher)
+                
+            
             
             return JsonResponse({
                 'data' : data
