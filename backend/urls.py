@@ -139,6 +139,13 @@ urlpatterns = [
     
     path('evaluator/school/get/teachers/', views.get_all_teacher_in_school), # NEW API
     
+    
+    path('evaluator/summary/teacher/recommendation/', views.evaluator_summary_recommendations),
+    path('evaluator/summary/teacher/tenure/', views.evaluator_summary_performance),
+    path('evaluator/summary/teacher/kra/', views.evaluator_summary_rpms),
+    path('evaluator/summary/teacher/swot/', views.evaluator_summary_swot),
+    
+    
     # =============== Teacher Path ================
     path('login_teacher/', views.login_teacher), # WORKING
     path('teacher/evaluation/', views.teacher_evaluation), 
