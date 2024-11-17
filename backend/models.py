@@ -1282,6 +1282,7 @@ class People(models.Model):
     is_verified = models.BooleanField(default=False) # Is the school verified or click the link
     is_accepted = models.BooleanField(default=False) # Is the school accepted or added by admin
     
+    profile = models.ImageField(upload_to='profile/', blank=True, default='')
     
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
