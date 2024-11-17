@@ -550,11 +550,15 @@ def evaluator_get_performance_true_year(request):
             }
             for teacher in teachers:
                 result = my_utils.get_performance_by_years(employee_id=teacher.employee_id)
-                teacher_performance["all"].append(result)
+                temp = {
+                    "data" : result,
+                    "name" : teacher.first_name
+                }
+                teacher_performance["all"].append(temp)
                 if my_utils.is_proficient_faculty(people=teacher):
-                    teacher_performance["proficient"].append(result)
+                    teacher_performance["proficient"].append(temp)
                 else:
-                    teacher_performance["highly_proficient"].append(result)
+                    teacher_performance["highly_proficient"].append(temp)
             
             return JsonResponse(teacher_performance, status=200)
              
