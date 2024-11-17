@@ -206,11 +206,11 @@ def get_rpms_forms_by_title(employee_id : str):
     
     # Create the dictionary
     result_dict = {
-        "KRA 1" : [],
-        "KRA 2" : [],
-        "KRA 3" : [],
-        "KRA 4" : [],
-        "Plus Factor" : [],
+        "KRA 1" : [0],
+        "KRA 2" : [0],
+        "KRA 3" : [0],
+        "KRA 4" : [0],
+        "Plus Factor" : [0],
     }
     
     teacher = models.RPMSClassWork.objects.filter(employee_id = employee_id).first()
@@ -221,6 +221,7 @@ def get_rpms_forms_by_title(employee_id : str):
             title = titles[title]
             score = attachment.getGradeSummary().get('Total', 0)
             result_dict[title].append(score)
+
     
     return result_dict
     
@@ -338,9 +339,15 @@ def get_kra_breakdown_of_a_teacher(employee_id : str):
     
     results = get_rpms_forms_by_title(employee_id)
     
+    total_score = 0.0
     for kra, scores in results.items():
         breakdown['kra'].append(kra)
+        total_score = total_score + (sum(scores) / len(scores) if len(scores) > 0 else 0)
         breakdown['averages'].append(sum(scores) / len(scores) if len(scores) > 0 else 0)
+    
+    breakdown['averages'].append(total_score)
+    breakdown['kra'].append("Total Score")
+    
     
     return breakdown
 
