@@ -487,15 +487,15 @@ def evaluator_get_teacher_recommendations(request):
                     data["all"]["number_of_promotion"] += 1
                 elif result == 'Termination':
                     if my_utils.is_proficient_faculty(people=teacher):
-                        data["proficient"]["number_of_promotion"] += 1
+                        data["proficient"]["number_of_termination"] += 1
                     else:
-                        data["highly_proficient"]["number_of_promotion"] += 1
+                        data["highly_proficient"]["number_of_termination"] += 1
                     data["all"]["number_of_termination"] += 1
                 elif result == 'Retention':
                     if my_utils.is_proficient_faculty(people=teacher):
-                        data["proficient"]["number_of_promotion"] += 1
+                        data["proficient"]["number_of_retention"] += 1
                     else:
-                        data["highly_proficient"]["number_of_promotion"] += 1
+                        data["highly_proficient"]["number_of_retention"] += 1
                     data["all"]["number_of_retention"] += 1
             
             data["all"]["number_of_promotion_by_percentage"] = (data["all"]["number_of_promotion"] / teachers.count()) * 100 if teachers.count() > 0 else 0
