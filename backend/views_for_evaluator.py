@@ -537,7 +537,7 @@ def evaluator_get_performance_true_year(request):
             
             
             teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher') 
-            if not teacher:
+            if not teachers:
                 return JsonResponse({
                     'message' : 'Teachers not found',
                     }, status=400)
