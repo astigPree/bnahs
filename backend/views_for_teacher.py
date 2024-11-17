@@ -1049,13 +1049,16 @@ def teacher_turn_in_rpms_work(request):
             
             files = []
             class_work_id = request.POST.get('class_work_id')
-            i = 0
-            while True:
-                file = request.FILES.get(f'file{i}')
-                if not file:
-                    break
+            file = request.FILES.get('file')
+            if file:
                 files.append(file)
-                i += 1
+            # i = 0
+            # while True:
+            #     file = request.FILES.get(f'file{i}')
+            #     if not file:
+            #         break
+            #     files.append(file)
+            #     i += 1
             
             
             if not class_work_id:
@@ -1063,9 +1066,9 @@ def teacher_turn_in_rpms_work(request):
                     'message' : 'class_work_id not found',
                 },status=400)
             
-            if not files or len(files) < 1:
+            if not files or len(files) == 0:
                 return JsonResponse({
-                    'message' : 'files not found or empty files used name convention "file0",... ',
+                    'message' : 'files not found or empty files used name convention "file" ',
                 },status=400)
             
             classwork = models.RPMSClassWork.objects.filter(class_work_id=class_work_id).order_by('-created_at').first()
