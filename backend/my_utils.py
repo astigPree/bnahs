@@ -213,7 +213,7 @@ def get_rpms_forms_by_title(employee_id : str):
         "Plus Factor" : [0],
     }
     
-    teacher = models.RPMSClassWork.objects.filter(employee_id = employee_id).first()
+    teacher = models.People.objects.filter(employee_id = employee_id).first()
     attachments = models.RPMSAttachment.objects.filter(employee_id=teacher.employee_id, school_id=teacher.school_id).order_by("-created_at")
     for attachment in attachments:
         title = attachment.title
