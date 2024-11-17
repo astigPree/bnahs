@@ -514,14 +514,14 @@ def all_teacher_recommendations(request):
                 elif result == 'RETENTION':
                     number_of_retention += 1
             
-            number_of_promotion = (number_of_promotion / teachers.count()) if teachers.count() > 0 else 0
-            number_of_termination = (number_of_termination / teachers.count()) if teachers.count() > 0 else 0
-            number_of_retention = (number_of_retention / teachers.count()) if teachers.count() > 0 else 0
+            number_of_promotion_percentage = (number_of_promotion / teachers.count()) if teachers.count() > 0 else 0
+            number_of_termination_percentage = (number_of_termination / teachers.count()) if teachers.count() > 0 else 0
+            number_of_retention_percentage = (number_of_retention / teachers.count()) if teachers.count() > 0 else 0
             
             return JsonResponse({
-                'promotion' : number_of_promotion,
-                'termination' : number_of_termination,
-                'retention' : number_of_retention
+                'promotion' : number_of_promotion_percentage * 100,
+                'termination' : number_of_termination_percentage  * 100,
+                'retention' : number_of_retention_percentage  * 100
             }, status=200)
             
             
