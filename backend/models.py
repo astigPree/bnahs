@@ -1316,9 +1316,9 @@ class People(models.Model):
         }
         
         if self.role == "Teacher":
-            data['is_proficient'] = is_proficient_faculty_teacher_in_model(self.role)
+            data['is_proficient'] = is_proficient_faculty_teacher_in_model(self.position)
         else :
-            data['is_proficient'] = is_proficient_faculty_evaluator_in_model(self.role)
+            data['is_proficient'] = is_proficient_faculty_evaluator_in_model(self.position)
         
         return data
     
