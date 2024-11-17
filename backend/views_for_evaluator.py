@@ -677,12 +677,16 @@ def update_rating_sheet(request):
             cot_form.subject = subject
             cot_form.employee_id = user.employee_id
             my_utils.update_cot_form(cot_form=cot_form, comment=comments, questions=questions , content=content)
-             
-            if search_evaluated:
-                search_evaluated.update_is_evaluted()
             
+            
+            evaluation = ""
+            if not search_evaluated.is_evaluated:
+                evaluation = search_evaluated.update_is_evaluted()
+            
+             
             return JsonResponse({
                 'message' : 'Rating sheet updated successfully',
+                'evaluation' : evaluation,
             }, status=200)
     
     
@@ -870,11 +874,14 @@ def check_teacher_ipcrf_form_part_1_by_evaluator(request):
                  ipcrf_form=part_1, content=content    
             )
              
-            if teacher:
-                teacher.update_is_evaluted()
+            evaluation = ""
+            if not teacher.is_evaluated:
+                evaluation = teacher.update_is_evaluted()
+            
             
             return JsonResponse({
                 'message' : 'Form updated successfully',
+                'evaluation' : evaluation
             },status=200)
             
             
@@ -1040,11 +1047,13 @@ def evaluator_check_rpms_attachment(request):
             my_utils.update_rpms_attachment(rpms_attachment=rpms, content=content , comment=comment)
             
             teacher = models.People.objects.filter(is_accepted = True, employee_id=rpms.employee_id, role='Teacher').first()
-            if teacher:
-                teacher.update_is_evaluted()
+            evaluation = ""
+            if not teacher.is_evaluated:
+                evaluation = teacher.update_is_evaluted()
             
             return JsonResponse({
                 'message' : 'Form updated successfully',
+                'evaluation' : evaluation
             },status=200)
             
         

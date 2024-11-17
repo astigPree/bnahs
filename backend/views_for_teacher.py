@@ -644,9 +644,15 @@ def teacher_update_ipcrf_part_1(request):
             ipcrf.average_score = average_score
             my_utils.update_iprcf_form_part_1_by_teacher(ipcrf, content)
             
+            evaluation = ""
+            if not user.is_evaluated:
+                evaluation = user.update_is_evaluted()
+                
+            
             return JsonResponse({
                 'message' : 'IPCRF Form updated successfully',
-                'connection_to_other' : ipcrf.connection_to_other
+                'connection_to_other' : ipcrf.connection_to_other,
+                'evaluation' : evaluation,
             },status=200)
             
         
@@ -754,10 +760,13 @@ def teacher_update_ipcrf_part_2(request):
             
                 
             my_utils.update_ipcrf_form_part_2_by_teacher(ipcrf, content)
-            
+            evaluation = ""
+            if not user.is_evaluated:
+                evaluation = user.update_is_evaluted()
             return JsonResponse({
                 'message' : 'IPCRF Form updated successfully',
-                'connection_to_other' : ipcrf.connection_to_other
+                'connection_to_other' : ipcrf.connection_to_other,
+                'evaluation' : evaluation,
             },status=200)
             
         
@@ -875,10 +884,13 @@ def teacher_update_ipcrf_part_3(request):
                 }, status=400)
                 
             my_utils.update_ipcrf_form_part_3_by_teacher(ipcrf, content)
-            
+            evaluation = ""
+            if not user.is_evaluated:
+                evaluation = user.update_is_evaluted()
             return JsonResponse({
                 'message' : 'IPCRF Form updated successfully',
-                'connection_to_other' : ipcrf.connection_to_other
+                'connection_to_other' : ipcrf.connection_to_other,
+                'evaluation' : evaluation,
             },status=200)
             
         

@@ -6,6 +6,32 @@ import uuid, string ,random
 # Create your models here.
 
 
+
+position_in_model = {
+    'Proficient' : ('Teacher I', 'Teacher II', 'Teacher III'  ),
+    'Highly Proficient' : ('Master Teacher I', 'Master Teacher II', 'Master Teacher III', 'Master Teacher IV'),
+}
+
+evaluator_positions_in_model = {
+    'Proficient' : ('Teacher I', 'Teacher II', 'Teacher III'  ),
+    'Highly Proficient' : ('Master Teacher I', 'Master Teacher II', 'Master Teacher III', 'Master Teacher IV'),
+}
+
+
+def is_proficient_faculty_teacher_in_model(role : str):
+    if role in position_in_model['Proficient']:
+        return True
+    return False
+
+def is_highly_proficient_faculty_teacher_in_model(role : str):
+    if role in position_in_model['Highly Proficient']:
+        return True
+    return False
+
+
+
+
+
 class VerificationLink(models.Model):
     email = models.CharField(max_length=255, blank=True, default='')
     verification_link = models.CharField(max_length=255, blank=True, default='')
@@ -715,7 +741,7 @@ class COTForm(models.Model):
     is_for_teacher_proficient = models.BooleanField(default=False) # If True, the folder is for teacher proffecient
     
     # New Added
-    quarter = models.CharField(max_length=255, blank=True, default='')
+    quarter = models.CharField(max_length=255, blank=True, default='') # Quarter 1, Quarter 2, Quarter 3, Quarter 4
     subject = models.CharField(max_length=255, blank=True, default='Not Assigned')
 
     def __str__(self):
@@ -1313,23 +1339,66 @@ class People(models.Model):
         }
         
 
-    def update_is_evaluted(self):
-        part_1 = IPCRFForm.objects.filter(employee_id=self.employee_id, form_type='PART 1').first() 
+    def update_is_evaluted(self , school_year = None):
+        cot_1 = COTForm.objects.filter(evaluated_id=self.employee_id, quarter="Quarter 1").order_by('-created_at').first()
+        cot_2 = COTForm.objects.filter(evaluated_id=self.employee_id, quarter="Quarter 2").order_by('-created_at').first()
+        cot_3 = COTForm.objects.filter(evaluated_id=self.employee_id, quarter="Quarter 3").order_by('-created_at').first()
+        cot_4 = COTForm.objects.filter(evaluated_id=self.employee_id, quarter="Quarter 4").order_by('-created_at').first()
         
-        if not part_1.is_checked:
-            return 
+        if cot_1 and cot_2 and cot_3 and cot_4:
+            if all([cot_1.is_checked, cot_2.is_checked, cot_3.is_checked, cot_4.is_checked]):
+                pass
+            else:
+                return "Evaluator not fully checked Quarter 1, Quarter 2, Quarter 3 and Quarter 4 in Rating Sheet."
+        else:
+            return "Quarter 1, Quarter 2, Quarter 3 and Quarter 4 in Rating Sheet does not exist."
         
-        number_of_attachment_evaluated = 0
-        attachments = RPMSAttachment.objects.filter(employee_id=self.employee_id)
-        for attachment in attachments: 
-            if attachment.is_checked :
-                number_of_attachment_evaluated += 1
+        folder = RPMSFolder.objects.filter(school_id=self.school_id , is_for_teacher_proficient=is_proficient_faculty_teacher_in_model(self.role)).order_by('-created_at').first()
+        if not folder:
+            return "No Folder found in Results-Based Performance Management System"
         
-        if number_of_attachment_evaluated != 5 :
-            return
+        classworks = RPMSClassWork.objects.filter(rpms_folder_id=folder.rpms_folder_id).order_by('-created_at')
+        if not classworks:
+            return "No Classes Found in Results-Based Performance Management System"
+        
+        
+        for classwork in classworks:
+            attachment = RPMSAttachment.objects.filter(class_work_id=classwork.class_work_id).order_by('-created_at').first()
+            if not attachment:
+                return "No Attachments Found in Results-Based Performance Management System or Incomplete Attachment"
+
+            if not attachment.is_checked:
+                return "Attachment in Results-Based Performance Management System not fully checked"
+            
+        
+        ipcrf_1 = IPCRFForm.objects.filter( school_id=self.school_id , employee_id=self.employee_id , form_type="PART 1").order_by('-created_at').first()
+        if not ipcrf_1:
+            return "Individual Performance Commitment Review Form Part 1 does not exist."
+        
+        if not ipcrf_1.is_checked:
+            return "Individual Performance Commitment Review Form Part 1 not fully checked"
+        
+        if not ipcrf_1.is_checked_by_evaluator:
+            return "Individual Performance Commitment Review Form Part 1 not fully checked by evaluator"
+        
+        ipcrf_2 = IPCRFForm.objects.filter( school_id=self.school_id , employee_id=self.employee_id , form_type="PART 2").order_by('-created_at').first()
+        if not ipcrf_2:
+            return "Individual Performance Commitment Review Form Part 2 does not exist."
+        
+        if not ipcrf_2.is_checked:
+            return "Individual Performance Commitment Review Form Part 2 not fully checked" 
+        
+        ipcrf_3 = IPCRFForm.objects.filter( school_id=self.school_id , employee_id=self.employee_id , form_type="PART 3").order_by('-created_at').first()
+        if not ipcrf_3:
+            return "Individual Performance Commitment Review Form Part 3 does not exist."
+        
+        if not ipcrf_3.is_checked:
+            return "Individual Performance Commitment Review Form Part 3 not fully checked" 
+        
         
         self.is_evaluated = True
         self.save()
+        return "Teacher is Evaluated."
     
     
     def get_recent_ipcrf_score(self):
