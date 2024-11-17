@@ -427,11 +427,11 @@ def evaluator_get_teacher_recommendations(request):
             teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher')
             for teacher in teachers:
                 result = my_utils.get_recommendation_result(employee_id=teacher.employee_id)
-                if result == 'PROMOTION':
+                if result == 'Promotion':
                     number_of_promotion += 1
-                elif result == 'TERMINATION':
+                elif result == 'Termination':
                     number_of_termination += 1
-                elif result == 'RETENTION':
+                elif result == 'Retention':
                     number_of_retention += 1
             
             number_of_promotion = number_of_promotion / teachers.count() if teachers.count() > 0 else 0
