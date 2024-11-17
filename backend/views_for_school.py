@@ -1312,10 +1312,28 @@ def school_summary_swot(request):
             if latest_cot:
                 if not latest_cot.isAlreadyAIGenerated():
                     data = latest_cot.generatePromtTemplate() 
-                    strength = my_utils.generate_text(data['strengths'])
-                    weakness = my_utils.generate_text(data['weaknesses'])
-                    opportunity = my_utils.generate_text(data['opportunities'])
-                    threat = my_utils.generate_text(data['threats'])
+                    while True:
+                        strength = my_utils.generate_text(data['strengths'])
+                        if strength:
+                            if len(strength) < 500: 
+                                break
+                    while True:       
+                    
+                        weakness = my_utils.generate_text(data['weaknesses'])
+                        if weakness:
+                            if len(weakness) < 500: 
+                                break
+                    while True:
+                        opportunity = my_utils.generate_text(data['opportunities'])
+                        if opportunity:
+                            if len(opportunity) < 500: 
+                                break
+                            
+                    while True: 
+                        threat = my_utils.generate_text(data['threats'])
+                        if threat:
+                            if len(threat) < 500: 
+                                break
                     
                     latest_cot.strengths_prompt = strength
                     latest_cot.weaknesses_prompt = weakness
