@@ -313,35 +313,42 @@ def evaluator_get_annual_ratings(request):
                     'message' : 'User not found',
                     }, status=400)
             
-            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher')
-            labels = []
-            ratings = []
+            teachers_ratings = {
+                "all" : {
+                    "names" : [],
+                    "ratings" : [],
+                },
+                "proficient" : {
+                    "names" : [],
+                    "ratings" : [],
+                },
+                "highly_proficient" : {
+                    "names" : [],
+                    "ratings" : [],
+                },
+            }
+            
+            
+            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher').order_by('-created_at')
+            if not teachers:
+                return JsonResponse(teachers_ratings, status=400)
+            
             for teacher in teachers:
-                labels.append(teacher.first_name)
-                ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()
-                # cot_form = models.COTForm.objects.filter(evaluated_id=teacher.employee_id).order_by('-created_at').first()
-                if ipcrf_1 :
+                ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first() 
+                if ipcrf_1:
                     if my_utils.is_proficient_faculty(teacher):
-                        # ratings.append(my_utils.calculate_scores_for_proficient(ipcrf_1.content_for_teacher , cot_form.content))
-                        ratings.append({
-                            'average_score' : ipcrf_1.average_score,
-                            'plus_factor' : ipcrf_1.plus_factor,
-                            'total_score' : ipcrf_1.rating,
-                        })
+                        teachers_ratings["proficient"]["names"].append(teacher.first_name)
+                        teachers_ratings["proficient"]["ratings"].append(ipcrf_1.evaluator_rating)
                     else:
-                        # ratings.append(my_utils.calculate_scores_for_highly_proficient(ipcrf_1.content_for_teacher, cot_form.content))
-                        ratings.append({
-                            'average_score' : ipcrf_1.average_score,
-                            'plus_factor' : ipcrf_1.plus_factor,
-                            'total_score' : ipcrf_1.rating,
-                        })
-                else:
-                    ratings.append({
-                        'average_score' : 0,
-                        'plus_factor' : 0,
-                        'total_score' : 0
-                    })
-    
+                        teachers_ratings["highly_proficient"]["names"].append(teacher.first_name)
+                        teachers_ratings["highly_proficient"]["ratings"].append(ipcrf_1.evaluator_rating)
+                    
+                    teachers_ratings["all"]["names"].append(teacher.first_name)
+                    teachers_ratings["all"]["ratings"].append(ipcrf_1.evaluator_rating)
+            
+            return JsonResponse(teachers_ratings, status=200)
+            
+            
     except Exception as e:
         return JsonResponse({
             'message' : f'Something went wrong : {e}'
@@ -364,16 +371,29 @@ def evaluator_get_all_teacher_tenure(request):
                     'message' : 'User not found',
                 }, status=400)
 
-        
+            data = {
+                "all" : {
+                    '0-3 years': 0,
+                    '3-5 years': 0,
+                    '5+ years': 0
+                },
+                "proficient" : {
+                    '0-3 years': 0,
+                    '3-5 years': 0,
+                    '5+ years': 0
+                },
+                "highly_proficient" : {
+                    '0-3 years': 0,
+                    '3-5 years': 0,
+                    '5+ years': 0
+                }
+            }
+
             people = People.objects.filter(role='Teacher', school_id=user.school_id)
             total_count = people.count()
             
             if total_count == 0:
-                return JsonResponse({
-                    '0-3 years': 0,
-                    '3-5 years': 0,
-                    '5+ years': 0
-                }, status=200)
+                return JsonResponse(data, status=200)
 
             # Initialize counters
             tenure_counts = {
@@ -384,19 +404,25 @@ def evaluator_get_all_teacher_tenure(request):
 
             for person in people:
                 tenure_category = person.get_tenure_category()
-                if tenure_category in tenure_counts:
-                    tenure_counts[tenure_category] += 1
+                if tenure_category in data['all']:
+                    data['all'][tenure_category] += 1
+                if my_utils.is_proficient_faculty(person):
+                    data['proficient'][tenure_category] += 1
+                else:
+                    data['highly_proficient'][tenure_category] += 1
             
             # Calculate percentages
-            tenure_percentages = {
-                category: (count / total_count) * 100 for category, count in tenure_counts.items()
+            data['all'] = {
+                category: (count / total_count) * 100 for category, count in data['all'].items()
+            }
+            data['proficient'] = {
+                category: (count / total_count) * 100 for category, count in data['proficient'].items()
+            }
+            data['highly_proficient'] = {
+                category: (count / total_count) * 100 for category, count in data['highly_proficient'].items()
             }
             
-            return JsonResponse({
-                '0-3 years': tenure_percentages['0-3 years'],
-                '3-5 years': tenure_percentages['3-5 years'],
-                '5+ years': tenure_percentages['5+ years']
-            }, status=200)
+            return JsonResponse(data, status=200)
     
     except Exception as e:
         return JsonResponse({
@@ -510,39 +536,28 @@ def evaluator_get_performance_true_year(request):
                     }, status=400)
             
             
-            teacher_performance = {}
-            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher')
+            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher') 
+            if not teacher:
+                return JsonResponse({
+                    'message' : 'Teachers not found',
+                    }, status=400)
+                
+            
+            teacher_performance = {
+                "all" : [],
+                "proficient" : [],
+                "highly_proficient" : []
+            }
             for teacher in teachers:
-                teacher_performance[teacher.employee_id] = {}
-                teacher_performance[teacher.employee_id]['Name'] = teacher.fullname
-                teacher_performance[teacher.employee_id]['Performance'] = my_utils.get_employee_performance_by_year(teacher.employee_id , teacher.position)
+                result = my_utils.get_performance_by_years(employee_id=teacher.employee_id)
+                teacher_performance["all"].append(result)
+                if my_utils.is_proficient_faculty(people=teacher):
+                    teacher_performance["proficient"].append(result)
+                else:
+                    teacher_performance["highly_proficient"].append(result)
             
-            # {
-            #     "Employee ID" : {
-            #         "Name" : "Name",
-            #         "Performance" :  {
-            #             2021: {
-            #                 'total_kra_score': 1.85,
-            #                 'plus_factor': 0.02,
-            #                 'total_score': 1.87
-            #             },
-            #             2022: {
-            #                 'total_kra_score': 2.40,
-            #                 'plus_factor': 0.04,
-            #                 'total_score': 2.44
-            #             },
-            #             2023: {
-            #                 'total_kra_score': 2.10,
-            #                 'plus_factor': 0.03,
-            #                 'total_score': 2.13
-            #             }
-            #         }
-            #     } 
-            # }
-            
-            return JsonResponse({
-                'teacher_performance' : teacher_performance
-            }, status=200) 
+            return JsonResponse(teacher_performance, status=200)
+             
     
     except Exception as e:
         return JsonResponse({
