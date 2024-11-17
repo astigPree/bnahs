@@ -28,9 +28,7 @@ def verify_school_people(request, token):
         
         if verification.is_expired():
             verification.delete()
-            return JsonResponse({
-                'message' : 'Token expired',
-                }, status=400)
+            return redirect("http://www.deped-performance-evaluation-system3211.online/expired%20token/token_expired.html")
         
         
         user = models.School.objects.filter(email_address=verification.email).first()
