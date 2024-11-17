@@ -195,36 +195,32 @@ def get_ipcrf_forms_by_years(employee_id : str ):
 def get_rpms_forms_by_title(employee_id : str):
     
     # Filter and group by title
-    grouped_attachments = (models.RPMSAttachment.objects
-                        .filter(is_checked=True, is_submitted=True , employee_id=employee_id)
-                        .values('title')
-                        .annotate(count=Count('id')))
-
+    
+    titles = {
+        "PLUS FACTOR" : "Plus Factor",
+        "KRA 4:  Curriculum and Planning & Assessment and Reporting" : "KRA 4",
+        "KRA 3: Curriculum and Planning" : "KRA 3",
+        "KRA 2: Learning Environment and Diversity of Learners" : "KRA 2",
+        "KRA 1: Content Knowledge and Pedagogy" : "KRA 1",
+    }
+    
     # Create the dictionary
-    result_dict = {}
-    for index, entry in enumerate(grouped_attachments, start=1):
-        key = f'Group {index}'
-        result_dict[key] = {
-            'Title': entry['title'],
-            'Count': entry['count'],
-            'Attachments': list(models.RPMSAttachment.objects.filter(title=entry['title'],
-                                                            is_checked=True,
-                                                            is_submitted=True))
-        }
- 
-    # Example of what the result might look like:
-    # {
-    #     'Group 1': {
-    #         'Title': 'Classwork 1',
-    #         'Count': 3,
-    #         'Attachments': [<RPMSAttachment: RPMSAttachment object (1)>, <RPMSAttachment: RPMSAttachment object (2)>, <RPMSAttachment: RPMSAttachment object (3)>]
-    #     },
-    #     'Group 2': {
-    #         'Title': 'Classwork 2',
-    #         'Count': 2,
-    #         'Attachments': [<RPMSAttachment: RPMSAttachment object (4)>, <RPMSAttachment: RPMSAttachment object (5)>]
-    #     }
-    # }
+    result_dict = {
+        "KRA 1" : [],
+        "KRA 2" : [],
+        "KRA 3" : [],
+        "KRA 4" : [],
+        "Plus Factor" : [],
+    }
+    
+    teacher = models.RPMSClassWork.objects.filter(employee_id = employee_id).first()
+    attachments = models.RPMSAttachment.objects.filter(employee_id=teacher.employee_id, school_id=teacher.school_id).order_by("-created_at")
+    for attachment in attachments:
+        title = attachment.title
+        if title in titles:
+            title = titles[title]
+            score = attachment.getGradeSummary().get('Total', 0)
+            result_dict[title].append(score)
     
     return result_dict
     
@@ -341,19 +337,10 @@ def get_kra_breakdown_of_a_teacher(employee_id : str):
     }
     
     results = get_rpms_forms_by_title(employee_id)
-    for key, value in results.items():
-        if key not in breakdown['kra']:
-            breakdown['kra'].append(key)
-            
-        scores = 0.0
-        for attachment in value['Attachments']:
-            scores += attachment.getGradeSummary().get('Total', 0)
-        
-        if len(value['Attachments']) > 0:
-            breakdown['averages'].append(scores / len(value['Attachments']))
-        else:
-            breakdown['averages'].append(0.0)
     
+    for kra, scores in results.items():
+        breakdown['kra'].append(kra)
+        breakdown['averages'].append(sum(scores) / len(scores) if len(scores) > 0 else 0)
     
     return breakdown
 
