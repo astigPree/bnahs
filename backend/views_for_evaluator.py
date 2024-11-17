@@ -396,30 +396,33 @@ def evaluator_get_all_teacher_tenure(request):
                 return JsonResponse(data, status=200)
 
             # Initialize counters
-            tenure_counts = {
-                '0-3 years': 0,
-                '3-5 years': 0,
-                '5+ years': 0
-            }
-
+            proficient_count = 0
+            highly_proficient_count = 0
             for person in people:
                 tenure_category = person.get_tenure_category()
                 if tenure_category in data['all']:
                     data['all'][tenure_category] += 1
                 if my_utils.is_proficient_faculty(person):
                     data['proficient'][tenure_category] += 1
+                    proficient_count += 1
                 else:
                     data['highly_proficient'][tenure_category] += 1
+                    highly_proficient_count += 1
+            
+            if proficient_count == 0:
+                proficient_count = 1
+            if highly_proficient_count == 0:
+                highly_proficient_count = 1
             
             # Calculate percentages
             data['all'] = {
                 category: (count / total_count) * 100 for category, count in data['all'].items()
             }
             data['proficient'] = {
-                category: (count / total_count) * 100 for category, count in data['proficient'].items()
+                category: (count / proficient_count) * 100 for category, count in data['proficient'].items()
             }
             data['highly_proficient'] = {
-                category: (count / total_count) * 100 for category, count in data['highly_proficient'].items()
+                category: (count / highly_proficient_count) * 100 for category, count in data['highly_proficient'].items()
             }
             
             return JsonResponse(data, status=200)
