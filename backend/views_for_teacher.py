@@ -220,10 +220,9 @@ def teacher_kba_breakdown(request ):
                     }, status=400)
              
             
-            return JsonResponse({
-                'kba_breakdown' : my_utils.get_kra_breakdown_of_a_teacher(employee_id=user.employee_id),
-            },status=200)
-        
+            
+            return JsonResponse( my_utils.get_kra_breakdown_of_a_teacher(employee_id=user.employee_id) , status=200)
+    
     
     except Exception as e:
         return JsonResponse({
@@ -251,108 +250,115 @@ def teacher_recommendations(request ):
                 return JsonResponse({
                     'message' : 'User is not a teacher',
                     }, status=400)
-             
-            # 2. rule based classifier for Promotion
-            ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').order_by('-created_at')
-            scores = [ form.getEvaluatorPart1Scores() for form in ipcrf_forms  ]
-            
-            # Initialize counters
-            
-            promotion_count = 0
-            retention_count = 0
-            termination_count = 0
-            overall_scores = []
-            detailed_scores = []  # To hold detailed score information 
-            # Classify scores
-            for score in scores: 
-                # for _, value in score.items():
-                #     average_score = value['Average']    
-                #     overall_scores.append(average_score)
-                #     category = my_utils.classify_ipcrf_score(average_score if average_score else 0)
-                #     detailed_scores.append({
-                #         'Average': average_score,
-                #         'Category': category
-                #     })
-                #     if category == 'Outstanding':
-                #         promotion_count += 1
-                #     elif category in ['Very Satisfactory', 'Satisfactory']:
-                #         retention_count += 1
-                #     elif category in ['Unsatisfactory', 'Poor']:
-                #         termination_count += 1 
-                if score is not None:
-                    average_score = score.get('average_score', 0) 
-                else :
-                    average_score = 0
-                overall_scores.append(average_score)
-                category = my_utils.classify_ipcrf_score(average_score if average_score else 0)
-                detailed_scores.append({
-                        'Average': average_score,
-                        'Category': category
-                    })
-                if category == 'Outstanding':
-                        promotion_count += 1
-                elif category in ['Very Satisfactory', 'Satisfactory']:
-                        retention_count += 1
-                elif category in ['Unsatisfactory', 'Poor']:
-                        termination_count += 1
                 
-                
-            # Calculate percentages
-            total = len(overall_scores)
-            promotion_percentage = promotion_count / total * 100 if total > 0 else 0
-            retention_percentage = retention_count / total * 100 if total > 0 else 0
-            termination_percentage = termination_count / total * 100 if total > 0 else 0
-
-            # Create recommendation dictionary
-            recommendation = {
-                'Promotion': promotion_percentage,
-                'Retention': retention_percentage,
-                'Termination': termination_percentage
-            }
-
-            # Calculate overall classification
-            overall_average = sum(overall_scores) / total if total > 0 else 0
-            overall_classification = my_utils.classify_ipcrf_score(overall_average)
+            result = my_utils.get_recommendation_result_with_percentage(employee_id=user.employee_id)
             
-            # Get The Recommended Rank
-            rank = my_utils.recommend_rank(user)
-            
-            """
-                {
-                    "recommendation": {
-                        "Promotion": 33.33,
-                        "Retention": 33.33,
-                        "Termination": 33.33
-                    },
-                    "detailed_scores": [
-                        {"Average": 4.8, "Category": "Outstanding"},
-                        {"Average": 4.5, "Category": "Outstanding"},
-                        {"Average": 3.9, "Category": "Very Satisfactory"},
-                        {"Average": 3.7, "Category": "Very Satisfactory"},
-                        {"Average": 2.2, "Category": "Unsatisfactory"},
-                        {"Average": 1.8, "Category": "Unsatisfactory"}
-                    ],
-                    "overall": {
-                        "Average": 3.48,
-                        "Classification": "Satisfactory"
-                    },
-                    "working years" : "5 years",
-                    "current position" : "Teacher I",
-                    "recommended position" : "Teacher II"
-                 } 
-            """
-            # Return JSON response
             return JsonResponse({
-                'recommendation': recommendation,
-                'detailed_scores': detailed_scores,
-                'overall': {
-                    'Average': overall_average,
-                    'Classification': overall_classification
-                },
-                'working years' : f"{user.working_years()} years",
-                "current position" : user.position,
-                "recommended position" : rank,
+                'message' : 'Recommendation result found successfully',
+                'result' : result,
             }, status=200)
+             
+            # # 2. rule based classifier for Promotion
+            # ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').order_by('-created_at')
+            # scores = [ form.getEvaluatorPart1Scores() for form in ipcrf_forms  ]
+            
+            # # Initialize counters
+            
+            # promotion_count = 0
+            # retention_count = 0
+            # termination_count = 0
+            # overall_scores = []
+            # detailed_scores = []  # To hold detailed score information 
+            # # Classify scores
+            # for score in scores: 
+            #     # for _, value in score.items():
+            #     #     average_score = value['Average']    
+            #     #     overall_scores.append(average_score)
+            #     #     category = my_utils.classify_ipcrf_score(average_score if average_score else 0)
+            #     #     detailed_scores.append({
+            #     #         'Average': average_score,
+            #     #         'Category': category
+            #     #     })
+            #     #     if category == 'Outstanding':
+            #     #         promotion_count += 1
+            #     #     elif category in ['Very Satisfactory', 'Satisfactory']:
+            #     #         retention_count += 1
+            #     #     elif category in ['Unsatisfactory', 'Poor']:
+            #     #         termination_count += 1 
+            #     if score is not None:
+            #         average_score = score.get('average_score', 0) 
+            #     else :
+            #         average_score = 0
+            #     overall_scores.append(average_score)
+            #     category = my_utils.classify_ipcrf_score(average_score if average_score else 0)
+            #     detailed_scores.append({
+            #             'Average': average_score,
+            #             'Category': category
+            #         })
+            #     if category == 'Outstanding':
+            #             promotion_count += 1
+            #     elif category in ['Very Satisfactory', 'Satisfactory']:
+            #             retention_count += 1
+            #     elif category in ['Unsatisfactory', 'Poor']:
+            #             termination_count += 1
+                
+                
+            # # Calculate percentages
+            # total = len(overall_scores)
+            # promotion_percentage = promotion_count / total * 100 if total > 0 else 0
+            # retention_percentage = retention_count / total * 100 if total > 0 else 0
+            # termination_percentage = termination_count / total * 100 if total > 0 else 0
+
+            # # Create recommendation dictionary
+            # recommendation = {
+            #     'Promotion': promotion_percentage,
+            #     'Retention': retention_percentage,
+            #     'Termination': termination_percentage
+            # }
+
+            # # Calculate overall classification
+            # overall_average = sum(overall_scores) / total if total > 0 else 0
+            # overall_classification = my_utils.classify_ipcrf_score(overall_average)
+            
+            # # Get The Recommended Rank
+            # rank = my_utils.recommend_rank(user)
+            
+            # """
+            #     {
+            #         "recommendation": {
+            #             "Promotion": 33.33,
+            #             "Retention": 33.33,
+            #             "Termination": 33.33
+            #         },
+            #         "detailed_scores": [
+            #             {"Average": 4.8, "Category": "Outstanding"},
+            #             {"Average": 4.5, "Category": "Outstanding"},
+            #             {"Average": 3.9, "Category": "Very Satisfactory"},
+            #             {"Average": 3.7, "Category": "Very Satisfactory"},
+            #             {"Average": 2.2, "Category": "Unsatisfactory"},
+            #             {"Average": 1.8, "Category": "Unsatisfactory"}
+            #         ],
+            #         "overall": {
+            #             "Average": 3.48,
+            #             "Classification": "Satisfactory"
+            #         },
+            #         "working years" : "5 years",
+            #         "current position" : "Teacher I",
+            #         "recommended position" : "Teacher II"
+            #      } 
+            # """
+            # # Return JSON response
+            # return JsonResponse({
+            #     'recommendation': recommendation,
+            #     'detailed_scores': detailed_scores,
+            #     'overall': {
+            #         'Average': overall_average,
+            #         'Classification': overall_classification
+            #     },
+            #     'working years' : f"{user.working_years()} years",
+            #     "current position" : user.position,
+            #     "recommended position" : rank,
+            # }, status=200)
     
     except Exception as e:
         return JsonResponse({
@@ -377,6 +383,15 @@ def teacher_performance(request ):
                     'message' : 'User not found',
                     }, status=400)
             
+            result = my_utils.get_performance_by_years(employee_id=user.employee_id)
+            
+            return JsonResponse({
+                'message' : 'Performance result found successfully',
+                'result' : result,
+            }, status=200)
+            
+            
+            
             # TODO : CHECK IF THE USER IS TEACHER OR NOT
             # 3. date of submission and score Performance tru year
             """
@@ -393,51 +408,51 @@ def teacher_performance(request ):
             }
             
             """
-            # Check if the user is a teacher
+            # # Check if the user is a teacher
 
-            # Annotate the IPCRF forms with the year of submission
-            attachments = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').order_by('-created_at').annotate(year=ExtractYear('created_at'))
+            # # Annotate the IPCRF forms with the year of submission
+            # attachments = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').order_by('-created_at').annotate(year=ExtractYear('created_at'))
             
-            # Initialize the performances dictionary
-            performances = {}
+            # # Initialize the performances dictionary
+            # performances = {}
             
-            # Loop through the attachments and gather scores by year
-            for attachment in attachments:
-                year = attachment.year
-                if year not in performances:
-                    performances[year] = {'Scores': [], 'Total': 0}
+            # # Loop through the attachments and gather scores by year
+            # for attachment in attachments:
+            #     year = attachment.year
+            #     if year not in performances:
+            #         performances[year] = {'Scores': [], 'Total': 0}
                 
-                scores = attachment.getEvaluatorPart1Scores() if attachment else {}
-                if scores is not None: 
-                    performances[year]['Score'] =  scores.get('average_score', 0)
-                else : 
-                    performances[year]['Score'] = 0 
-                # for key, value in scores.items():
-                    # if 'Average' in value:
-                    #     performances[year]['Scores'].append(value['Average'])
+            #     scores = attachment.getEvaluatorPart1Scores() if attachment else {}
+            #     if scores is not None: 
+            #         performances[year]['Score'] =  scores.get('average_score', 0)
+            #     else : 
+            #         performances[year]['Score'] = 0 
+            #     # for key, value in scores.items():
+            #         # if 'Average' in value:
+            #         #     performances[year]['Scores'].append(value['Average'])
                     
             
-            # Calculate the total for each year
-            years = sorted(performances.keys())
-            total_scores = []
-            for year in years:
-                total = sum(performances[year]['Scores'])
-                performances[year]['Total'] = total
-                total_scores.append(total)
+            # # Calculate the total for each year
+            # years = sorted(performances.keys())
+            # total_scores = []
+            # for year in years:
+            #     total = sum(performances[year]['Scores'])
+            #     performances[year]['Total'] = total
+            #     total_scores.append(total)
 
-            # Convert to labels and data suitable for the chart
-            labels = [str(year) for year in years]
-            data = total_scores
+            # # Convert to labels and data suitable for the chart
+            # labels = [str(year) for year in years]
+            # data = total_scores
             
-            """
-            {
-                "performance": {
-                    "labels": ["2022", "2023"],
-                    "data": [16.33, 9.33]
-                }
-            }
-            """
-            return JsonResponse({'performance': {'labels': labels, 'data': data}}, status=200)
+            # """
+            # {
+            #     "performance": {
+            #         "labels": ["2022", "2023"],
+            #         "data": [16.33, 9.33]
+            #     }
+            # }
+            # """
+            # return JsonResponse({'performance': {'labels': labels, 'data': data}}, status=200)
                     
         
     except Exception as e:
@@ -469,20 +484,77 @@ def teacher_swot(request ):
                     }, status=400)
             
          
-            # 4. generated text SWOT from COTForm 
-            cot_form = models.COTForm.objects.filter(employee_id=user.employee_id).order_by('-created_at').first()
-            generated_swot = {
-                'Strengths': '',
-                'Weaknesses': '',
-                'Opportunities': '',
-                'Threats': ''
-            }
-            if cot_form:
-                swot = cot_form.generatePromtTemplate()
-                generated_swot["Strengths"] = my_utils.my_utils(swot["strengths"])
-                generated_swot["Weaknesses"] = my_utils.generate_text(swot["weaknesses"])
-                generated_swot["Opportunities"] = my_utils.generate_text(swot["opportunities"])
-                generated_swot["Threats"] = my_utils.generate_text(swot["threats"])
+            strength = "The teacher has not been rated yet."
+            weakness = "The teacher has not been rated yet."
+            opportunity = "The teacher has not been rated yet."
+            threat = "The teacher has not been rated yet."
+
+            latest_cot = None
+            cot_1 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="Quarter 1").order_by('-created_at').first()
+            if cot_1:
+                if cot_1.is_checked:
+                    latest_cot = cot_1
+            
+            cot_2 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="Quarter 2").order_by('-created_at').first()
+            if cot_2:
+                if cot_2.is_checked:
+                    latest_cot = cot_2
+            
+            cot_3 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="Quarter 3").order_by('-created_at').first()
+            if cot_3:
+                if cot_3.is_checked:
+                    latest_cot = cot_3
+            
+            cot_4 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="Quarter 4").order_by('-created_at').first()
+            if cot_4:
+                if cot_4.is_checked:
+                    latest_cot = cot_4
+            
+            if latest_cot:
+                if not latest_cot.isAlreadyAIGenerated():
+                    data = latest_cot.generatePromtTemplate() 
+                    while True:
+                        strength = my_utils.generate_text(data['strengths'])
+                        if strength:
+                            if len(strength) < 500: 
+                                break
+                    while True:       
+                    
+                        weakness = my_utils.generate_text(data['weaknesses'])
+                        if weakness:
+                            if len(weakness) < 500: 
+                                break
+                    while True:
+                        opportunity = my_utils.generate_text(data['opportunities'])
+                        if opportunity:
+                            if len(opportunity) < 500: 
+                                break
+                            
+                    while True: 
+                        threat = my_utils.generate_text(data['threats'])
+                        if threat:
+                            if len(threat) < 500: 
+                                break
+                    
+                    latest_cot.strengths_prompt = strength
+                    latest_cot.weaknesses_prompt = weakness
+                    latest_cot.opportunities_prompt = opportunity
+                    latest_cot.threats_prompt = threat
+                    latest_cot.save()
+                     
+                else :
+                    strength = latest_cot.strengths_prompt
+                    weakness = latest_cot.weaknesses_prompt
+                    opportunity = latest_cot.opportunities_prompt
+                    threat = latest_cot.threats_prompt
+            
+            
+            return JsonResponse({ 
+                'strength' : strength,
+                'weakness' : weakness,
+                'opportunity' : opportunity,
+                'threat' : threat,
+            }, status=200)
             
             
             
