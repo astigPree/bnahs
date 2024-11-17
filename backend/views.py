@@ -249,11 +249,16 @@ def people_update_profile(request ):
             confirm_password = request.POST.get('confirm_password')
             if password and password == confirm_password:
                 if based_user:
-                    pass
-                    
+                    # pass
+                    user.password = password
                     # TODO : Change password
                 has_changed = True    
-                
+            
+            profile = request.FILES.get('profile')
+            if profile:
+                user.profile = profile
+                has_changed = True
+            
             
             
             if has_changed:

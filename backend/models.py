@@ -1285,7 +1285,7 @@ class People(models.Model):
     profile = models.ImageField(upload_to='profile/', blank=True, default='')
     
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.role} : {self.first_name} {self.last_name} - {self.employee_id} - {self.email_address} - {self.position}"
 
     def save(self, *args, **kwargs):
         self.fullname = f"{self.first_name} {self.middle_name} {self.last_name}"
