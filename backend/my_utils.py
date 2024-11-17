@@ -30,9 +30,28 @@ position = {
 }
 
 evaluator_positions = {
-    'Proficient' : ('Teacher I', 'Teacher II', 'Teacher III'  ),
-    'Highly Proficient' : ('Master Teacher I', 'Master Teacher II', 'Master Teacher III', 'Master Teacher IV'),
+    "Proficient": ["Head Teacher I", "Head Teacher II", "Head Teacher III", "Head Teacher IV", "Head Teacher V", "Head Teacher VI"],
+    "Highly Proficient": ["School Principal I", "School Principal II", "School Principal III", "School Principal IV"]
 }
+
+
+def is_proficient_faculty(people : models.People , is_faculty = False):
+    if is_faculty:
+        return people.position in evaluator_positions['Proficient']
+    
+    if people.position in position['Proficient']:
+        return True
+    return False
+
+def is_highly_proficient_faculty(people : models.People, is_faculty = False):
+    if is_faculty:
+        return people.position in evaluator_positions['Highly Proficient']
+    
+    if people.position in position['Highly Proficient']:
+        return True
+    return False
+
+
 
 client = Client()
 
@@ -137,7 +156,7 @@ def parse_date_string(date_string):
 
 def get_recommendation_result(employee_id : str):
     ipcrf_forms = models.IPCRFForm.objects.filter(employee_id=employee_id, form_type='PART 1').order_by('-created_at')
-    scores = [ form.getEvaluatorPart1Scores() for form in ipcrf_forms ]
+    scores = [ form.evaluator_rating for form in ipcrf_forms ]
             
     # Initialize counters
     promotion_count = 0
@@ -146,23 +165,9 @@ def get_recommendation_result(employee_id : str):
     overall_scores = []
     
     # Classify scores
-    for score in scores:
-        # for _, value in score.items():
-        #     average_score = value['Average']
-        #     overall_scores.append(average_score)
-        #     category = classify_ipcrf_score(average_score if average_score else 0) 
-        #     if category == 'Outstanding':
-        #         promotion_count += 1
-        #     elif category in ['Very Satisfactory', 'Satisfactory']:
-        #         retention_count += 1
-        #     elif category in ['Unsatisfactory', 'Poor']:
-        #         termination_count += 1
-        if score is not None:
-            average_score = score.get('average_score', 0)
-        else :
-            average_score = 0 
-        overall_scores.append(average_score)
-        category = classify_ipcrf_score(average_score if average_score else 0)
+    for score in scores: 
+        overall_scores.append(score)
+        category = classify_ipcrf_score(score)
         if category == 'Outstanding':
                 promotion_count += 1
         elif category in ['Very Satisfactory', 'Satisfactory']:
@@ -264,7 +269,7 @@ def recommend_rank(teacher : models.People):
     tenure = teacher.working_years()
     current_rank = teacher.position
     recent_form = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1', is_expired=False).order_by('-created_at').first()
-    recent_ipcrf_score = recent_form.average_score if recent_form else 0  # Assume this method returns the most recent IPCRF score
+    recent_ipcrf_score = recent_form.evaluator_rating if recent_form else 0  # Assume this method returns the most recent IPCRF score
     score_classification = classify_ipcrf_score(recent_ipcrf_score)
     
     recommendation = []
@@ -290,15 +295,6 @@ def recommend_rank(teacher : models.People):
     return recommendation
 
 
-def is_proficient_faculty(people : models.People):
-    if people.position in position['Proficient']:
-        return True
-    return False
-
-def is_highly_proficient_faculty(people : models.People):
-    if people.position in position['Highly Proficient']:
-        return True
-    return False
 
 
 def create_cot_form( 

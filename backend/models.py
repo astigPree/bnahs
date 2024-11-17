@@ -13,9 +13,10 @@ position_in_model = {
 }
 
 evaluator_positions_in_model = {
-    'Proficient' : ('Teacher I', 'Teacher II', 'Teacher III'  ),
-    'Highly Proficient' : ('Master Teacher I', 'Master Teacher II', 'Master Teacher III', 'Master Teacher IV'),
+    "Proficient": ["Head Teacher I", "Head Teacher II", "Head Teacher III", "Head Teacher IV", "Head Teacher V", "Head Teacher VI"],
+    "Highly Proficient": ["School Principal I", "School Principal II", "School Principal III", "School Principal IV"]
 }
+
 
 
 def is_proficient_faculty_teacher_in_model(role : str):
@@ -28,7 +29,15 @@ def is_highly_proficient_faculty_teacher_in_model(role : str):
         return True
     return False
 
+def is_proficient_faculty_teacher_in_model(role : str):
+    if role in evaluator_positions_in_model['Proficient']:
+        return True
+    return False
 
+def is_highly_proficient_faculty_teacher_in_model(role : str):
+    if role in evaluator_positions_in_model['Highly Proficient']:
+        return True
+    return False
 
 
 
