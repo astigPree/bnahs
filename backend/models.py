@@ -1313,13 +1313,17 @@ class People(models.Model):
             'is_accepted' : self.is_accepted,
             'fullname' : self.fullname,
             'action_id' : self.action_id,
-            'educations' : self.educations
+            'educations' : self.educations,
+            'profile' : ''
         }
         
         if self.role == "Teacher":
             data['is_proficient'] = is_proficient_faculty_teacher_in_model(self.position)
         else :
             data['is_proficient'] = is_proficient_faculty_evaluator_in_model(self.position)
+            
+        if self.profile:
+            data['profile'] = self.profile.url
         
         return data
     
