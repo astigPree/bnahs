@@ -29,12 +29,12 @@ def is_highly_proficient_faculty_teacher_in_model(role : str):
         return True
     return False
 
-def is_proficient_faculty_teacher_in_model(role : str):
+def is_proficient_faculty_evaluator_in_model(role : str):
     if role in evaluator_positions_in_model['Proficient']:
         return True
     return False
 
-def is_highly_proficient_faculty_teacher_in_model(role : str):
+def is_highly_proficient_faculty_evaluator_in_model(role : str):
     if role in evaluator_positions_in_model['Highly Proficient']:
         return True
     return False
@@ -1291,7 +1291,7 @@ class People(models.Model):
         super().save(*args, **kwargs)
     
     def get_information(self):
-        return {
+        data = {
             'role' : self.role,
             'school_id' : self.school_id,
             'employee_id' : self.employee_id,
@@ -1310,8 +1310,17 @@ class People(models.Model):
             'is_declined' : self.is_declined,
             'is_verified' : self.is_verified,
             'is_accepted' : self.is_accepted,
-            'fullname' : self.fullname
+            'fullname' : self.fullname,
+            'action_id' : self.action_id,
+            'educations' : self.educations
         }
+        
+        if self.role == "Teacher":
+            data['is_proficient'] = is_proficient_faculty_teacher_in_model(self.role)
+        else :
+            data['is_proficient'] = is_proficient_faculty_evaluator_in_model(self.role)
+        
+        return data
     
     def working_years(self):
         if self.job_ended:
