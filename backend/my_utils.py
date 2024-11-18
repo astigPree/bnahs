@@ -1063,7 +1063,7 @@ def get_employee_performance_by_year(employee_id, employee_position):
 
 def generate_report(school : models.School):
     if not school:
-            return HttpResponse("No school data found.", content_type='text/plain')
+            return None
     school_year_text = None
     school_year = models.IPCRFForm.objects.filter(form_type='PART 1').order_by('-created_at').first()
     if not school_year:
@@ -1071,7 +1071,7 @@ def generate_report(school : models.School):
         if not school_year:
             school_year = models.RPMSFolder.objects.filter(school_id=school.school_id).order_by('-created_at').first()
             if not school_year:
-                return HttpResponse("No school year data found.", content_type='text/plain')
+                return None
             else:
                 school_year_text = school_year.rpms_folder_school_year
         else:

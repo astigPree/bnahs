@@ -1545,6 +1545,10 @@ def get_school_report(request):
                 
             
             buffer = my_utils.generate_report(user)
+            if not buffer:
+                return JsonResponse({
+                    'message' : 'Report not found',
+                    }, status=400) 
             return HttpResponse(buffer, content_type='application/pdf')
             
 
