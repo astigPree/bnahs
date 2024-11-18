@@ -779,7 +779,8 @@ class COTForm(models.Model):
             'evaluated_id' : self.evaluated_id,
             'rater' : None,
             'total' : 0 ,
-            'subject' : self.subject
+            'subject' : self.subject,
+            'school_year' : self.school_year
         }
         try:
             
