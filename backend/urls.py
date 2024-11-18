@@ -180,6 +180,7 @@ urlpatterns = [
     path('teacher/school/get/rpms/attachment/result/', views.teacher_get_rpms_attachment_result),
     path('teacher/school/rpms/folder/classwork/unsubmit/', views.teacher_unsubmit_class_work),
     
+    path('teacher/generate/report/', views.teacher_generate_report),
      
     
 ]

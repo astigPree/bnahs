@@ -1388,3 +1388,44 @@ def teacher_unsubmit_class_work(request):
         }, status=400)
 
 
+
+
+
+
+@csrf_exempt
+def teacher_generate_report(request):
+    try:
+        if request.method == "POST":
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+                
+            data = {
+                
+            }
+            
+            data['job'] = user.get_job_years()
+            data['recommendation'] = my_utils.get_recommendation_result_with_percentage(employee_id=user.employee_id)
+            
+            ipcrf = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').order_by('-created_at').first()
+            data['rating'] = ipcrf.get_information()
+            data['performance_rating'] = my_utils.classify_ipcrf_score(ipcrf.evaluator_rating)
+            data['ranking'] = my_utils.recommend_rank(user)
+            data['teacher'] = user.get_information()
+            
+            return JsonResponse(data,status=200)
+            
+    
+    except Exception as e: 
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400 )
+
+
+
