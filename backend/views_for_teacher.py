@@ -166,7 +166,7 @@ def teacher_evaluation(request ):
                 submitted_all = 0
                 for classwork in classworks:
                     rpms_data[classwork.title] = None
-                    attachment = models.RPMSAttachment.objects.filter(classwork_id=classwork.class_work_id, employee_id=user.employee_id).order_by('-created_at').first()
+                    attachment = models.RPMSAttachment.objects.filter(class_work_id=classwork.class_work_id, employee_id=user.employee_id).order_by('-created_at').first()
                     if attachment:
                         if attachment.is_checked:
                             submitted_all += 1
