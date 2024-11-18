@@ -1065,7 +1065,7 @@ def generate_report(school : models.School):
     if not school:
             return None
     school_year_text = None
-    school_year = models.IPCRFForm.objects.filter(form_type='PART 1').order_by('-created_at').first()
+    school_year = models.IPCRFForm.objects.filter( school_id=school.school_id, form_type='PART 1').order_by('-created_at').first()
     if not school_year:
         school_year = models.COTForm.objects.filter(school_id=school.school_id).order_by('-created_at').first()
         if not school_year:
