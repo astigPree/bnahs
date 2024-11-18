@@ -102,6 +102,7 @@ def teacher_evaluation(request ):
                 'overall' : False,
                 'rater' : None,
                 'content' : None,
+                'rater' : None
             }
             ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type="PART 1").first()
             if ipcrf_1:
@@ -109,8 +110,9 @@ def teacher_evaluation(request ):
                 ipcrf_data['part_1'] = ipcrf_1.is_checked
                 ipcrf_data['part_1_rater'] = ipcrf_1.is_checked_by_evaluator
                 if ipcrf_1.is_checked_by_evaluator:
-                    ipcrf_data['rater'] = models.People.objects.filter(employee_id=ipcrf_1.evaluator_id).first()
-            
+                    rater = models.People.objects.filter(employee_id=ipcrf_1.evaluator_id).first()
+                    if rater:
+                        ipcrf_data['rater'] = rater.get_information()
             ipcrf_2 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type="PART 2").first()
             if ipcrf_2:
                 ipcrf_data['part_2'] = ipcrf_2.is_checked 
@@ -131,7 +133,8 @@ def teacher_evaluation(request ):
                 'content_1' : None,
                 'content_2' : None,
                 'content_3' : None,
-                'content_4' : None, 
+                'content_4' : None,
+                'rater' : None, 
             }
             
             cots_1 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="QUARTER 1").first()
@@ -139,6 +142,10 @@ def teacher_evaluation(request ):
                 cots_data['quarter_1'] = cots_1.is_checked
                 cots_data['content_1'] = cots_1.get_information()
                 
+                rater = models.People.objects.filter(employee_id=cots_1.employee_id).first()
+                if rater:
+                    cots_data['rater'] = rater.get_information()
+                    
             cots_2 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="QUARTER 2").first()
             if cots_2:
                 cots_data['quarter_2'] = cots_2.is_checked 
@@ -158,6 +165,7 @@ def teacher_evaluation(request ):
             
             rpms_data = {
                 'overall' : False,
+                "rater" : None,
             }
             
             folder = models.RPMSFolder.objects.filter(school_id=user.school_id, is_for_teacher_proficient=True if my_utils.is_proficient_faculty(user) else False ).order_by('-created_at').first()
@@ -172,6 +180,9 @@ def teacher_evaluation(request ):
                     if attachment:
                         if attachment.is_checked:
                             submitted_all += 1
+                            rater = models.People.objects.filter(employee_id=attachment.evaluator_id).first()
+                            if rater:
+                                rpms_data["rater"] = rater.get_information()
                         rpms_data[classwork.title] = attachment.get_information()
                             
                 rpms_data['overall'] = submitted_all == len(classworks)
