@@ -74,6 +74,7 @@ urlpatterns = [
     path('school/faculties/', views.get_all_school_faculty), 
     path('school/faculties/search/', views.search_school_faculty),
     path('school/profile/', views.get_school_information), # WORKING
+    path('school/summary/', views.school_summary), # WORKING
     
     path('school/faculties/mention/', views.get_search_school_faculty_for_mentioning),
     path('school/faculties/count/', views.get_number_of_school_faculty),
