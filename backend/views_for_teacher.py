@@ -105,7 +105,7 @@ def teacher_evaluation(request ):
                 'rater' : None,
                 'date_submitted' : None,
             }
-            ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type="PART 1").first()
+            ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, school_id=user.school_id, form_type="PART 1").first()
             if ipcrf_1:
                 ipcrf_data['content'] = ipcrf_1.get_information()
                 ipcrf_data['part_1'] = ipcrf_1.is_checked
@@ -115,11 +115,11 @@ def teacher_evaluation(request ):
                     ipcrf_data['date_submitted'] = ipcrf_1.created_at
                     if rater:
                         ipcrf_data['rater'] = rater.get_information()
-            ipcrf_2 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type="PART 2").first()
+            ipcrf_2 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, school_id=user.school_id, form_type="PART 2").first()
             if ipcrf_2:
                 ipcrf_data['part_2'] = ipcrf_2.is_checked 
             
-            ipcrf_3 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type="PART 3").first()
+            ipcrf_3 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, school_id=user.school_id, form_type="PART 3").first()
             if ipcrf_3:
                 ipcrf_data['part_3'] = ipcrf_3.is_checked 
                 
@@ -140,7 +140,7 @@ def teacher_evaluation(request ):
                 "date_submitted" : None
             }
             
-            cots_1 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="QUARTER 1").first()
+            cots_1 = models.COTForm.objects.filter(evaluated_id=user.employee_id, school_id=user.school_id, quarter="QUARTER 1").first()
             if cots_1:
                 cots_data['quarter_1'] = cots_1.is_checked
                 cots_data['content_1'] = cots_1.get_information()
@@ -150,17 +150,17 @@ def teacher_evaluation(request ):
                 if rater:
                     cots_data['rater'] = rater.get_information()
                     
-            cots_2 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="QUARTER 2").first()
+            cots_2 = models.COTForm.objects.filter(evaluated_id=user.employee_id,  school_id=user.school_id, quarter="QUARTER 2").first()
             if cots_2:
                 cots_data['quarter_2'] = cots_2.is_checked 
                 cots_data['content_2'] = cots_2.get_information()
                 
-            cots_3 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="QUARTER 3").first()
+            cots_3 = models.COTForm.objects.filter(evaluated_id=user.employee_id,  school_id=user.school_id, quarter="QUARTER 3").first()
             if cots_3:
                 cots_data['quarter_3'] = cots_3.is_checked 
                 cots_data['content_3'] = cots_3.get_information()
                 
-            cots_4 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="QUARTER 4").first()
+            cots_4 = models.COTForm.objects.filter(evaluated_id=user.employee_id, school_id=user.school_id, quarter="QUARTER 4").first()
             if cots_4:
                 cots_data['quarter_4'] = cots_4.is_checked 
                 cots_data['content_4'] = cots_4.get_information()
