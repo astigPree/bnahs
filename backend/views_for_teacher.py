@@ -102,7 +102,8 @@ def teacher_evaluation(request ):
                 'overall' : False,
                 'rater' : None,
                 'content' : None,
-                'rater' : None
+                'rater' : None,
+                'date_submitted' : None,
             }
             ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type="PART 1").first()
             if ipcrf_1:
@@ -111,6 +112,7 @@ def teacher_evaluation(request ):
                 ipcrf_data['part_1_rater'] = ipcrf_1.is_checked_by_evaluator
                 if ipcrf_1.is_checked_by_evaluator:
                     rater = models.People.objects.filter(employee_id=ipcrf_1.evaluator_id).first()
+                    ipcrf_data['date_submitted'] = ipcrf_1.created_at
                     if rater:
                         ipcrf_data['rater'] = rater.get_information()
             ipcrf_2 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type="PART 2").first()
@@ -135,12 +137,14 @@ def teacher_evaluation(request ):
                 'content_3' : None,
                 'content_4' : None,
                 'rater' : None, 
+                "date_submitted" : None
             }
             
             cots_1 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="QUARTER 1").first()
             if cots_1:
                 cots_data['quarter_1'] = cots_1.is_checked
                 cots_data['content_1'] = cots_1.get_information()
+                cots_data['date_submitted'] = cots_1.created_at
                 
                 rater = models.People.objects.filter(employee_id=cots_1.employee_id).first()
                 if rater:
@@ -166,6 +170,7 @@ def teacher_evaluation(request ):
             rpms_data = {
                 'overall' : False,
                 "rater" : None,
+                "date_submitted" : None
             }
             
             folder = models.RPMSFolder.objects.filter(school_id=user.school_id, is_for_teacher_proficient=True if my_utils.is_proficient_faculty(user) else False ).order_by('-created_at').first()
@@ -173,6 +178,7 @@ def teacher_evaluation(request ):
                 rpms_data['folder'] = folder.get_rpms_folder_information() 
                 classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=folder.rpms_folder_id).order_by('-created_at')
                 submitted_all = 0
+                rpms_data['date_submitted'] = folder.created_at
                 for classwork in classworks:
                     rpms_data[classwork.title + " id"] = classwork.get_rpms_classwork_information()
                     rpms_data[classwork.title] = None
