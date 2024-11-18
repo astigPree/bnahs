@@ -162,9 +162,11 @@ def teacher_evaluation(request ):
             
             folder = models.RPMSFolder.objects.filter(school_id=user.school_id, is_for_teacher_proficient=True if my_utils.is_proficient_faculty(user) else False ).order_by('-created_at').first()
             if folder:
+                rpms_data['folder'] = folder.get_rpms_folder_information() 
                 classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=folder.rpms_folder_id).order_by('-created_at')
                 submitted_all = 0
                 for classwork in classworks:
+                    rpms_data[classwork.title + " id"] = classwork.get_rpms_classwork_information()
                     rpms_data[classwork.title] = None
                     attachment = models.RPMSAttachment.objects.filter(class_work_id=classwork.class_work_id, employee_id=user.employee_id).order_by('-created_at').first()
                     if attachment:
