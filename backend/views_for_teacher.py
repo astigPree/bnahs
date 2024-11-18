@@ -101,9 +101,11 @@ def teacher_evaluation(request ):
                 'part_3' : False,
                 'overall' : False,
                 'rater' : None,
+                'content' : None,
             }
             ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type="PART 1").first()
             if ipcrf_1:
+                ipcrf_data['content'] = ipcrf_1.get_information()
                 ipcrf_data['part_1'] = ipcrf_1.is_checked
                 ipcrf_data['part_1_rater'] = ipcrf_1.is_checked_by_evaluator
                 if ipcrf_1.is_checked_by_evaluator:
@@ -125,30 +127,54 @@ def teacher_evaluation(request ):
                 'quarter_2' : False,
                 'quarter_3' : False,
                 'quarter_4' : False,
-                'overall' : False
+                'overall' : False,
+                'content_1' : None,
+                'content_2' : None,
+                'content_3' : None,
+                'content_4' : None, 
             }
             
             cots_1 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="QUARTER 1").first()
             if cots_1:
-                cots_data['quarter_1'] = cots_1.is_checked 
+                cots_data['quarter_1'] = cots_1.is_checked
+                cots_data['content_1'] = cots_1.get_information()
                 
             cots_2 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="QUARTER 2").first()
             if cots_2:
                 cots_data['quarter_2'] = cots_2.is_checked 
+                cots_data['content_2'] = cots_2.get_information()
                 
             cots_3 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="QUARTER 3").first()
             if cots_3:
                 cots_data['quarter_3'] = cots_3.is_checked 
+                cots_data['content_3'] = cots_3.get_information()
                 
             cots_4 = models.COTForm.objects.filter(evaluated_id=user.employee_id, quarter="QUARTER 4").first()
             if cots_4:
                 cots_data['quarter_4'] = cots_4.is_checked 
+                cots_data['content_4'] = cots_4.get_information()
                 
             cots_data['overall'] = all([cots_data['quarter_1'], cots_data['quarter_2'], cots_data['quarter_3'], cots_data['quarter_4']])
             
             rpms_data = {
-                
+                'overall' : False,
             }
+            
+            folder = models.RPMSFolder.objects.filter(school_id=user.school_id, is_for_teacher_proficient=True if my_utils.is_proficient_faculty(user) else False ).order_by('-created_at').first()
+            if folder:
+                classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=folder.rpms_folder_id).order_by('-created_at')
+                submitted_all = 0
+                for classwork in classworks:
+                    rpms_data[classwork.title] = None
+                    attachment = models.RPMSAttachment.objects.filter(classwork_id=classwork.class_work_id, employee_id=user.employee_id).order_by('-created_at').first()
+                    if attachment:
+                        if attachment.is_checked:
+                            submitted_all += 1
+                        rpms_data[classwork.title] = attachment.get_information()
+                            
+                rpms_data['overall'] = submitted_all == len(classworks)
+
+                        
             
             return JsonResponse({ 
                 'teacher' : user.get_information(),
