@@ -7,6 +7,16 @@ from django.utils import timezone
 from django.conf import settings
 from django.templatetags.static import static
 
+import io
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import A4, landscape
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle
+
+
+
 from collections import defaultdict
 
 from datetime import datetime
@@ -1048,6 +1058,101 @@ def get_employee_performance_by_year(employee_id, employee_position):
     # }
     
     return results
+
+
+
+def generate_report(school : models.School):
+    if not school:
+            return HttpResponse("No school data found.", content_type='text/plain')
+    school_year_text = None
+    school_year = models.IPCRFForm.objects.filter(form_type='PART 1').order_by('-created_at').first()
+    if not school_year:
+        school_year = models.COTForm.objects.filter(school_id=school.school_id).order_by('-created_at').first()
+        if not school_year:
+            school_year = models.RPMSFolder.objects.filter(school_id=school.school_id).order_by('-created_at').first()
+            if not school_year:
+                return HttpResponse("No school year data found.", content_type='text/plain')
+            else:
+                school_year_text = school_year.rpms_folder_school_year
+        else:
+            school_year_text = school_year.school_year
+    else:
+        school_year_text = school_year.school_year
+    
+    # Create a PDF buffer
+    buffer = io.BytesIO()
+
+    # Create a PDF document
+    doc = SimpleDocTemplate(buffer, pagesize=landscape(A4))
+    elements = []
+
+    # Add logo/image in the center
+    if school.school_logo:
+        logo_path = settings.MEDIA_ROOT + '/' + school.school_logo.name
+        logo = Image(logo_path, 2*inch, 2*inch)
+        logo.hAlign = 'CENTER'
+        elements.append(logo)
+
+    # Add School Name and School Year in the center
+    styles = getSampleStyleSheet()
+    styles.add(ParagraphStyle(name='Center', alignment=1))  # 1 means center alignment
+    styles.add(ParagraphStyle(name='SchoolName', alignment=1, fontSize=18, fontName='Helvetica-Bold'))
+    styles.add(ParagraphStyle(name='SchoolYear', alignment=1, fontSize=16))
+
+    elements.append(Spacer(1, 0.25*inch))
+    elements.append(Paragraph(school.school_name, styles['SchoolName']))
+    elements.append(Spacer(1, 0.25*inch))
+    elements.append(Paragraph(f"{school_year_text}", styles['SchoolYear']))
+
+    elements.append(Spacer(1, 0.5*inch))
+
+    # Add table headers
+    table_data = [
+        ["Name of Teachers", "KRA 1", "KRA 2", "KRA 3", "KRA 4", "PLUS FACTOR", "Total Score", "Final Rating" ,"Adjective Rating", ],
+        # ["Jessica Sanchez Ramirez", "90", "85", "88", "92", "80", "80", "0.34","Very Good"],
+        # ["John Doe", "80", "78", "85", "88", "75","80", "0.34","Very Good"],
+        # ["Jane Smith", "85", "88", "90", "89", "82","80", "0.34", "Very Good"]
+    ]
+    
+    teachers = models.People.objects.filter(school_id=school.school_id).filter(is_accepted = True)
+    for teacher in teachers:
+        teacher_data = []
+        teacher_data.append(teacher.fullname)
+        
+        result = get_rpms_forms_by_title(teacher.employee_id)
+        total_score = 0.0
+        for kra, scores in result.items():
+            total_score += sum(scores) / len(scores) if len(scores) > 0 else 0
+            teacher_data.append(sum(scores) / len(scores) if len(scores) > 0 else 0)
+        teacher_data.append(total_score)
+        ipcrf = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()
+        rating = ipcrf.evaluator_rating if ipcrf else 0.0
+        teacher_data.append(rating)
+        adjective_rating = classify_ipcrf_score(rating)
+        table_data.append(adjective_rating)
+        
+
+    table = Table(table_data)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#d6e0f5")),  # Light blue color for header
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),  # Text color for header
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),  # Center align text
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),  # Bold text for header
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]))
+
+    elements.append(table)
+
+    # Build the PDF
+    doc.build(elements)
+
+    # Get the value of the BytesIO buffer and write it to the response.
+    buffer.seek(0)
+    return buffer
+    # return HttpResponse(buffer, as_attachment=True, content_type='application/pdf')
+
 
 
 

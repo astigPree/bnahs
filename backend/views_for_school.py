@@ -1533,26 +1533,28 @@ def get_all_teachers_by_school(request):
 
 
 
-# @csrf_exempt
-# def get_school_summary(request):
-#     try:
-#         if request.method == "GET":
-#             user = models.School.objects.filter(email_address=request.user.username).first()
-#             if not user:
-#                 return JsonResponse({
-#                     'message' : 'User not found',
-#                     }, status=400)
-                
+@csrf_exempt
+def get_school_report(request):
+    try:
+        if request.method == "GET":
+            user = models.School.objects.filter(email_address=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
                 
             
+            buffer = my_utils.generate_report(user)
+            return HttpResponse(buffer, content_type='application/pdf')
+            
 
-#     except Exception as e:
-#         return JsonResponse({
-#             'message' : f'Something went wrong : {e}',
-#             }, status=500)
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
         
-#     return JsonResponse({
-#         'message' : 'Invalid request',
-#         }, status=400)
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
 
 
