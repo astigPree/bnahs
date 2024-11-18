@@ -1240,12 +1240,7 @@ class People(models.Model):
     job_started = models.DateTimeField(blank=True, null=True)
     job_ended = models.DateTimeField(blank=True, null=True)
     
-    grade_level = models.CharField(max_length=255, blank=True, default='',
-            choices=(
-                ('Junior High School', 'Junior High School'),
-                ('Senior High School', 'Senior High School'),
-            )
-                                   )
+    grade_level = models.CharField(max_length=255, blank=True, default='')
     department = models.CharField(max_length=255, blank=True, default='')
     password = models.CharField(max_length=255, blank=True, default='')
     confirm_password = models.CharField(max_length=255, blank=True, default='')
