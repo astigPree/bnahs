@@ -145,6 +145,9 @@ urlpatterns = [
     path('evaluator/summary/teacher/kra/', views.evaluator_summary_rpms),
     path('evaluator/summary/teacher/swot/', views.evaluator_summary_swot),
     
+    path('evaluator/get/records/cot/', views.evaluator_get_records_cot),
+    path('evaluator/get/records/rpms/', views.evaluator_get_records_rpms),
+    path('evaluator/get/records/ipcrf/', views.evaluator_get_records_ipcrf),
     
     # =============== Teacher Path ================
     path('login_teacher/', views.login_teacher), # WORKING
