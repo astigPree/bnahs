@@ -1116,21 +1116,22 @@ def generate_report(school : models.School):
     
     teachers = models.People.objects.filter(school_id=school.school_id).filter(is_accepted = True)
     for teacher in teachers:
-        teacher_data = []
-        teacher_data.append(teacher.fullname)
+        teacher_data_individual = []
+        teacher_data_individual.append(teacher.fullname)
         
         result = get_rpms_forms_by_title(teacher.employee_id)
         total_score = 0.0
         for kra, scores in result.items():
             total_score += sum(scores) / len(scores) if len(scores) > 0 else 0
-            teacher_data.append(sum(scores) / len(scores) if len(scores) > 0 else 0)
-        teacher_data.append(total_score)
+            teacher_data_individual.append(sum(scores) / len(scores) if len(scores) > 0 else 0)
+        teacher_data_individual.append(total_score)
         ipcrf = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()
         rating = ipcrf.evaluator_rating if ipcrf else 0.0
-        teacher_data.append(rating)
+        teacher_data_individual.append(rating)
         adjective_rating = classify_ipcrf_score(rating)
-        table_data.append(adjective_rating)
+        teacher_data_individual.append(adjective_rating)
         
+        table_data.append(teacher_data_individual)
 
     table = Table(table_data)
     table.setStyle(TableStyle([
