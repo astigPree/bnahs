@@ -1236,16 +1236,7 @@ class People(models.Model):
     middle_name = models.CharField(max_length=255, blank=True, default='')
     last_name = models.CharField(max_length=255, blank=True, default='')
     email_address = models.CharField(max_length=255, blank=True, default='')
-    position = models.CharField(max_length=255, blank=True, default='Teacher I',
-        choices=(
-            ('Teacher I', 'Teacher I'), 
-            ('Teacher II', 'Teacher II'), 
-            ('Teacher III', 'Teacher III'), 
-            ('Master Teacher I', 'Master Teacher I'),
-            ('Master Teacher II', 'Master Teacher II'),
-            ('Master Teacher III', 'Master Teacher III'),
-            ('Master Teacher IV', 'Master Teacher IV'),
-            ))
+    position = models.CharField(max_length=255, blank=True, default='')
     job_started = models.DateTimeField(blank=True, null=True)
     job_ended = models.DateTimeField(blank=True, null=True)
     
