@@ -1414,6 +1414,11 @@ def teacher_generate_report(request):
             data['performance_rating'] = my_utils.classify_ipcrf_score(ipcrf.evaluator_rating if ipcrf else 0.0)
             data['ranking'] = my_utils.recommend_rank(user)
             data['teacher'] = user.get_information()
+            data['rater'] = None
+            if ipcrf:
+                rater = models.People.objects.filter(employee_id=ipcrf.evaluator_id).first()
+                if rater:
+                    data['rater'] = rater.get_information()
             
             return JsonResponse(data,status=200)
             
