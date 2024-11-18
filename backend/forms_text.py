@@ -644,7 +644,7 @@ def form_cot_highly_proficient():
                 "Objective" : "Used effective strategies for providing timely, accurate and constructive feedback to encourage learners to reflect on and improve their own learning.  *",
                 "Selected" : "0"
             }
-        },
+        }
 
 
 def form_for_ipcrf_part_1_highly_proficient():

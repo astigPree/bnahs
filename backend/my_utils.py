@@ -466,7 +466,8 @@ def create_cot_form(
             "Subject & Grade Level" : f"{subject}",
             "Date" : f"{cot_date}",
             "Quarter": f"{quarter}",
-            "Comments" : ""
+            "Comments" : "",
+            "Questions" : {}
         }
 
     if cot_type == 'Highly Proficient':
