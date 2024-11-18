@@ -906,6 +906,14 @@ def form_for_ipcrf_part_1_highly_proficient():
                 "4" : "Submitted 3 acceptable MOVs",
                 "5" : "Submitted 4 acceptable MOVs",
                 "Rate" : "0"
+            },
+            "EFFICIENCY" : {
+                "1" : "No acceptable evidence was shown",
+                "2" : "Submitted 1 acceptable MOV",
+                "3" : "Submitted 2 acceptable MOVs",
+                "4" : "Submitted 3 acceptable MOVs",
+                "5" : "Submitted 4 acceptable MOVs",
+                "Rate" : "0"
             }
         }
     }
