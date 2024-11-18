@@ -1395,7 +1395,7 @@ def teacher_unsubmit_class_work(request):
 @csrf_exempt
 def teacher_generate_report(request):
     try:
-        if request.method == "POST":
+        if request.method == "GET":
             user = models.People.objects.filter(employee_id=request.user.username).first()
             if not user:
                 return JsonResponse({
@@ -1410,7 +1410,7 @@ def teacher_generate_report(request):
             data['recommendation'] = my_utils.get_recommendation_result_with_percentage(employee_id=user.employee_id)
             
             ipcrf = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').order_by('-created_at').first()
-            data['rating'] = ipcrf.get_information()
+            data['rating'] = ipcrf.get_information() if ipcrf else None
             data['performance_rating'] = my_utils.classify_ipcrf_score(ipcrf.evaluator_rating)
             data['ranking'] = my_utils.recommend_rank(user)
             data['teacher'] = user.get_information()
