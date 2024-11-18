@@ -536,7 +536,7 @@ def school_get_all_teacher_tenure(request):
     try:
         
         if request.method == 'GET':
-            user = models.School.objects.filter(email_address=request.user.username, role='Evaluator').first()
+            user = models.School.objects.filter(email_address=request.user.username).first()
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
@@ -1330,7 +1330,7 @@ def school_summary_rpms(request):
 def school_get_kras_scores(request):
     try:
         
-        if request.method == "POST":
+        if request.method == "GET":
             user = models.School.objects.filter(email_address=request.user.username).first()
             if not user:
                 return JsonResponse({
