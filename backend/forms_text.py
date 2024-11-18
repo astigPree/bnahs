@@ -242,7 +242,7 @@ def form_for_ipcrf_part_1_proficient():
                 "5" : "Submitted MOVs were distributed across 4 quarters",
                 "Rate" : "0"
             }
-        },
+        }
     }
     
     
@@ -304,7 +304,7 @@ def form_for_ipcrf_part_2_proficient():
                 "4" : "Translates creative thinking into tangible changes and solutions that improve the work unit and organization..",
                 "5" : "Uses ingenious methods to accomplish responsibilities. Demonstrates resourcefulness and the ability to succeed with minimal resources.",
                 "Selected" : []
-        },
+        }
     }
 
 
@@ -318,7 +318,7 @@ def form_for_ipcrf_part_3_proficient():
                 "Learning Objectives": "",
                 "Intervention": "",
                 "Timeline": "",
-                "Resources Needs": "", 
+                "Resources Needs": ""
             },
     
     plans["B"] = { 
@@ -327,7 +327,7 @@ def form_for_ipcrf_part_3_proficient():
                 "Learning Objectives": "",
                 "Intervention": "",
                 "Timeline": "",
-                "Resources Needs": "", 
+                "Resources Needs": ""
             }
      
 
@@ -384,7 +384,7 @@ def form_for_kra1_proficient():
                 "Objectives" : "Displayed proficient use of Mother Tongue, Filipino and English to facilitate teaching and learning (PPST 1.6.2)",
                 "Score" : "0",
                 "Maximum Score" : "7",
-            },
+            }
         },
         "Comment" : " "
     }
@@ -440,7 +440,7 @@ def form_for_kra2_proficient():
                 "Objectives" : "Adapted and used culturally appropriate teaching strategies to address the needs of learners from indigenous groups (PPST 3.5.2) ",
                 "Score" : "0",
                 "Maximum Score" : "7",
-            },
+            }
         },
         "Comment" : " "
     }
@@ -487,7 +487,7 @@ def form_for_kra3_proficient():
                 "Objectives" : "Utilized  assessment data to inform the modification of teaching and learning practices and programs (PPST 5.5.2)",
                 "Score" : "0",
                 "Maximum Score" : "7",
-            },
+            }
         },
         "Comment" : " "
     }
@@ -533,7 +533,7 @@ def form_for_kra4_proficient():
                 "Objectives" : "Developed a personal improvement plan based on reflection of one s practice and ongoing professional learning (PPST 7.4.2)",
                 "Score" : "0",
                 "Maximum Score" : "7",
-            },
+            }
         },
         "Comment" : " "
 
@@ -560,7 +560,7 @@ def form_for_plus_factor_proficient():
                 "Objectives" : "Performed various related works/activities that contribute to the teaching learning process",
                 "Score" : "0",
                 "Maximum Score" : "2",
-            },
+            }
         },
         "Comment" : " "
         
@@ -685,7 +685,7 @@ def form_for_ipcrf_part_1_highly_proficient():
                 "4" : "Evaluated with colleagues the effectiveness of teaching strategies that promote learner achievement in literacy and numeracy across 3 quarters",
                 "5" : "Evaluated with colleagues the effectiveness of teaching strategies that promote learner achievement in literacy and numeracy across 4 quarters",
                 "Rate" : "0"
-            },
+            }
         },
         "3" : {
             "Question" : "Developed and applied effective teaching strategies to promote critical and creative thinking, as well as other higher-order thinking skills ",
@@ -937,7 +937,7 @@ def form_for_ipcrf_part_1_highly_proficient():
                 "5" : "Submitted MOVs were distributed across 4 quarters",
                 "Rate" : "0"
             }
-        },
+        }
     }
     
     
@@ -994,7 +994,7 @@ def form_for_kra1_highly_proficient():
                 "Objectives" : "Modeled and supported colleagues in the proficient use of Mother Tongues,  Filipino and English to improve teaching and learning, as well as to developed the learners  pride of their language, heritage and culture",
                 "Score" : "0",
                 "Maximum Score" : "7",
-            },
+            }
         },
         "Comment" : " "
     }
@@ -1050,7 +1050,7 @@ def form_for_kra2_highly_proficient():
                 "Objectives" : "Developed and applied teaching strategies to address effectively the needs of learners from indigenous groups",
                 "Score" : "0",
                 "Maximum Score" : "7",
-            },
+            }
         },
         "Comment" : " "
     }
@@ -1097,7 +1097,7 @@ def form_for_kra3_highly_proficient():
                 "Objectives" : "Worked collaboratively with colleagues to analyze and utilize assessment data to modify practices and programs to further support learner progress and achievement",
                 "Score" : "0",
                 "Maximum Score" : "7",
-            },
+            }
         },
         "Comment" : " "
     }
@@ -1143,7 +1143,7 @@ def form_for_kra4_highly_proficient():
                 "Objectives" : "Initiated professional reflections and promote learning opportunities with colleagues to improve practice",
                 "Score" : "0",
                 "Maximum Score" : "7",
-            },
+            }
         },
         "Comment" : " "
 
@@ -1170,7 +1170,7 @@ def form_for_plus_factor_highly_proficient():
                 "Objectives" : "Performed various related works/activities that contribute to the teaching-learning process",
                 "Score" : "0",
                 "Maximum Score" : "7",
-            },
+            }
         },
         "Comment" : " "
         
