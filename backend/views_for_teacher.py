@@ -1411,7 +1411,7 @@ def teacher_generate_report(request):
             
             ipcrf = models.IPCRFForm.objects.filter(employee_id=user.employee_id, form_type='PART 1').order_by('-created_at').first()
             data['rating'] = ipcrf.get_information() if ipcrf else None
-            data['performance_rating'] = my_utils.classify_ipcrf_score(ipcrf.evaluator_rating)
+            data['performance_rating'] = my_utils.classify_ipcrf_score(ipcrf.evaluator_rating if ipcrf else 0.0)
             data['ranking'] = my_utils.recommend_rank(user)
             data['teacher'] = user.get_information()
             
