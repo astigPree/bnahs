@@ -543,38 +543,61 @@ def school_get_all_teacher_tenure(request):
                 }, status=400)
 
         
+            data = {
+                "all" : {
+                    '0-3 years': 0,
+                    '3-5 years': 0,
+                    '5+ years': 0
+                },
+                "proficient" : {
+                    '0-3 years': 0,
+                    '3-5 years': 0,
+                    '5+ years': 0
+                },
+                "highly_proficient" : {
+                    '0-3 years': 0,
+                    '3-5 years': 0,
+                    '5+ years': 0
+                }
+            }
+
             people = People.objects.filter(role='Teacher', school_id=user.school_id)
             total_count = people.count()
             
             if total_count == 0:
-                return JsonResponse({
-                    '0-3 years': 0,
-                    '3-5 years': 0,
-                    '5+ years': 0
-                }, status=200)
+                return JsonResponse(data, status=200)
 
             # Initialize counters
-            tenure_counts = {
-                '0-3 years': 0,
-                '3-5 years': 0,
-                '5+ years': 0
-            }
-
+            proficient_count = 0
+            highly_proficient_count = 0
             for person in people:
                 tenure_category = person.get_tenure_category()
-                if tenure_category in tenure_counts:
-                    tenure_counts[tenure_category] += 1
+                if tenure_category in data['all']:
+                    data['all'][tenure_category] += 1
+                if my_utils.is_proficient_faculty(person):
+                    data['proficient'][tenure_category] += 1
+                    proficient_count += 1
+                else:
+                    data['highly_proficient'][tenure_category] += 1
+                    highly_proficient_count += 1
+            
+            if proficient_count == 0:
+                proficient_count = 1
+            if highly_proficient_count == 0:
+                highly_proficient_count = 1
             
             # Calculate percentages
-            tenure_percentages = {
-                category: (count / total_count) * 100 for category, count in tenure_counts.items()
+            data['all'] = {
+                category: (count / total_count) * 100 for category, count in data['all'].items()
+            }
+            data['proficient'] = {
+                category: (count / proficient_count) * 100 for category, count in data['proficient'].items()
+            }
+            data['highly_proficient'] = {
+                category: (count / highly_proficient_count) * 100 for category, count in data['highly_proficient'].items()
             }
             
-            return JsonResponse({
-                '0-3 years': tenure_counts['0-3 years'],
-                '3-5 years': tenure_counts['3-5 years'],
-                '5+ years': tenure_counts['5+ years']
-            }, status=200)
+            return JsonResponse(data, status=200)
     
     except Exception as e:
         return JsonResponse({
@@ -598,29 +621,80 @@ def school_get_teacher_recommendations(request):
                     }, status=400)
             
             
-            number_of_promotion = 0
-            number_of_termination = 0
-            number_of_retention = 0
             
+            data = {
+                "proficient" : {
+                    "number_of_promotion" : 0,
+                    "number_of_termination" : 0,
+                    "number_of_retention" : 0 ,
+                    "number_of_promotion_by_percentage" : 0.0,
+                    "number_of_termination_by_percentage" : 0.0,
+                    "number_of_retention_by_percentage" : 0.0
+                },
+                "highly_proficient" : {
+                    "number_of_promotion" : 0,
+                    "number_of_termination" : 0,
+                    "number_of_retention" : 0 ,
+                    "number_of_promotion_by_percentage" : 0.0,
+                    "number_of_termination_by_percentage" : 0.0,
+                    "number_of_retention_by_percentage" : 0.0
+                },
+                "all" : {
+                    "number_of_promotion" :0,
+                    "number_of_termination" : 0,
+                    "number_of_retention" : 0,
+                    "number_of_promotion_by_percentage" : 0.0,
+                    "number_of_termination_by_percentage" : 0.0,
+                    "number_of_retention_by_percentage" : 0.0
+                }
+            }
+            
+            
+            
+            # FOR ALL TEACHER
             teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher')
+            proficient_count = 0
+            highly_proficient_count = 0
             for teacher in teachers:
                 result = my_utils.get_recommendation_result(employee_id=teacher.employee_id)
                 if result == 'Promotion':
-                    number_of_promotion += 1
+                    if my_utils.is_proficient_faculty(people=teacher):
+                        data["proficient"]["number_of_promotion"] += 1
+                        proficient_count += 1
+                    else:
+                        data["highly_proficient"]["number_of_promotion"] += 1
+                        highly_proficient_count += 1
+                    data["all"]["number_of_promotion"] += 1
                 elif result == 'Termination':
-                    number_of_termination += 1
+                    if my_utils.is_proficient_faculty(people=teacher):
+                        data["proficient"]["number_of_termination"] += 1
+                        proficient_count += 1
+                    else:
+                        data["highly_proficient"]["number_of_termination"] += 1
+                        highly_proficient_count += 1
+                    data["all"]["number_of_termination"] += 1
                 elif result == 'Retention':
-                    number_of_retention += 1
+                    if my_utils.is_proficient_faculty(people=teacher):
+                        data["proficient"]["number_of_retention"] += 1
+                        proficient_count += 1
+                    else:
+                        data["highly_proficient"]["number_of_retention"] += 1
+                        highly_proficient_count += 1
+                    data["all"]["number_of_retention"] += 1
             
-            number_of_promotion = number_of_promotion / teachers.count()
-            number_of_termination = number_of_termination / teachers.count()
-            number_of_retention = number_of_retention / teachers.count()
+            data["all"]["number_of_promotion_by_percentage"] = (data["all"]["number_of_promotion"] / teachers.count()) * 100 if teachers.count() > 0 else 0
+            data["all"]["number_of_termination_by_percentage"] = (data["all"]["number_of_termination"] / teachers.count()) * 100 if teachers.count() > 0 else 0
+            data["all"]["number_of_retention_by_percentage"] = (data["all"]["number_of_retention"] / teachers.count()) * 100 if teachers.count() > 0 else 0
             
-            return JsonResponse({
-                'promotion' : number_of_promotion,
-                'termination' : number_of_termination,
-                'retention' : number_of_retention
-            }, status=200)
+            data["proficient"]["number_of_promotion_by_percentage"] = (data["proficient"]["number_of_promotion"] / proficient_count) * 100 if proficient_count > 0 else 0
+            data["proficient"]["number_of_termination_by_percentage"] = (data["proficient"]["number_of_termination"] / proficient_count) * 100 if proficient_count > 0 else 0
+            data["proficient"]["number_of_retention_by_percentage"] = (data["proficient"]["number_of_retention"] / proficient_count) * 100 if proficient_count > 0 else 0
+            
+            data["highly_proficient"]["number_of_promotion_by_percentage"] = (data["highly_proficient"]["number_of_promotion"] / highly_proficient_count) * 100 if highly_proficient_count > 0 else 0
+            data["highly_proficient"]["number_of_termination_by_percentage"] = (data["highly_proficient"]["number_of_termination"] / highly_proficient_count) * 100 if highly_proficient_count > 0 else 0
+            data["highly_proficient"]["number_of_retention_by_percentage"] = (data["highly_proficient"]["number_of_retention"] / highly_proficient_count) * 100 if highly_proficient_count > 0 else 0
+            
+            return JsonResponse(data, status=200)
             
             
     
@@ -695,41 +769,32 @@ def school_get_performance_true_year(request):
                 return JsonResponse({
                     'message' : 'User not found',
                     }, status=400)
+             
+            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher') 
+            if not teachers:
+                return JsonResponse({
+                    'message' : 'Teachers not found',
+                    }, status=400)
+                
             
-            
-            teacher_performance = {}
-            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher')
+            teacher_performance = {
+                "all" : [],
+                "proficient" : [],
+                "highly_proficient" : []
+            }
             for teacher in teachers:
-                teacher_performance[teacher.employee_id] = {}
-                teacher_performance[teacher.employee_id]['Name'] = teacher.fullname
-                teacher_performance[teacher.employee_id]['Performance'] = my_utils.get_employee_performance_by_year(teacher.employee_id , teacher.position)
+                result = my_utils.get_performance_by_years(employee_id=teacher.employee_id)
+                temp = {
+                    "data" : result,
+                    "name" : teacher.first_name
+                }
+                teacher_performance["all"].append(temp)
+                if my_utils.is_proficient_faculty(people=teacher):
+                    teacher_performance["proficient"].append(temp)
+                else:
+                    teacher_performance["highly_proficient"].append(temp)
             
-            # {
-            #     "Employee ID" : {
-            #         "Name" : "Name",
-            #         "Performance" :  {
-            #             2021: {
-            #                 'total_kra_score': 1.85,
-            #                 'plus_factor': 0.02,
-            #                 'total_score': 1.87
-            #             },
-            #             2022: {
-            #                 'total_kra_score': 2.40,
-            #                 'plus_factor': 0.04,
-            #                 'total_score': 2.44
-            #             },
-            #             2023: {
-            #                 'total_kra_score': 2.10,
-            #                 'plus_factor': 0.03,
-            #                 'total_score': 2.13
-            #             }
-            #         }
-            #     } 
-            # }
-            
-            return JsonResponse({
-                'teacher_performance' : teacher_performance
-            }, status=200) 
+            return JsonResponse(teacher_performance, status=200)
     
     except Exception as e:
         return JsonResponse({
@@ -1259,6 +1324,68 @@ def school_summary_rpms(request):
     return JsonResponse({
         'message' : 'Invalid request',
         }, status=400)
+
+
+@csrf_exempt
+def school_get_kras_scores(request):
+    try:
+        
+        if request.method == "POST":
+            user = models.School.objects.filter(email_address=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            result_dict ={
+                "kra" : [
+                    "KRA 1",
+                    "KRA 2",
+                    "KRA 3" ,
+                    "KRA 4" ,
+                    "Plus Factor",
+                    "Total Score"
+                ],
+                "averages" : [
+                    
+                ]
+                
+            } 
+
+            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher')
+            kra1 = 0.0
+            kra2 = 0.0
+            kra3 = 0.0
+            kra4 = 0.0
+            plus_factor = 0.0
+            total_score = 0.0
+            for teacher in teachers:
+                result = my_utils.get_kra_breakdown_of_a_teacher(employee_id=teacher.employee_id)
+                kra1 += result['averages'][0]
+                kra2 += result['averages'][1]
+                kra3 += result['averages'][2]
+                kra4 += result['averages'][3]
+                plus_factor += result['averages'][4]
+                total_score += result['averages'][5]
+            result_dict["averages"].append(kra1/len(teachers) if len(teachers) > 0 else 0.0)
+            result_dict["averages"].append(kra2/len(teachers) if len(teachers) > 0 else 0.0)
+            result_dict["averages"].append(kra3/len(teachers) if len(teachers) > 0 else 0.0)
+            result_dict["averages"].append(kra4/len(teachers) if len(teachers) > 0 else 0.0)
+            result_dict["averages"].append(plus_factor/len(teachers) if len(teachers) > 0 else 0.0)
+            result_dict["averages"].append(total_score/len(teachers) if len(teachers) > 0 else 0.0)
+            
+            return JsonResponse( result_dict  , status=200)
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
 
 
 @csrf_exempt

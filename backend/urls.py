@@ -80,11 +80,12 @@ urlpatterns = [
     path('school/faculties/evaluated/count/', views.get_number_of_school_faculty_evaluated),
     path('school/faculties/evaluated/pending/count/', views.get_number_of_school_faculty_not_evaluated),
     
-    path('school/teachers/get/tenure', views.school_get_all_teacher_tenure), # NEED TO TEST 
-    path('school/teachers/get/recommendations', views.school_get_teacher_recommendations), # NEED TO TEST 
+    path('school/teachers/get/tenure/', views.school_get_all_teacher_tenure), # NEED TO TEST 
+    path('school/teachers/get/recommendations/', views.school_get_teacher_recommendations), # NEED TO TEST 
     
     path('school/teachers/get/annual/ratings/', views.school_get_annual_ratings),  
     path('school/teachers/get/performance/', views.school_get_performance_true_year),
+    path('school/teachers/get/kras/scores/', views.school_get_kras_scores),
     
     
     path('school/forms/rpms/folders/create/', views.create_rpms_folder),
