@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 
+from dateutil.relativedelta import relativedelta
+
 import uuid, string ,random
 # Create your models here.
 
@@ -1364,21 +1366,22 @@ class People(models.Model):
         data['evaluated'] = True if number_of_attachment_evaluated == 6 else False
         
         return data
-        
+         
+
     def get_job_years(self):
         now = timezone.now()
-        difference = self.job_started - now
-        
+        difference = relativedelta(now, self.job_started)
+
+        years = difference.years
+        months = difference.months
         days = difference.days
-        months = (self.job_started.year - now.year) * 12 + self.job_started.month - now.month
-        years = self.job_started.year - now.year
-        
-        
+
         return {
-            "days": days,
+            "years": years,
             "months": months,
-            "years": years
+            "days": days
         }
+
         
 
     def update_is_evaluted(self , school_year = None):
