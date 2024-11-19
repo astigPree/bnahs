@@ -735,9 +735,10 @@ def update_rating_sheet(request):
                 }, status=400)
             
             cot_form = models.COTForm.objects.filter(
-                employee_id=evaluator_id,
+                evaluated_id=evaluated_id,
                 cot_form_id=cot_id,
-                quarter=quarter
+                quarter=quarter,
+                school_id=search_evaluated.school_id
             ).order_by('-created_at').first()
             
             if not cot_form:
