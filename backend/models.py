@@ -1262,11 +1262,11 @@ class People(models.Model):
         ]
     """
     
-    
     is_evaluated = models.BooleanField(default=False) # Is the person evaluated or not
     is_deactivated = models.BooleanField(default=False) # Is the person deactivated or not
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
+    reason = models.CharField(max_length=255, blank=True, default='Other') # is the school declined and reason
     is_declined = models.BooleanField(default=False) # is the school declined
     is_verified = models.BooleanField(default=False) # Is the school verified or click the link
     is_accepted = models.BooleanField(default=False) # Is the school accepted or added by admin
@@ -1303,7 +1303,8 @@ class People(models.Model):
             'fullname' : self.fullname,
             'action_id' : self.action_id,
             'educations' : self.educations,
-            'profile' : ''
+            'profile' : '',
+            'reason' : self.reason
         }
         
         if self.role == "Teacher":
