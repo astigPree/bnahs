@@ -1579,6 +1579,7 @@ def get_all_teacher_by_status(request):
                 "all" : [],
                 "accepted" : [],
                 "rejected" : [],
+                "pending" : []
             }
             
             for people in peoples:
@@ -1586,6 +1587,9 @@ def get_all_teacher_by_status(request):
                     data['accepted'].append(people.get_information())
                 elif people.is_declined:
                     data['rejected'].append(people.get_information())
+                elif not people.is_accepted and not people.is_declined:
+                    data['pending'].append(people.get_information())
+                    
                 data['all'].append(people.get_information())
             
             return JsonResponse(data, status=200)
