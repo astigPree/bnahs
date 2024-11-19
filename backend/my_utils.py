@@ -6,6 +6,7 @@ from django.db.models.functions import ExtractYear
 from django.utils import timezone
 from django.conf import settings
 from django.templatetags.static import static
+import time
 
 import io
 from django.http import HttpResponse
@@ -110,7 +111,16 @@ def send_verification_email(user_email, verification_code , template , masbate_l
     # Create the email
     email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
     email.attach_alternative(html_content, "text/html")
-    email.send()
+    initial_delay=5
+    while True:
+        try:
+            email.send()
+            print("Email Sent Successfully")
+            break
+        except Exception as e:
+            time.sleep(1000)
+            time.sleep(initial_delay)
+            initial_delay *= 2  # Exponential backoff
 
 
 def send_declined_reason(user_email, reason , template , masbate_locker_email , subject, request):
@@ -129,7 +139,18 @@ def send_declined_reason(user_email, reason , template , masbate_locker_email , 
     # Create the email
     email = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
     email.attach_alternative(html_content, "text/html")
-    email.send()
+    initial_delay=5
+    while True:
+        try:
+            email.send()
+            print("Email Sent Successfully")
+            break
+        except Exception as e:
+            time.sleep(1000)
+            time.sleep(initial_delay)
+            initial_delay *= 2  # Exponential backoff
+
+
 
 
 def send_account_info_email(user_email, username, password, template, from_email, subject):
@@ -143,7 +164,16 @@ def send_account_info_email(user_email, username, password, template, from_email
     # Create the email
     email = EmailMultiAlternatives(subject, text_content, from_email, [user_email])
     email.attach_alternative(html_content, "text/html")
-    email.send()
+    initial_delay=5
+    while True:
+        try:
+            email.send()
+            print("Email Sent Successfully")
+            break
+        except Exception as e:
+            time.sleep(1000)
+            time.sleep(initial_delay)
+            initial_delay *= 2  # Exponential backoff
 
 
 
@@ -159,7 +189,16 @@ def send_password_reset_email(user_email, verifiy_change_password_link, template
     # Create the email
     email = EmailMultiAlternatives(subject, text_content, from_email, [user_email])
     email.attach_alternative(html_content, "text/html")
-    email.send()
+    initial_delay=5
+    while True:
+        try:
+            email.send()
+            print("Email Sent Successfully")
+            break
+        except Exception as e:
+            time.sleep(1000)
+            time.sleep(initial_delay)
+            initial_delay *= 2  # Exponential backoff
 
 
 def parse_date_string(date_string):
