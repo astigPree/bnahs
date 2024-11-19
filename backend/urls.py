@@ -98,6 +98,7 @@ urlpatterns = [
     
     
     path('school/people/reject/', views.reject_people_by_school), # NEW API
+    path('school/people/get/by_status/', views.get_all_teacher_by_status),
     
     path('school/get/teachers/', views.get_all_teachers_by_school), # NEW API
     

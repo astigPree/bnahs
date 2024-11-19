@@ -1562,3 +1562,46 @@ def get_school_report(request):
         }, status=400)
 
 
+
+@csrf_exempt
+def get_all_teacher_by_status(request):
+    try:
+        if request.method == "GET":
+            user = models.School.objects.filter(email_address=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            
+            peoples = models.People.objects.filter(school_id=user.school_id).all()
+            data = {
+                "all" : [],
+                "accepted" : [],
+                "rejected" : [],
+            }
+            
+            for people in peoples:
+                if people.is_accepted:
+                    data['accepted'].append(people.get_information())
+                elif people.is_declined:
+                    data['rejected'].append(people.get_information())
+                data['all'].append(people.get_information())
+            
+            return JsonResponse(data, status=200)
+
+    
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+
+
+
+
