@@ -61,7 +61,7 @@ def login_evaluator(request):
             user_authenticated = authenticate(request, username=employee_id, password=password)
             if not user_authenticated:
                 return JsonResponse({
-                    'message' : 'Invalid employee_id or password',
+                    'message' : 'Invalid employee_id or password in authenticate ',
                     }, status=400)
             
             login(request, user_authenticated)
