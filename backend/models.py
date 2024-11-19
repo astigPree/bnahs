@@ -1194,7 +1194,7 @@ class School(models.Model):
     action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
 
     def __str__(self):
-        return f"{self.name} - {self.school_id} - {self.email_address} - {self.contact_number}"
+        return f"{self.name} - {self.school_id} - {self.email_address} - {self.contact_number} - Verified : {self.is_verified} - Accepted : {self.is_accepted} - Declined : {self.is_declined}"
     
     def get_school_information(self):
         
