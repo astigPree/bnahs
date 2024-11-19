@@ -840,6 +840,7 @@ def reject_people_by_school(request):
             role = rejected_pople.role 
             rejected_pople.is_accepted = False
             rejected_pople.is_declined = True
+            rejected_pople.reason = reason
             rejected_pople.save()
             peoples = models.People.objects.filter(is_accepted=True , school_id=user.school_id).order_by('-created_at')
             
