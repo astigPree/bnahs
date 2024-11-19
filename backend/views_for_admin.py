@@ -453,7 +453,7 @@ def evaluation_submission_rate(request):
             
             schools = models.School.objects.filter(is_accepted=True).order_by('-created_at')
             for school in schools:
-                data['labels'].append(school.name)
+                data['labels'].append(school.school_name)
                 total_rating = 0.0
                 
                 teachers = models.People.objects.filter(is_accepted=True , school_id=school.school_id, role='Teacher').order_by('-created_at')

@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import People
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import update_session_auth_hash
 from django.db.models.functions import ExtractYear
 from django.db.models import Count
 
@@ -203,24 +204,108 @@ def people_update_education(request ):
         }, status=400)
 
 
-@csrf_exempt
-def people_update_profile(request ):
-    if request.method == 'POST':
+# @csrf_exempt
+# def people_update_profile(request ):
+#     if request.method == 'POST':
 
+#         user = models.People.objects.filter(employee_id=request.user.username).first()
+#         based_user = User.objects.filter(username=request.user.username).first()
+        
+#         if not user:
+#             return JsonResponse({
+#                 'message' : 'User not found',
+#             }, status=400)
+        
+        
+#         try:
+#             # Update profile if have
+#             has_changed = False
+#             firstname = request.POST.get('firstname')
+            
+#             if firstname:
+#                 user.first_name = firstname
+#                 has_changed = True
+            
+#             middlename = request.POST.get('middlename')
+#             if middlename:
+#                 user.middle_name = middlename
+#                 has_changed = True
+            
+#             lastname = request.POST.get('lastname')
+#             if lastname:
+#                 user.last_name = lastname
+#                 has_changed = True
+            
+#             jobtitle = request.POST.get('jobtitle')
+#             if jobtitle:
+#                 user.position = jobtitle
+#                 has_changed = True
+            
+#             department = request.POST.get('department')
+#             if department:
+#                 user.department = department
+#                 has_changed = True
+                
+#             password = request.POST.get('password')
+#             confirm_password = request.POST.get('confirm_password')
+#             if password and password == confirm_password:
+#                 if based_user:
+#                     # pass
+#                     user.password = password
+#                     # TODO : Change password
+#                 has_changed = True    
+            
+#             profile = request.FILES.get('profile')
+#             if profile:
+#                 user.profile = profile
+#                 has_changed = True
+            
+            
+            
+#             if has_changed:
+#                 # Re-authenticate the user with the new credentials
+#                 based_user.set_password(user.password if not password else password)  # Use the raw user_key here
+#                 based_user.save()
+#                 new_user = authenticate(username=user.employee_id, password=user.password)
+#                 if new_user:
+#                     login(request, new_user)
+#                     user.save()
+                    
+#                 return JsonResponse({
+#                     'message' : 'Profile updated successfully',
+#                 }, status=200)
+            
+#             return JsonResponse({
+#                 'message' : 'No changes made',
+#             }, status=200)
+            
+                
+#         except Exception as e:
+#             return JsonResponse({
+#                 'message' : f'Something went wrong : {e}',
+#                 }, status=500)
+    
+        
+#     return JsonResponse({
+#         'message' : 'Invalid request',
+#         }, status=400)
+
+
+
+@csrf_exempt
+def people_update_profile(request):
+    if request.method == 'POST':
         user = models.People.objects.filter(employee_id=request.user.username).first()
         based_user = User.objects.filter(username=request.user.username).first()
         
-        if not user:
+        if not user or not based_user:
             return JsonResponse({
-                'message' : 'User not found',
+                'message': 'User not found',
             }, status=400)
         
-        
         try:
-            # Update profile if have
             has_changed = False
             firstname = request.POST.get('firstname')
-            
             if firstname:
                 user.first_name = firstname
                 has_changed = True
@@ -248,10 +333,9 @@ def people_update_profile(request ):
             password = request.POST.get('password')
             confirm_password = request.POST.get('confirm_password')
             if password and password == confirm_password:
-                if based_user:
-                    # pass
-                    user.password = password
-                    # TODO : Change password
+                based_user.set_password(password)
+                based_user.save()
+                update_session_auth_hash(request, based_user)  # Important to keep the user authenticated after password change
                 has_changed = True    
             
             profile = request.FILES.get('profile')
@@ -259,36 +343,36 @@ def people_update_profile(request ):
                 user.profile = profile
                 has_changed = True
             
-            
-            
             if has_changed:
-                # Re-authenticate the user with the new credentials
-                old_based_user = User.objects.get(username=user.employee_id)
-                old_based_user.set_password(user.password if not password else password)  # Use the raw user_key here
-                old_based_user.save()
-                new_user = authenticate(username=user.employee_id, password=user.password)
-                if new_user:
-                    login(request, new_user)
-                    user.save()
-                    
+                user.save()
                 return JsonResponse({
-                    'message' : 'Profile updated successfully',
+                    'message': 'Profile updated successfully',
                 }, status=200)
             
             return JsonResponse({
-                'message' : 'No changes made',
+                'message': 'No changes made',
             }, status=200)
-            
-                
+        
         except Exception as e:
             return JsonResponse({
-                'message' : f'Something went wrong : {e}',
-                }, status=500)
+                'message': f'Something went wrong: {e}',
+            }, status=500)
     
-        
     return JsonResponse({
-        'message' : 'Invalid request',
-        }, status=400)
+        'message': 'Invalid request',
+    }, status=400)
+
+
+
+
+
+
+
+
+
+
+
+
 
 @csrf_exempt
 def people_logout(request ):
