@@ -723,7 +723,7 @@ def create_rating_sheet(request):
                 
             for school in schools:
                 teachers = models.People.objects.filter(is_accepted = True, role='Teacher', school_id=school.school_id)
-                evaluator = models.People.objects.filter(is_accepted = True, role='Evaluator', school_id=school.school_id).first()
+                # evaluator = models.People.objects.filter(is_accepted = True, role='Evaluator', school_id=school.school_id).first()
                 
                 for teacher in teachers:
                     #   school : models.School , evaluator : models.People , 
@@ -734,7 +734,7 @@ def create_rating_sheet(request):
                             for quarter in [ "Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4" ]:
                                 my_utils.create_cot_form(
                                     school=school,
-                                    evaluator=evaluator, 
+                                    evaluator=None, 
                                     teacher=teacher,
                                     subject='', 
                                     cot_date='', 
@@ -747,7 +747,7 @@ def create_rating_sheet(request):
                             for quarter in [ "Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4" ]:
                                 my_utils.create_cot_form(
                                     school=school,
-                                    evaluator=evaluator, 
+                                    evaluator=None, 
                                     teacher=teacher,
                                     subject='', 
                                     cot_date='', 

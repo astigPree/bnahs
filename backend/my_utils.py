@@ -459,7 +459,7 @@ def create_cot_form(
     ):
     cot_form = models.COTForm.objects.create(
         school_id = school.school_id,
-        employee_id = evaluator.employee_id,
+        employee_id = evaluator.employee_id if evaluator else "",
         school_year = school_year,
         evaluated_id = teacher.employee_id,
         quarter = quarter
@@ -469,8 +469,8 @@ def create_cot_form(
     
     content = {
             "COT Type" : f"{cot_type}",
-            "Observer ID" : f"{evaluator.employee_id}",
-            "Observer Name" : f"{evaluator.fullname}",
+            "Observer ID" : f"{evaluator.employee_id if evaluator else ''}",
+            "Observer Name" : f"{evaluator.fullname if evaluator else ''}",
             "Teacher Name" : f"{teacher.fullname}",
             "Teacher ID" : f"{teacher.employee_id}",
             "Subject & Grade Level" : f"{subject}",
