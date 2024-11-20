@@ -522,7 +522,17 @@ class IPCRFForm(models.Model):
             'is_submitted' : self.is_submitted,
             'rater' : None,
             'submit_date' : self.submit_date,
-            'check_date' : self.check_date
+            'check_date' : self.check_date,
+            'kra1_teacher' : self.kra1_teacher,
+            'kra2_teacher' : self.kra2_teacher,
+            'kra3_teacher' : self.kra3_teacher,
+            'kra4_teacher' : self.kra4_teacher,
+            'plus_factor_teacher' : self.plus_factor_teacher,
+            'kra1_evaluator' : self.kra1_evaluator,
+            'kra2_evaluator' : self.kra2_evaluator,
+            'kra3_evaluator' : self.kra3_evaluator,
+            'kra4_evaluator' : self.kra4_evaluator,
+            'plus_factor_evaluator' : self.plus_factor_evaluator
         }
         
         # Find the evaluator
