@@ -1611,7 +1611,7 @@ def get_all_teacher_by_status(request):
 
 
 @csrf_exempt
-def teacher_generate_report(request):
+def teacher_generate_report_by_school(request):
     try:
         
         if request.method == "POST":
