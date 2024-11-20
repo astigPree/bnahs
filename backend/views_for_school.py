@@ -1840,7 +1840,7 @@ def school_get_records_ipcrf(request):
 
 
 
-@c
+@csrf_exempt
 def get_rating_sheet_by_school(request):
     try:
         if request.method == 'POST':
