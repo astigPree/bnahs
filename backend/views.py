@@ -333,10 +333,10 @@ def people_update_profile(request):
             password = request.POST.get('password')
             confirm_password = request.POST.get('confirm_password')
             if password and password == confirm_password:
-                user.password = password
-                based_user.set_password(password)
-                based_user.save()
-                update_session_auth_hash(request, based_user)  # Important to keep the user authenticated after password change
+                # user.password = password
+                # based_user.set_password(password)
+                # based_user.save()
+                # update_session_auth_hash(request, based_user)  # Important to keep the user authenticated after password change
                 has_changed = True    
             
             profile = request.FILES.get('profile')
