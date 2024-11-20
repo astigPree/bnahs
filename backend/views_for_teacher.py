@@ -1670,9 +1670,12 @@ def teacher_get_ipcrf(request):
 
             ipcrf = models.IPCRFForm.objects.filter(school_id=user.school_id, ipcrf_id=ipcrf_id).first()
             
+            rater = models.People.objects.filter(employee_id=ipcrf.evaluator_id, school_id=user.school_id).first()
+            
             return JsonResponse({
                 'ipcrf' : ipcrf.get_information() if ipcrf else None,
                 'teacher' : teacher.get_information(),
+                'rater' : rater.get_information() if rater else None,
             },status=200)
     
     
