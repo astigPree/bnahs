@@ -479,6 +479,20 @@ class IPCRFForm(models.Model):
     evaluator_average_score = models.FloatField( blank=True, default=0.0) # Average Score
     evaluator_plus_factor = models.FloatField( blank=True, default=0.0) # Plus Factor Score
     
+    kra1_teacher = models.FloatField( blank=True, default=0.0) 
+    kra2_teacher = models.FloatField( blank=True, default=0.0)
+    kra3_teacher = models.FloatField( blank=True, default=0.0)
+    kra4_teacher = models.FloatField( blank=True, default=0.0)
+    plus_factor_teacher = models.FloatField( blank=True, default=0.0)
+    
+    kra1_evaluator = models.FloatField( blank=True, default=0.0) 
+    kra2_evaluator = models.FloatField( blank=True, default=0.0)
+    kra3_evaluator = models.FloatField( blank=True, default=0.0)
+    kra4_evaluator = models.FloatField( blank=True, default=0.0)
+    plus_factor_evaluator = models.FloatField( blank=True, default=0.0)
+    
+    
+    
     def __str__(self):
         return f"{self.school_id} - {self.employee_id} - {self.form_type} - {self.evaluator_id} - {self.connection_to_other}"
     

@@ -724,6 +724,33 @@ def teacher_update_ipcrf_part_1(request):
             plus_factor = request.POST.get('plus_factor', None)
             average_score = request.POST.get('average_score', None)
             
+            kra1 = request.POST.get('kra1', None)
+            kra2 = request.POST.get('kra2', None)
+            kra3 = request.POST.get('kra3', None)
+            kra4 = request.POST.get('kra4', None)
+            plus_factor = request.POST.get('plus_factor', None)
+            
+            if not kra1:
+                return JsonResponse({
+                    'message' : 'KRA 1 not found',
+                }, status=400)
+            if not kra2:
+                return JsonResponse({
+                    'message' : 'KRA 2 not found',
+                }, status=400)
+            if not kra3:
+                return JsonResponse({
+                    'message' : 'KRA 3 not found',
+                }, status=400)
+            if not kra4:
+                return JsonResponse({
+                    'message' : 'KRA 4 not found',
+                }, status=400)
+            if not plus_factor:
+                return JsonResponse({
+                    'message' : 'Plus Factor not found',
+                }, status=400)
+            
             if not rating:
                 return JsonResponse({
                     'message' : 'Rating not found',
@@ -757,6 +784,11 @@ def teacher_update_ipcrf_part_1(request):
                     'message' : 'IPCRF Form is already checked',
                 }, status=400)
             
+            ipcrf.kra1_teacher = kra1
+            ipcrf.kra2_teacher = kra2
+            ipcrf.kra3_teacher = kra3
+            ipcrf.kra4_teacher = kra4
+            ipcrf.plus_factor_teacher = plus_factor
             ipcrf.submit_date = timezone.now()
             ipcrf.rating = rating
             ipcrf.plus_factor = plus_factor
@@ -1435,6 +1467,177 @@ def teacher_generate_report(request):
     return JsonResponse({
         'message' : 'Invalid request',
         }, status=400 )
+
+
+
+
+
+
+@csrf_exempt
+def teacher_get_records_cot(request):
+    try:
+        if request.method == "GET":
+            
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            
+            data = {
+                "school_year" : [],
+                "quarter" : [],
+                "cot_taker" : [],
+            }
+            
+            cots = models.COTForm.objects.filter(school_id=user.school_id).order_by('-created_at')
+            for cot in cots:
+                if cot.quarter not in data["quarter"]:
+                    data["quarter"].append(cot.quarter)
+                if cot.school_year not in data["school_year"]:
+                    data["school_year"].append(cot.school_year)
+                
+                cot_taker = {
+                    "school_year" : cot.school_year,
+                    "quarter" : cot.quarter,
+                    "cot_evaluator" : None,
+                    "cot_taker" : None,
+                    "cot" : cot.get_information(),
+                }
+                
+                evaluator = models.People.objects.filter(employee_id=cot.employee_id).first()
+                if evaluator:
+                    cot_taker["cot_evaluator"] = evaluator.get_information()
+                
+                teacher = models.People.objects.filter(employee_id=cot.evaluated_id).first()
+                if teacher:
+                    cot_taker["cot_taker"] = teacher.get_information()
+                
+                data["cot_taker"].append(cot_taker)
+            
+            
+            
+            
+            return JsonResponse(data, status=200)
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+        
+    return JsonResponse({
+    'message' : 'Invalid request',
+    }, status=400)
+
+
+
+
+@csrf_exempt
+def teacher_get_records_rpms(request):
+    try:
+        if request.method == "GET":
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            data = {
+                "school_year": [],
+                "rpms_taker": [],
+            }
+
+            rpms = models.RPMSFolder.objects.filter(school_id=user.school_id).order_by('-created_at')
+            for rpm in rpms:
+                if rpm.rpms_folder_school_year not in data["school_year"]:
+                    data["school_year"].append(rpm.rpms_folder_school_year)
+
+                classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpm.rpms_folder_id, school_id=user.school_id).order_by('-created_at')
+                for classwork in classworks:
+                    attachment = models.RPMSAttachment.objects.filter(class_work_id=classwork.class_work_id, school_id=user.school_id).order_by('-created_at').first()
+                    if attachment:
+                        rpms_record = {
+                            "school_year": rpm.rpms_folder_school_year,
+                            "rpms_taker": None,
+                            "rpms_data": attachment.get_information(),
+                            "rpms_rater": None
+                        }
+
+                        rpms_taker = models.People.objects.filter(employee_id=attachment.employee_id, school_id=user.school_id).first()
+                        if rpms_taker:
+                            rpms_record["rpms_taker"] = rpms_taker.get_information()
+
+                        rpms_rater = models.People.objects.filter(employee_id=attachment.evaluator_id, school_id=user.school_id).first()
+                        if rpms_rater:
+                            rpms_record["rpms_rater"] = rpms_rater.get_information()
+
+                        data["rpms_taker"].append(rpms_record)
+
+            return JsonResponse(data, status=200)
+
+    except Exception as e:
+        return JsonResponse({
+            'message': f'Something went wrong: {e}',
+        }, status=500)
+
+    return JsonResponse({
+        'message': 'Invalid request',
+    }, status=400)
+
+
+
+
+
+@csrf_exempt
+def teacher_get_records_ipcrf(request):
+    try:
+        if request.method == "GET":
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+
+            data = {
+                "school_year": [],
+                "quarter": [],
+                "ipcrf_taker": [],
+            }
+
+            ipcrfs = models.IPCRFForm.objects.filter(school_id=user.school_id, form_type="PART 1").order_by('-created_at')
+            for ipcrf in ipcrfs:
+                if ipcrf.school_year not in data["school_year"]:
+                    data["school_year"].append(ipcrf.school_year)
+
+                ipcrf_record = {
+                    "school_year": ipcrf.school_year,
+                    "ipcrf_taker": None,
+                    "ipcrf_rater": None,
+                    "ipcrf": ipcrf.get_information(),
+                }
+
+                ipcrf_taker = models.People.objects.filter(employee_id=ipcrf.employee_id, school_id=user.school_id).first()
+                if ipcrf_taker:
+                    ipcrf_record["ipcrf_taker"] = ipcrf_taker.get_information()
+
+                ipcrf_rater = models.People.objects.filter(employee_id=ipcrf.evaluator_id, school_id=user.school_id).first()
+                if ipcrf_rater:
+                    ipcrf_record["ipcrf_rater"] = ipcrf_rater.get_information()
+
+                data["ipcrf_taker"].append(ipcrf_record)
+
+            return JsonResponse(data, status=200)
+
+    except Exception as e:
+        return JsonResponse({
+            'message': f'Something went wrong: {e}',
+        }, status=500)
+
+    return JsonResponse({
+        'message': 'Invalid request',
+    }, status=400)
+
 
 
 

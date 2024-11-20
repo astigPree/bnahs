@@ -906,6 +906,34 @@ def check_teacher_ipcrf_form_part_1_by_evaluator(request):
             plus_factor = request.POST.get('plus_factor', None)
             average_score = request.POST.get('average_score', None)
             
+            kra1 = request.POST.get('kra1', None)
+            kra2 = request.POST.get('kra2', None)
+            kra3 = request.POST.get('kra3', None)
+            kra4 = request.POST.get('kra4', None)
+            plus_factor = request.POST.get('plus_factor', None)
+            
+            if not kra1:
+                return JsonResponse({
+                    'message' : 'KRA 1 not found',
+                }, status=400)
+            if not kra2:
+                return JsonResponse({
+                    'message' : 'KRA 2 not found',
+                }, status=400)
+            if not kra3:
+                return JsonResponse({
+                    'message' : 'KRA 3 not found',
+                }, status=400)
+            if not kra4:
+                return JsonResponse({
+                    'message' : 'KRA 4 not found',
+                }, status=400)
+            if not plus_factor:
+                return JsonResponse({
+                    'message' : 'Plus Factor not found',
+                }, status=400)
+            
+            
             if not rating:
                 return JsonResponse({
                     'message' : 'Rating not found',
@@ -947,6 +975,11 @@ def check_teacher_ipcrf_form_part_1_by_evaluator(request):
                     'message' : 'School not found',
                     }, status=400)
             
+            part_1.kra1_evaluator = kra1
+            part_1.kra2_evaluator = kra2
+            part_1.kra3_evaluator = kra3
+            part_1.kra4_evaluator = kra4
+            part_1.plus_factor_evaluator = plus_factor
             part_1.check_date = timezone.now()
             part_1.evaluator_id = user.employee_id
             part_1.evaluator_rating = rating
