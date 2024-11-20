@@ -1815,7 +1815,8 @@ def school_get_records_ipcrf(request):
                 ipcrf_record = {
                     "school_year": ipcrf.school_year,
                     "ipcrf_taker": None,
-                    "ipcrf_rater": None
+                    "ipcrf_rater": None,
+                    "ipcrf": ipcrf.get_information(),
                 }
 
                 ipcrf_taker = models.People.objects.filter(employee_id=ipcrf.employee_id, school_id=user.school_id).first()
