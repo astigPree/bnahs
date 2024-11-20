@@ -1210,7 +1210,8 @@ class School(models.Model):
             'is_accepted' : self.is_accepted,
             'is_verified' : self.is_verified,
             'is_declined' : self.is_declined,
-            'role' : 'School Admin'
+            'role' : 'School Admin',
+            'reason' : self.reason
         }
         
         if self.school_logo:
