@@ -1786,61 +1786,58 @@ def school_get_records_rpms(request):
     }, status=400)
 
 
+
+
+
+
+
 @csrf_exempt
 def school_get_records_ipcrf(request):
     try:
         if request.method == "GET":
-            
             user = models.School.objects.filter(email_address=request.user.username).first()
             if not user:
                 return JsonResponse({
-                    'message' : 'User not found',
-                    }, status=400)
-            
-            
+                    'message': 'User not found',
+                }, status=400)
+
             data = {
-                "school_year" : [],
-                "quarter" : [],
-                "ipcrf_taker" : [],
+                "school_year": [],
+                "quarter": [],
+                "ipcrf_taker": [],
             }
-            
-            ipcrfs = models.IPCRFForm.objects.filter(school_id=user.school_id , form_type="PART 1").order_by('-created_at')
+
+            ipcrfs = models.IPCRFForm.objects.filter(school_id=user.school_id, form_type="PART 1").order_by('-created_at')
             for ipcrf in ipcrfs:
                 if ipcrf.school_year not in data["school_year"]:
-                    data["school_year"].append(ipcrf.school_year) 
+                    data["school_year"].append(ipcrf.school_year)
 
-                ipcrf_taker = {
-                    "school_year" : ipcrf.school_year, 
-                    "ipcrf_taker" : None,
-                    "ipcrf_rater" : None
+                ipcrf_record = {
+                    "school_year": ipcrf.school_year,
+                    "ipcrf_taker": None,
+                    "ipcrf_rater": None
                 }
 
                 ipcrf_taker = models.People.objects.filter(employee_id=ipcrf.employee_id, school_id=user.school_id).first()
                 if ipcrf_taker:
-                    ipcrf_taker["ipcrf_taker"] = ipcrf_taker.get_information()
+                    ipcrf_record["ipcrf_taker"] = ipcrf_taker.get_information()
 
                 ipcrf_rater = models.People.objects.filter(employee_id=ipcrf.evaluator_id, school_id=user.school_id).first()
                 if ipcrf_rater:
-                    ipcrf_taker["ipcrf_rater"] = ipcrf_rater.get_information()
+                    ipcrf_record["ipcrf_rater"] = ipcrf_rater.get_information()
 
-                data["ipcrf_taker"].append(ipcrf_taker)
-            
-            
+                data["ipcrf_taker"].append(ipcrf_record)
+
             return JsonResponse(data, status=200)
-    
+
     except Exception as e:
         return JsonResponse({
-            'message' : f'Something went wrong : {e}',
-            }, status=500)
-        
+            'message': f'Something went wrong: {e}',
+        }, status=500)
+
     return JsonResponse({
-    'message' : 'Invalid request',
+        'message': 'Invalid request',
     }, status=400)
-
-
-
-
-
 
 
 
