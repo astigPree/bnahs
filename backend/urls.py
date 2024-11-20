@@ -117,6 +117,8 @@ urlpatterns = [
     path('school/get/records/ipcrf/', views.school_get_records_ipcrf),
     path('school/get/cot/', views.get_rating_sheet_by_school),
     
+    path('school/get/ipcrf/specific/' , views.school_get_ipcrf),
+    
     # ============== Evaluator Path ================
     path('login_evaluator/', views.login_evaluator), # WORKING
     path('evaluator/update_profile/', views.people_update_profile),
@@ -193,6 +195,8 @@ urlpatterns = [
      
     path('teacher/get/records/cot/', views.teacher_get_records_cot),
     path('teacher/get/records/rpms/', views.teacher_get_records_rpms),
-    path('teacher/get/records/ipcrf/', views.teacher_get_records_ipcrf)
+    path('teacher/get/records/ipcrf/', views.teacher_get_records_ipcrf),
+    
+    path('teacher/get/ipcrf/specific/' , views.teacher_get_ipcrf),
 ]
 
