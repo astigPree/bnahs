@@ -1735,57 +1735,53 @@ def school_get_records_cot(request):
 def school_get_records_rpms(request):
     try:
         if request.method == "GET":
-            
             user = models.School.objects.filter(email_address=request.user.username).first()
             if not user:
                 return JsonResponse({
-                    'message' : 'User not found',
-                    }, status=400)
-            
-            
+                    'message': 'User not found',
+                }, status=400)
+
             data = {
-                "school_year" : [], 
-                "rpms_taker" : [] ,
+                "school_year": [],
+                "rpms_taker": [],
             }
-            
+
             rpms = models.RPMSFolder.objects.filter(school_id=user.school_id).order_by('-created_at')
             for rpm in rpms:
                 if rpm.rpms_folder_school_year not in data["school_year"]:
                     data["school_year"].append(rpm.rpms_folder_school_year)
-                    
+
                 classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpm.rpms_folder_id, school_id=user.school_id).order_by('-created_at')
                 for classwork in classworks:
-                    
-                    attachement = models.RPMSAttachment.objects.filter(class_work_id=classwork.class_work_id, school_id=user.school_id).order_by('-created_at').first()
-                    if attachement:
-                        rpms_taker = {
-                            "school_year" : rpm.rpms_folder_school_year,
-                            "rpms_taker" : None,
-                            "rpms_data" : attachement.get_information(),
-                            "rpms_rater" : None
+                    attachment = models.RPMSAttachment.objects.filter(class_work_id=classwork.class_work_id, school_id=user.school_id).order_by('-created_at').first()
+                    if attachment:
+                        rpms_record = {
+                            "school_year": rpm.rpms_folder_school_year,
+                            "rpms_taker": None,
+                            "rpms_data": attachment.get_information(),
+                            "rpms_rater": None
                         }
-                        
-                        rpms_taker = models.People.objects.filter(employee_id=attachement.employee_id, school_id=user.school_id).first()
-                        if rpms_taker: 
-                            rpms_taker["rpms_taker"] =  rpms_taker.get_information()
-                        rpms_rater = models.People.objects.filter(employee_id=attachement.evaluator_id, school_id=user.school_id).first()
+
+                        rpms_taker = models.People.objects.filter(employee_id=attachment.employee_id, school_id=user.school_id).first()
+                        if rpms_taker:
+                            rpms_record["rpms_taker"] = rpms_taker.get_information()
+
+                        rpms_rater = models.People.objects.filter(employee_id=attachment.evaluator_id, school_id=user.school_id).first()
                         if rpms_rater:
-                            rpms_taker["rpms_rater"] = rpms_rater.get_information()
-                    
-                        data["rpms_taker"].append(rpms_taker)
-      
+                            rpms_record["rpms_rater"] = rpms_rater.get_information()
+
+                        data["rpms_taker"].append(rpms_record)
+
             return JsonResponse(data, status=200)
-    
+
     except Exception as e:
         return JsonResponse({
-            'message' : f'Something went wrong : {e}',
-            }, status=500)
-        
+            'message': f'Something went wrong: {e}',
+        }, status=500)
+
     return JsonResponse({
-    'message' : 'Invalid request',
+        'message': 'Invalid request',
     }, status=400)
-
-
 
 
 
