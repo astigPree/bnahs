@@ -728,7 +728,7 @@ def teacher_update_ipcrf_part_1(request):
             kra2 = request.POST.get('kra2', None)
             kra3 = request.POST.get('kra3', None)
             kra4 = request.POST.get('kra4', None)
-            plus_factor = request.POST.get('plus_factor', None)
+            plus_factor_main = request.POST.get('plus_factor_main', None)
             
             if not kra1:
                 return JsonResponse({
@@ -746,9 +746,9 @@ def teacher_update_ipcrf_part_1(request):
                 return JsonResponse({
                     'message' : 'KRA 4 not found',
                 }, status=400)
-            if not plus_factor:
+            if not plus_factor_main:
                 return JsonResponse({
-                    'message' : 'Plus Factor not found',
+                    'message' : 'plus_factor_main not found',
                 }, status=400)
             
             if not rating:
@@ -788,7 +788,7 @@ def teacher_update_ipcrf_part_1(request):
             ipcrf.kra2_teacher = kra2
             ipcrf.kra3_teacher = kra3
             ipcrf.kra4_teacher = kra4
-            ipcrf.plus_factor_teacher = plus_factor
+            ipcrf.plus_factor_teacher = plus_factor_main
             ipcrf.submit_date = timezone.now()
             ipcrf.rating = rating
             ipcrf.plus_factor = plus_factor
