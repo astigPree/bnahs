@@ -749,6 +749,7 @@ def update_rating_sheet(request):
             
             cot_form.subject = subject
             cot_form.employee_id = user.employee_id
+            cot_form.check_date = timezone.now()
             my_utils.update_cot_form(cot_form=cot_form, comment=comments, questions=questions , content=content)
             
             
@@ -939,6 +940,7 @@ def check_teacher_ipcrf_form_part_1_by_evaluator(request):
                     'message' : 'School not found',
                     }, status=400)
             
+            part_1.check_date = timezone.now()
             part_1.evaluator_id = user.employee_id
             part_1.evaluator_rating = rating
             part_1.evaluator_plus_factor = plus_factor

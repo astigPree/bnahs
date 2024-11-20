@@ -467,8 +467,10 @@ class IPCRFForm(models.Model):
     is_expired = models.BooleanField(default=False) # Used to check if the form is expired
     school_year = models.CharField(max_length=255, blank=True, default='') # School year
     
+    check_date = models.DateTimeField(blank=True, null=True, default=None)
     is_submitted = models.BooleanField(default=False) # Used to identify it already submmited
-    
+    submit_date = models.DateTimeField(blank=True, null=True, default=None)
+
     rating = models.FloatField( blank=True, default=0.0) # Rating
     average_score = models.FloatField( blank=True, default=0.0) # Average Score
     plus_factor = models.FloatField( blank=True, default=0.0) # Plus Factor Score
@@ -504,7 +506,9 @@ class IPCRFForm(models.Model):
             'evaluator_average_score' : self.evaluator_average_score,
             'evaluator_plus_factor' : self.evaluator_plus_factor,
             'is_submitted' : self.is_submitted,
-            'rater' : None
+            'rater' : None,
+            'submit_date' : self.submit_date,
+            'check_date' : self.check_date
         }
         
         # Find the evaluator
@@ -747,6 +751,8 @@ class COTForm(models.Model):
         }
     """
     
+    submit_date = models.DateTimeField(blank=True, null=True, default=None) 
+    check_date = models.DateTimeField(blank=True, null=True, default=None)
     cot_form_id = models.CharField(max_length=255, blank=True, default='') # ID of COT
     is_checked = models.BooleanField(default=False)
     is_for_teacher_proficient = models.BooleanField(default=False) # If True, the folder is for teacher proffecient
@@ -782,7 +788,9 @@ class COTForm(models.Model):
             'rater' : None,
             'total' : 0 ,
             'subject' : self.subject,
-            'school_year' : self.school_year
+            'school_year' : self.school_year,
+            'submit_date' : self.submit_date,
+            'check_date' : self.check_date
         }
         try:
             
@@ -1058,6 +1066,9 @@ class RPMSAttachment(models.Model):
     is_for_teacher_proficient = models.BooleanField(default=False)
     school_year = models.CharField(max_length=255, blank=True, default='')
     
+    check_date = models.DateTimeField(blank=True, null=True, default=None)
+    submit_date = models.DateTimeField(blank=True, null=True, default=None)
+
     is_submitted = models.BooleanField(default=False) # Used to identify if submitted
     post_id = models.CharField(max_length=255, blank=True, default='') # Used to identify the comment 
     
@@ -1079,7 +1090,9 @@ class RPMSAttachment(models.Model):
             'is_checked' : self.is_checked,
             "post_id" : self.post_id,
             'is_submitted' : self.is_submitted,
-            'comment' : None
+            'comment' : None,
+            'submit_date' : self.submit_date,
+            'check_date' : self.check_date
         }
         """
         {

@@ -9,6 +9,7 @@ from .models import People
 from django.contrib.auth import authenticate, login, logout
 from django.db.models.functions import ExtractYear
 from django.db.models import Count
+from django.utils import timezone 
 
 from . import models, my_utils
 
@@ -756,6 +757,7 @@ def teacher_update_ipcrf_part_1(request):
                     'message' : 'IPCRF Form is already checked',
                 }, status=400)
             
+            ipcrf.submit_date = timezone.now()
             ipcrf.rating = rating
             ipcrf.plus_factor = plus_factor
             ipcrf.average_score = average_score
@@ -875,7 +877,8 @@ def teacher_update_ipcrf_part_2(request):
                     'message' : 'IPCRF Form PART 1 is not checked',
                 }, status=400)
             
-                
+            
+            ipcrf.submit_date = timezone.now()
             my_utils.update_ipcrf_form_part_2_by_teacher(ipcrf, content)
             evaluation = ""
             if not user.is_evaluated:
@@ -999,7 +1002,8 @@ def teacher_update_ipcrf_part_3(request):
                 return JsonResponse({
                     'message' : 'IPCRF Form PART 2 is not checked',
                 }, status=400)
-                
+            
+            ipcrf.submit_date = timezone.now()
             my_utils.update_ipcrf_form_part_3_by_teacher(ipcrf, content)
             evaluation = ""
             if not user.is_evaluated:
@@ -1221,7 +1225,7 @@ def teacher_turn_in_rpms_work(request):
                     is_submitted = True
                 )
                 
-                
+                attachment.submit_date = timezone.now()
                 attachment.is_for_teacher_proficient = my_utils.is_proficient_faculty(user)
                 attachment.title = classwork.title
                 attachment.grade = classwork.get_grade()
