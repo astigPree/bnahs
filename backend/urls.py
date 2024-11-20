@@ -109,6 +109,10 @@ urlpatterns = [
     
     path('school/generate/report/', views.get_school_report),
     path('school/teacher/generate/report/', views.teacher_generate_report_by_school),
+        
+    path('school/get/records/cot/', views.school_get_records_cot),
+    path('school/get/records/rpms/', views.school_get_records_rpms),
+    path('school/get/records/ipcrf/', views.school_get_records_ipcrf),
     
     # ============== Evaluator Path ================
     path('login_evaluator/', views.login_evaluator), # WORKING
