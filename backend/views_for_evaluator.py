@@ -646,7 +646,7 @@ def get_rating_sheet(request):
 
             cots = models.COTForm.objects.filter(school_id=evaluator.school_id, quarter=quarter , evaluated_id=teacher_id).order_by('-created_at').first()
             
-            rater = models.People.objects.filter(is_accepted = True, school_id=evaluator.school_id, employee_id=cots.employee_id , role='Teacher').first()
+            rater = models.People.objects.filter(is_accepted = True, school_id=evaluator.school_id, employee_id=cots.employee_id).first()
             
             return JsonResponse({
                 'cot' : cots.get_information() if cots else {},
