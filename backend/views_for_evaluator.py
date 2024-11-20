@@ -1208,7 +1208,8 @@ def evaluator_get_list_of_rpms_takers(request):
                                 if rpms_attachment.is_checked:
                                     teacher_data['number_of_checked'] += 1
                                     teacher_data['status'] = 'Submitted'
-                                    
+                                    teacher_data['rater'] = models.People.objects.filter(employee=rpms_attachment.evaluator_id).first().get_information()
+                                
                     if not contain_atleast_one_rpms:
                         teacher_data['status'] = 'No Attachments'
                 
