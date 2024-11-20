@@ -1648,34 +1648,28 @@ def teacher_get_ipcrf(request):
                 return JsonResponse({
                     'message' : 'User not found',
                 }, status=400)
-
-            teacher_id = request.POST.get('teacher_id')
+ 
             ipcrf_id = request.POST.get('ipcrf_id')
-            
-            if not teacher_id:
-                return JsonResponse({
-                    'message' : 'Teacher ID is required',
-                    }, status=400)
+             
             
             if not ipcrf_id:
                 return JsonResponse({
                     'message' : 'IPCRF ID is required',
                     }, status=400)
             
-            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
-            if not teacher:
-                return JsonResponse({
-                    'message' : 'Teacher not found',
-                    }, status=400)
+            school = models.School.objects.filter(school_id=user.school_id).first()
 
             ipcrf = models.IPCRFForm.objects.filter(school_id=user.school_id, form_type='PART 1' , connection_to_other=ipcrf_id).first()
+            ipcrf_3 = models.IPCRFForm.objects.filter(school_id=user.school_id, form_type='PART 3' , connection_to_other=ipcrf_id).first()
             
             rater = models.People.objects.filter(employee_id=ipcrf.evaluator_id, school_id=user.school_id).first()
             
             return JsonResponse({
                 'ipcrf' : ipcrf.get_information() if ipcrf else None,
-                'teacher' : teacher.get_information(),
+                'ipcrf_3' : ipcrf_3.get_information() if ipcrf_3 else None,
+                'teacher' : user.get_information(),
                 'rater' : rater.get_information() if rater else None,
+                'school' : school.get_school_information()
             },status=200)
     
     
