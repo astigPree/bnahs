@@ -1610,3 +1610,57 @@ def get_all_teacher_by_status(request):
 
 
 
+@csrf_exempt
+def teacher_generate_report(request):
+    try:
+        
+        if request.method == "POST":
+            user = models.School.objects.filter(email_address=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+            
+            teacher_id = request.POST.get('teacher_id')
+            if not teacher_id:
+                return JsonResponse({
+                    'message' : 'teacher_id is required',
+                    }, status=400)
+                
+            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+                
+            data = {
+                
+            }
+            
+            data['job'] = teacher.get_job_years()
+            data['recommendation'] = my_utils.get_recommendation_result_with_percentage(employee_id=teacher.employee_id)
+            
+            ipcrf = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()
+            data['rating'] = ipcrf.get_information() if ipcrf else None
+            data['performance_rating'] = my_utils.classify_ipcrf_score(ipcrf.evaluator_rating if ipcrf else 0.0)
+            data['ranking'] = my_utils.recommend_rank(teacher)
+            data['teacher'] = teacher.get_information()
+            data['rater'] = None
+            if ipcrf:
+                rater = models.People.objects.filter(employee_id=ipcrf.evaluator_id).first()
+                if rater:
+                    data['rater'] = rater.get_information()
+            
+            return JsonResponse(data,status=200)
+            
+    
+    except Exception as e: 
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400 )
+
+
+
+
+
+
