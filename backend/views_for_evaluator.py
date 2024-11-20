@@ -651,7 +651,7 @@ def get_rating_sheet(request):
             return JsonResponse({
                 'cot' : cots.get_information() if cots else {},
                 'teacher' : teacher.get_information(),
-                'rater' : rater.get_information() if rater else {}
+                'rater' : rater.get_information() if rater else None
             },status=200)
             
         
