@@ -1852,12 +1852,12 @@ def get_rating_sheet_by_school(request):
 
             teacher_id = request.POST.get('teacher_id')
             quarter = request.POST.get('quarter')
-            cot_id = request.POST.get('cot_id')
+            # cot_id = request.POST.get('cot_id')
             
-            if not cot_id:
-                return JsonResponse({
-                    'message' : 'cot_id is required',
-                    }, status=400) 
+            # if not cot_id:
+            #     return JsonResponse({
+            #         'message' : 'cot_id is required',
+            #         }, status=400) 
             
             if not teacher_id:
                 return JsonResponse({
@@ -1875,7 +1875,7 @@ def get_rating_sheet_by_school(request):
                     'message' : 'Teacher not found',
                     }, status=400)
 
-            cots = models.COTForm.objects.filter(school_id=user.school_id, cot_form_id=cot_id, quarter=quarter , evaluated_id=teacher_id).order_by('-created_at').first()
+            cots = models.COTForm.objects.filter(school_id=user.school_id, quarter=quarter , evaluated_id=teacher_id).order_by('-created_at').first()
             
             return JsonResponse({
                 'cot' : cots.get_information() if cots else {},
