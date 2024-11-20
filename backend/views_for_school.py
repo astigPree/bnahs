@@ -1935,6 +1935,7 @@ def school_get_ipcrf(request):
                 'ipcrf' : ipcrf.get_information() if ipcrf else None,
                 'teacher' : teacher.get_information(),
                 'rater' : rater.get_information() if rater else None,
+                'school' : user.get_school_information()
             },status=200)
     
     
