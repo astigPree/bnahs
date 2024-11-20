@@ -50,6 +50,19 @@ INSTALLED_APPS = [
     
 ]
 
+# settings.py
+
+# Custom middleware function to add the Partitioned attribute
+def add_partitioned_attribute_middleware(get_response):
+    def middleware(request):
+        response = get_response(request)
+        session_cookie = response.cookies.get('sessionid')
+        if session_cookie:
+            session_cookie['Partitioned'] = True
+        return response
+    return middleware
+
+
 MIDDLEWARE = [
     
     'corsheaders.middleware.CorsMiddleware', 
@@ -64,6 +77,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    'bnahs.settings.add_partitioned_attribute_middleware', # Ensure MiddlewareMixin is imported
 ]
 
 ROOT_URLCONF = 'bnahs.urls'
@@ -182,6 +197,8 @@ SESSION_COOKIE_SECURE = True
 
 CSRF_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SECURE = True
+
+
 
 
 
