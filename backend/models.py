@@ -1190,7 +1190,7 @@ class School(models.Model):
     is_accepted = models.BooleanField(default=False) # Is the school accepted or added by admin
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
-
+    reason = models.TextField( blank=True, default='Other')
     action_id = models.CharField(max_length=255, blank=True, default='') # Used to track actions ( 'Posts' , 'Comments' , 'Replies' )
 
     def __str__(self):

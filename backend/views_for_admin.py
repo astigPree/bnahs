@@ -641,6 +641,7 @@ def reject_school(request):
                 
             rejected_school.is_accepted = False
             rejected_school.is_declined = True
+            rejected_school.reason = reason
             rejected_school.save()
             schools = models.School.objects.filter(is_accepted=True).order_by('-created_at')
             
