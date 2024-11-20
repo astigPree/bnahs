@@ -34,6 +34,8 @@ urlpatterns = [
     
     path('user/get/owner/action_id/', views.get_user_by_action_id), # NEW API
     
+    path('user/get/info', views.get_what_user),
+    
     # ============ Admin Path ================
     path('login_admin/', views.login_admin), # WORKING
     path('admin/schools/add/', views.add_school), # WORKING
@@ -113,6 +115,7 @@ urlpatterns = [
     path('school/get/records/cot/', views.school_get_records_cot),
     path('school/get/records/rpms/', views.school_get_records_rpms),
     path('school/get/records/ipcrf/', views.school_get_records_ipcrf),
+    path('school/get/cot/', views.get_rating_sheet_by_school),
     
     # ============== Evaluator Path ================
     path('login_evaluator/', views.login_evaluator), # WORKING

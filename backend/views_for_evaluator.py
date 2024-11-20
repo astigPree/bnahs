@@ -621,6 +621,13 @@ def get_rating_sheet(request):
 
             teacher_id = request.POST.get('teacher_id')
             quarter = request.POST.get('quarter')
+            cot_id = request.POST.get('cot_id')
+            
+            if not cot_id:
+                return JsonResponse({
+                    'message' : 'cot_id is required',
+                    }, status=400) 
+            
             if not teacher_id:
                 return JsonResponse({
                     'message' : 'Teacher ID is required',

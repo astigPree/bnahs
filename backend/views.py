@@ -366,7 +366,46 @@ def people_update_profile(request):
 
 
 
-
+@csrf_exempt
+def get_what_user(request):
+    try:
+        if request.method == 'GET':
+            
+            admin = models.MainAdmin.objects.filter(username=request.user.username).first()
+            if admin:
+                return JsonResponse({
+                    'role': 'admin',
+                    'data' : {}
+                }, status=200)
+                
+            school = models.School.objects.filter(email_address=request.user.username).first()
+            if school:
+                return JsonResponse({
+                    'role': 'school_admin',
+                    'data' : school.get_school_information()
+                }, status=200)
+            
+            teacher = models.People.objects.filter(employee_id=request.user.username).first()
+            if teacher:
+                return JsonResponse({
+                    'role': 'teacher',
+                    'data': teacher.get_information()
+                }, status=200)
+            
+            return JsonResponse({
+                'role': 'invalid'
+            }, status=200)
+            
+            
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Something went wrong : {e}'
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request method'
+    },status=400)
 
 
 
