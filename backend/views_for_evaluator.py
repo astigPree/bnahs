@@ -1187,25 +1187,30 @@ def evaluator_get_list_of_rpms_takers(request):
                 teacher_data = {
                     'teacher' : teacher.get_information(),
                     'rater' : None,
-                    'status' : 'Pending'
+                    'status' : 'Pending',
+                    'number_of_submitted' : 0,
+                    'number_of_checked' : 0
                 }
                 # TODO : FIX IT SOON
-                # contain_atleast_one_rpms = False
+                contain_atleast_one_rpms = False
                 
-                # for folder in folders:
-                #     classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=folder.rpms_folder_id).order_by('-created_at')
-                #     for classwork in classworks:
-                #         rpms_attachments = models.RPMSAttachment.objects.filter(
-                #             class_work_id=classwork.class_work_id, 
-                #             employee_id=teacher.employee_id).order_by('-created_at')
+                for folder in folders:
+                    classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=folder.rpms_folder_id).order_by('-created_at')
+                    for classwork in classworks:
+                        rpms_attachments = models.RPMSAttachment.objects.filter(
+                            class_work_id=classwork.class_work_id, 
+                            employee_id=teacher.employee_id).order_by('-created_at')
                         
-                #         if rpms_attachments:
-                #             contain_atleast_one_rpms = True
-                #             for rpms_attachment in rpms_attachments:
-                #                 if rpms_attachment.is_checked:
-                
-                # if not contain_atleast_one_rpms:
-                #     teacher_data['status'] = 'No Attachments'
+                        if rpms_attachments:
+                            contain_atleast_one_rpms = True
+                            teacher_data['number_of_submitted'] += 1
+                            for rpms_attachment in rpms_attachments:
+                                if rpms_attachment.is_checked:
+                                    teacher_data['number_of_checked'] += 1
+                                    teacher_data['status'] = 'Submitted'
+                                    
+                    if not contain_atleast_one_rpms:
+                        teacher_data['status'] = 'No Attachments'
                 
                 teachers_rpms.append(teacher_data)
             
