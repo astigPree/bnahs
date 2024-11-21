@@ -1974,7 +1974,7 @@ def deactivate_faculty(request):
                     'message' : 'Teacher not found',
                     }, status=400)
 
-            teacher.is_deactivated = False
+            teacher.is_deactivated = True
             teacher.save()
             
             return JsonResponse({
