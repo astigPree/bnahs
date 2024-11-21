@@ -1974,7 +1974,6 @@ def deactivate_faculty(request):
                     'message' : 'Teacher not found',
                     }, status=400)
 
-            teacher.is_accepted = False
             teacher.is_deactivated = False
             teacher.save()
             
