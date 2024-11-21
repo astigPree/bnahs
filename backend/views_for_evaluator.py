@@ -1129,6 +1129,7 @@ def evaluator_check_rpms_attachment(request):
             
             # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND Teacher
             """
+            evaluator/school/check/rpms/attachment/
                 {
                     'rpms_id' : 'rpms_id',
                     'content' : {...} !Content/Checked of RPMS form from teacher
@@ -1253,7 +1254,7 @@ def evaluator_get_list_of_rpms_takers(request):
                                 if rpms_attachment.is_checked:
                                     teacher_data['number_of_checked'] += 1
                                     teacher_data['status'] = 'Submitted'
-                                    teacher_data['rater'] = models.People.objects.filter(employee=rpms_attachment.evaluator_id).first().get_information()
+                                    teacher_data['rater'] = models.People.objects.filter(employee_id=rpms_attachment.evaluator_id).first().get_information()
                                 
                 if teacher_data['number_of_submitted'] == 0:
                     teacher_data['status'] = 'No Attachments'
