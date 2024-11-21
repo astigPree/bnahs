@@ -2028,7 +2028,7 @@ def get_cot_from_school(request):
                     'message' : 'Teacher not found',
                     }, status=400)
 
-            cots = models.COTForm.objects.filter(school_id=user.school_id, quarter=quarter , evaluated_id=teacher_id , cot_id=cot_id).order_by('-created_at').first()
+            cots = models.COTForm.objects.filter(school_id=user.school_id, quarter=quarter , evaluated_id=teacher_id , cot_form_id=cot_id).order_by('-created_at').first()
             
             return JsonResponse({
                 'cot' : cots.get_information() if cots else None,
