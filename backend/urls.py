@@ -36,6 +36,20 @@ urlpatterns = [
     
     path('user/get/info', views.get_what_user),
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     # ============ Admin Path ================
     path('login_admin/', views.login_admin), # WORKING
     path('admin/schools/add/', views.add_school), # WORKING
@@ -64,6 +78,20 @@ urlpatterns = [
     path('admin/forms/ipcrf/get/<str:type_proficient>/' , views.get_ipcrf_form_by_admin),
     
     path('admin/school/teacher/get/annual/ratings/', views.get_annual_ratings),
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -119,6 +147,21 @@ urlpatterns = [
     
     path('school/get/ipcrf/specific/' , views.school_get_ipcrf),
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     # ============== Evaluator Path ================
     path('login_evaluator/', views.login_evaluator), # WORKING
     path('evaluator/update_profile/', views.people_update_profile),
@@ -162,6 +205,23 @@ urlpatterns = [
     path('evaluator/get/records/cot/', views.evaluator_get_records_cot),
     path('evaluator/get/records/rpms/', views.evaluator_get_records_rpms),
     path('evaluator/get/records/ipcrf/', views.evaluator_get_records_ipcrf),
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     # =============== Teacher Path ================
     path('login_teacher/', views.login_teacher), # WORKING

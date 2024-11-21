@@ -1345,6 +1345,15 @@ class People(models.Model):
             'reason' : self.reason
         }
         
+        ipcrf = IPCRFForm.objects.filter(school_id=self.school_id , employee_id=self.employee_id).first()
+        if ipcrf:
+            data['is_checked'] = ipcrf.is_checked
+            data['is_checked_by_evaluator'] = ipcrf.is_checked_by_evaluator
+            if ipcrf.is_checked_by_evaluator:
+                rater = People.objects.filter(employee_id=ipcrf.evaluator_id).first()
+                if rater:
+                    data['evaluator'] = rater.get_information()
+        
         if self.role == "Teacher":
             data['is_proficient'] = is_proficient_faculty_teacher_in_model(self.position)
         else :
