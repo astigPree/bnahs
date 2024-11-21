@@ -1233,7 +1233,7 @@ def evaluator_get_list_of_rpms_takers(request):
                 
                 first_attachment = models.RPMSAttachment.objects.filter(employee_id=teacher.employee_id).order_by('-created_at').first()
                 if first_attachment :
-                    first_classwork = models.RPMSClassWork.objects.filter(rpms_folder_id=folder.rpms_folder_id).order_by('-created_at').first()
+                    first_classwork = models.RPMSClassWork.objects.filter(rpms_folder_id=first_attachment.rpms_folder_id).order_by('-created_at').first()
                     
                     folder = models.RPMSFolder.objects.filter(rpms_folder_id=first_classwork.rpms_folder_id).first()
                     classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=folder.rpms_folder_id).order_by('-created_at')
