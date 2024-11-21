@@ -2029,10 +2029,13 @@ def get_cot_from_school(request):
                     }, status=400)
 
             cots = models.COTForm.objects.filter(school_id=user.school_id, quarter=quarter , evaluated_id=teacher_id , cot_form_id=cot_id).order_by('-created_at').first()
-            
+            rater = None
+            if cots :
+                rater = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=cots.employee_id , role='Evaluator').first()
             return JsonResponse({
                 'cot' : cots.get_information() if cots else None,
                 'teacher' : teacher.get_information(),
+                'rater' : rater
             },status=200)
             
                 
