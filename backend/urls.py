@@ -37,7 +37,7 @@ urlpatterns = [
     path('user/get/info', views.get_what_user),
     
     
-    
+    path('user/get/rpms/attachments', views.no_time_get_all_teacher_rpms_attachments),
     
     
     

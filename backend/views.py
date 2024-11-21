@@ -1081,7 +1081,39 @@ def user_get_list_of_schools(request):
 def no_time_get_all_teacher_rpms_attachments(request):
     try:
         if request.method == 'POST':
-            pass
+            
+            teacher_id = request.POST.get("teacher_id")
+            
+            
+            if not teacher_id:
+                return JsonResponse({
+                   'message' : 'Teacher ID is required',
+                   'teacher_id' : teacher_id
+                }, status=400)
+            
+            
+            teacher = models.People.objects.filter(employee_id=teacher_id).first()
+            if not teacher:
+                return JsonResponse({
+                   'message' : 'Teacher does not exist',
+                   'teacher_id' : teacher_id
+                }, status=400)
+            
+            rpms_data = {
+                
+            }
+            rpms_folders = models.RPMSFolder.objects.filter(school_id=teacher.school_id).order_by('-created_at')
+            for folder in rpms_folders:
+                class_works = models.RPMSClassWork.objects.filter(rpms_folder_id=folder.rpms_folder_id).order_by('-created_at')
+                for class_work in class_works:
+                    if class_work.title not in rpms_data:
+                        rpms_data[class_work.title] = []
+                    attachment = models.RPMSAttachment.objects.filter(class_work_id=class_work.class_work_id).order_by('-created_at').first()
+                    if attachment:
+                        rpms_data[class_work.title].append(attachment.get_information())
+                        
+            return JsonResponse(rpms_data, status=200)
+            
         
     except Exception as e:
         return JsonResponse({
