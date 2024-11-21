@@ -1234,10 +1234,10 @@ def evaluator_get_list_of_rpms_takers(request):
                     'rater' : None,
                     'status' : 'Pending',
                     'number_of_submitted' : 0,
-                    'number_of_checked' : 0
+                    'number_of_checked' : 0,
+                    'rpms' : []
                 }
                 # TODO : FIX IT SOON
-                contain_atleast_one_rpms = False
                 
                 for folder in folders:
                     classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=folder.rpms_folder_id).order_by('-created_at')
@@ -1247,15 +1247,15 @@ def evaluator_get_list_of_rpms_takers(request):
                             employee_id=teacher.employee_id).order_by('-created_at')
                         
                         if rpms_attachments:
-                            contain_atleast_one_rpms = True
                             teacher_data['number_of_submitted'] += 1
                             for rpms_attachment in rpms_attachments:
+                                teacher_data['rpms'].append(rpms_attachment.get_information())
                                 if rpms_attachment.is_checked:
                                     teacher_data['number_of_checked'] += 1
                                     teacher_data['status'] = 'Submitted'
                                     teacher_data['rater'] = models.People.objects.filter(employee=rpms_attachment.evaluator_id).first().get_information()
                                 
-                    if not contain_atleast_one_rpms:
+                    if teacher_data['number_of_submitted'] == 0:
                         teacher_data['status'] = 'No Attachments'
                 
                 teachers_rpms.append(teacher_data)
