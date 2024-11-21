@@ -1055,7 +1055,7 @@ def register_people(request):
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
 
-
+@csrf_exempt
 def user_get_list_of_schools(request):
     try:
         if request.method == 'GET':
@@ -1077,7 +1077,18 @@ def user_get_list_of_schools(request):
 
 
 # =================NO time
-
+@csrf_exempt
+def no_time_get_all_teacher_rpms_attachments(request):
+    try:
+        if request.method == 'POST':
+            pass
+        
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
 
 

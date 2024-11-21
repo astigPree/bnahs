@@ -1962,7 +1962,8 @@ def evaluator_get_ipcrf(request):
             ipcrf = models.IPCRFForm.objects.filter(school_id=user.school_id, form_type='PART 1' , connection_to_other=ipcrf_id).first()
             ipcrf_3 = models.IPCRFForm.objects.filter(school_id=user.school_id, form_type='PART 3' , connection_to_other=ipcrf_id).first()
             
-            rater = models.People.objects.filter(employee_id=ipcrf.evaluator_id, school_id=user.school_id).first()
+            if ipcrf:
+                rater = models.People.objects.filter(employee_id=ipcrf.evaluator_id, school_id=user.school_id).first()
             
             return JsonResponse({
                 'ipcrf' : ipcrf.get_information() if ipcrf else None,
