@@ -1128,7 +1128,7 @@ def no_time_get_all_teacher_rpms_attachments(request):
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
 
-
+@csrf_exempt
 def no_time_download_rpms(request):
     try:
         if request.method == "POST":
