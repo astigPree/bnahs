@@ -208,6 +208,7 @@ urlpatterns = [
     path('evaluator/get/records/ipcrf/', views.evaluator_get_records_ipcrf),
     
     
+    path('evaluator/get/ipcrf/specific/' , views.evaluator_get_ipcrf),
     
     
     
