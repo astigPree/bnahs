@@ -1251,7 +1251,7 @@ def evaluator_get_list_of_rpms_takers(request):
                                     teacher_data['number_of_checked'] += 1
                                     teacher_data['status'] = 'In Progress'
                                     teacher_data['rater'] = models.People.objects.filter(employee_id=rpms_attachment.evaluator_id).first().get_information()
-                                    break
+                                break
                 if teacher_data['number_of_checked'] == teacher_data['number_of_classwork']:
                     teacher_data['status'] = 'Completed'
                 teachers_rpms.append(teacher_data)
