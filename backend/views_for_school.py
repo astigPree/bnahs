@@ -1948,3 +1948,46 @@ def school_get_ipcrf(request):
     return JsonResponse({
         'message' : 'Invalid request method',
         }, status=400)
+
+
+
+@csrf_exempt
+def deactivate_faculty(request):
+    try:
+        if request.method == 'POST':
+            user = models.School.objects.filter(email_address=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message': 'User not found',
+                }, status=400)
+
+            teacher_id = request.POST.get('teacher_id')
+            
+            if not teacher_id:
+                return JsonResponse({
+                    'message' : 'Teacher ID is required',
+                    }, status=400)
+            
+            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            if not teacher:
+                return JsonResponse({
+                    'message' : 'Teacher not found',
+                    }, status=400)
+
+            teacher.is_accepted = False
+            teacher.is_deactivated = False
+            teacher.save()
+            
+            return JsonResponse({
+                'teacher' : teacher.get_information(),
+            },status=200)
+            
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}'
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request method',
+        }, status=400)
+
