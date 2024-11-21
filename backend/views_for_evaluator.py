@@ -1232,7 +1232,7 @@ def evaluator_get_list_of_rpms_takers(request):
                 teacher_data = {
                     'teacher' : teacher.get_information(),
                     'rater' : None,
-                    'status' : 'Pending',
+                    'status' : 'In Progress',
                     'number_of_submitted' : 0,
                     'number_of_checked' : 0,
                     'rpms' : []
@@ -1255,8 +1255,8 @@ def evaluator_get_list_of_rpms_takers(request):
                                     teacher_data['status'] = 'Submitted'
                                     teacher_data['rater'] = models.People.objects.filter(employee=rpms_attachment.evaluator_id).first().get_information()
                                 
-                    if teacher_data['number_of_submitted'] == 0:
-                        teacher_data['status'] = 'No Attachments'
+                if teacher_data['number_of_submitted'] == 0:
+                    teacher_data['status'] = 'No Attachments'
                 
                 teachers_rpms.append(teacher_data)
             
