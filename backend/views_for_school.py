@@ -2032,6 +2032,8 @@ def get_cot_from_school(request):
             rater = None
             if cots :
                 rater = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=cots.employee_id , role='Evaluator').first()
+                if rater:
+                    rater = rater.get_information()
             return JsonResponse({
                 'cot' : cots.get_information() if cots else None,
                 'teacher' : teacher.get_information(),
