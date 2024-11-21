@@ -126,6 +126,7 @@ urlpatterns = [
     path('school/forms/rpms/classworks/', views.get_rpms_classworks), 
     path('school/forms/rpms/classwork/get/', views.get_rpms_classwork_by_id),
     
+    path('school/forms/cot/get/', views.get_cot_from_school),
     
     path('school/people/reject/', views.reject_people_by_school), # NEW API
     path('school/people/get/by_status/', views.get_all_teacher_by_status),
