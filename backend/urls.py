@@ -38,7 +38,7 @@ urlpatterns = [
     
     
     path('user/get/rpms/attachments', views.no_time_get_all_teacher_rpms_attachments),
-    
+    path('download/rpms/', views.no_time_download_rpms),
     
     
     

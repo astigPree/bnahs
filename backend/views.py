@@ -11,6 +11,11 @@ from django.contrib.auth import update_session_auth_hash
 from django.db.models.functions import ExtractYear
 from django.db.models import Count
 
+from django.http import FileResponse, HttpResponse, Http404 
+from django.conf import settings
+import os
+
+
 from . import models, my_utils , forms_text
 
 
@@ -1122,6 +1127,44 @@ def no_time_get_all_teacher_rpms_attachments(request):
     
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
+
+
+def no_time_download_rpms(request):
+    try:
+        if request.method == "POST":
+            rpms_id = request.POST.get('rpms_id')
+            if not rpms_id:
+                return JsonResponse({
+                    'message' : 'RPMS ID is required',
+                    'rpms_id' : rpms_id
+                }, status=400)
+                
+            rpms_attachment = models.RPMSAttachment.objects.filter(attachment_id=rpms_id).first()
+            if not rpms_attachment:
+                return JsonResponse({
+                    'message' : 'RPMS attachment not found',
+                    'rpms_id' : rpms_id
+                }, status=400)
+            
+            attachment = rpms_attachment
+            file_path = os.path.join(settings.MEDIA_ROOT, attachment.file.name)
+            if os.path.exists(file_path):
+                response = FileResponse(open(file_path, 'rb'), content_type='application/pdf')
+                response['Content-Disposition'] = f'attachment; filename={os.path.basename(file_path)}'
+                return response
+            else:
+                return JsonResponse({
+                    'message' : 'RPMS attachment not found',
+                    'rpms_id' : rpms_id
+                }, status=400)
+    
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+    
 
 
 
