@@ -147,7 +147,7 @@ urlpatterns = [
     
     path('school/get/ipcrf/specific/' , views.school_get_ipcrf),
     
-    path("school/faculty/deactivate/'", views.deactivate_faculty),
+    path("school/faculty/deactivate/", views.deactivate_faculty),
     
     
     
