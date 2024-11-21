@@ -1227,7 +1227,8 @@ def evaluator_get_list_of_rpms_takers(request):
                     'status' : 'Pending',
                     'number_of_submitted' : 0,
                     'number_of_checked' : 0,
-                    'number_of_classwork' : 0
+                    'number_of_classwork' : 0,
+                    'rpms' : []
                 }
                 # TODO : FIX IT SOON
                 
