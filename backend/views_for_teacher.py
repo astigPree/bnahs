@@ -602,12 +602,7 @@ def teacher_swot(request ):
                 'threat' : threat,
             }, status=200)
             
-            
-            
-            return JsonResponse({
-                'swot' : generated_swot
-            },status=200)
-    
+             
     except Exception as e:
         return JsonResponse({
             'message' : f'Something went wrong : {e}',
@@ -1681,5 +1676,65 @@ def teacher_get_ipcrf(request):
     return JsonResponse({
         'message' : 'Invalid request method',
         }, status=400)
+
+
+
+
+
+@csrf_exempt
+def get_cot_from_by_teacher(request):
+    try:
+        if request.method == 'POST':
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+            
+            teacher_id = user.employee_id
+            quarter = request.POST.get('quarter')
+            cot_id = request.POST.get('cot_id')
+             
+            if not quarter:
+                return JsonResponse({
+                    'message' : 'Quarter is required',
+                    }, status=400)
+            
+            if not cot_id:
+                return JsonResponse({
+                    'message' : 'COT ID is required',
+                    }, status=400)
+
+            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            if not teacher:
+                return JsonResponse({
+                    'message' : 'Teacher not found',
+                    }, status=400)
+
+            cots = models.COTForm.objects.filter(school_id=user.school_id, quarter=quarter , evaluated_id=teacher_id , cot_form_id=cot_id).order_by('-created_at').first()
+            rater = None
+            if cots :
+                rater = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=cots.employee_id , role='Evaluator').first()
+                if rater:
+                    rater = rater.get_information()
+            return JsonResponse({
+                'cot' : cots.get_information() if cots else None,
+                'teacher' : teacher.get_information(),
+                'rater' : rater
+            },status=200)
+            
+                
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}'
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request method',
+        }, status=400)
+
+
+
+
 
 

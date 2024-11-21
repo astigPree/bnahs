@@ -259,5 +259,7 @@ urlpatterns = [
     path('teacher/get/records/ipcrf/', views.teacher_get_records_ipcrf),
     
     path('teacher/get/ipcrf/specific/' , views.teacher_get_ipcrf),
+     
+    path('teacher/forms/cot/get/', views.get_cot_from_by_teacher)
 ]
 
