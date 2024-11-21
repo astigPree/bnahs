@@ -1198,12 +1198,6 @@ def evaluator_get_list_of_rpms_takers(request):
                     'message' : 'User not found',
                     }, status=400)
                 
-            # Get the latest folder
-            folders = models.RPMSFolder.objects.filter(school_id=user.school_id).order_by('-created_at')
-            if not folders:
-                return JsonResponse({
-                    'message' : 'No folders found',
-                    }, status=400)
 
             teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher').order_by('-created_at')
             
@@ -1219,46 +1213,46 @@ def evaluator_get_list_of_rpms_takers(request):
             ]
             
             STATUS: 
-            “Pending” (Action - Review)
-            Kapag hindi pa tapos gradan ni Evaluator lahat ng attachments.
+            Pending - kapag naipasa na ni teacher lahat ng attachment pero hindi pa nagsisimulang mag-evaluate si Evaluator
 
-            “Submitted” (Action - Reviewed)
-            Once na tapos nang masagutan ni evaluator lahat ng pinasa ni teacher. And once na nireturn na rin ni Evaluator yung scores.
+            In progress - kapag nagsimula nang mag-score ng isa attachment si evaluator
 
-            “No Attachments” (Action - Blank)
-            Kapag wala pa ni isang attachment na pinasa si teacher
+            Completed - kapag tapos na lahat mascoran ni evaluator yung limang attachments
             """
             
             for teacher in teachers:
                 teacher_data = {
                     'teacher' : teacher.get_information(),
                     'rater' : None,
-                    'status' : 'In Progress',
+                    'status' : 'Pending',
                     'number_of_submitted' : 0,
                     'number_of_checked' : 0,
-                    'rpms' : []
+                    'number_of_classwork' : 0
                 }
                 # TODO : FIX IT SOON
                 
-                for folder in folders:
+                first_attachment = models.RPMSAttachment.objects.filter(employee_id=teacher.employee_id).order_by('-created_at').first()
+                if first_attachment :
+                    first_classwork = models.RPMSClassWork.objects.filter(rpms_folder_id=folder.rpms_folder_id).order_by('-created_at').first()
+                    
+                    folder = models.RPMSFolder.objects.filter(rpms_folder_id=first_classwork.rpms_folder_id).first()
                     classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=folder.rpms_folder_id).order_by('-created_at')
                     for classwork in classworks:
                         rpms_attachments = models.RPMSAttachment.objects.filter(
                             class_work_id=classwork.class_work_id, 
                             employee_id=teacher.employee_id).order_by('-created_at')
-                        
+                        teacher_data['number_of_classwork'] += 1
                         if rpms_attachments:
                             teacher_data['number_of_submitted'] += 1
                             for rpms_attachment in rpms_attachments:
                                 teacher_data['rpms'].append(rpms_attachment.get_information())
                                 if rpms_attachment.is_checked:
                                     teacher_data['number_of_checked'] += 1
-                                    teacher_data['status'] = 'Submitted'
+                                    teacher_data['status'] = 'In Progress'
                                     teacher_data['rater'] = models.People.objects.filter(employee_id=rpms_attachment.evaluator_id).first().get_information()
-                                
-                if teacher_data['number_of_submitted'] == 0:
-                    teacher_data['status'] = 'No Attachments'
-                
+                                    break
+                if teacher_data['number_of_checked'] == teacher_data['number_of_classwork']:
+                    teacher_data['status'] = 'Completed'
                 teachers_rpms.append(teacher_data)
             
             return JsonResponse({ 'teachers' : teachers_rpms}, status=200)
