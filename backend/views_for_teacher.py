@@ -556,38 +556,44 @@ def teacher_swot(request ):
                 if cot_4.is_checked:
                     latest_cot = cot_4
             
+            error = "Wala namam"
+            all_result = None
             if latest_cot:
                 if not latest_cot.isAlreadyAIGenerated():
-                    data = latest_cot.generatePromtTemplate() 
-                    while True:
-                        strength = my_utils.generate_text(data['strengths'])
-                        if strength:
-                            if len(strength) < 500: 
-                                break
-                    while True:       
+                    data = latest_cot.generatePromtTemplateNew() 
+                    # while True:
+                    #     strength = my_utils.generate_text(data['strengths'])
+                    #     if strength:
+                    #         if len(strength) < 500: 
+                    #             break
+                    # while True:       
                     
-                        weakness = my_utils.generate_text(data['weaknesses'])
-                        if weakness:
-                            if len(weakness) < 500: 
-                                break
-                    while True:
-                        opportunity = my_utils.generate_text(data['opportunities'])
-                        if opportunity:
-                            if len(opportunity) < 500: 
-                                break
+                    #     weakness = my_utils.generate_text(data['weaknesses'])
+                    #     if weakness:
+                    #         if len(weakness) < 500: 
+                    #             break
+                    # while True:
+                    #     opportunity = my_utils.generate_text(data['opportunities'])
+                    #     if opportunity:
+                    #         if len(opportunity) < 500: 
+                    #             break
                             
-                    while True: 
-                        threat = my_utils.generate_text(data['threats'])
-                        if threat:
-                            if len(threat) < 500: 
-                                break
-                    
-                    latest_cot.strengths_prompt = strength
-                    latest_cot.weaknesses_prompt = weakness
-                    latest_cot.opportunities_prompt = opportunity
-                    latest_cot.threats_prompt = threat
+                    # while True: 
+                    #     threat = my_utils.generate_text(data['threats'])
+                    #     if threat:
+                    #         if len(threat) < 500: 
+                    #             break
+                    # strength = my_utils.generate_text(data['strengths'])
+                    # weakness = my_utils.generate_text(data['weaknesses'])
+                    # opportunity = my_utils.generate_text(data['opportunities'])
+                    # threat = my_utils.generate_text(data['threats'])
+                    all_result = my_utils.generate_text_v2(data) 
+                    latest_cot.strengths_prompt = all_result.get('strengths_prompt', None)
+                    latest_cot.weaknesses_prompt = all_result.get('weaknesses_prompt', None)
+                    latest_cot.opportunities_prompt = all_result.get('opportunities_prompt', None)
+                    latest_cot.threats_prompt = all_result.get('threats_prompt', None)
                     latest_cot.save()
-                     
+                    error = all_result.get('error', None)
                 else :
                     strength = latest_cot.strengths_prompt
                     weakness = latest_cot.weaknesses_prompt
@@ -600,6 +606,8 @@ def teacher_swot(request ):
                 'weakness' : weakness,
                 'opportunity' : opportunity,
                 'threat' : threat,
+                'error' : error,
+                'all_result' : all_result
             }, status=200)
             
              
