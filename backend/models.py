@@ -853,28 +853,28 @@ class COTForm(models.Model):
     def generatePromtTemplate(self):
         strengths_prompt = """
         Based on the following evaluation data, 
-        what are the strengths? Make it atleast 2-3 sentences with less than 490 characters
+        what are the strengths? Make it atleast 2-3 sentences and should not exceed 350 characters in total.
         and only the sentences i need no need to add title or any additional information.
         Also if there are no data provided then tell that they did not take the "Individual Performance Commitment and Review Form"
         Objectives and Ratings (0 - 7):
         """
 
         weaknesses_prompt = """
-        Based on the following evaluation data, what are the weaknesses? Make it atleast 2-3 sentences with less than 490 characters
+        Based on the following evaluation data, what are the weaknesses? Make it atleast 2-3 sentences and should not exceed 350 characters in total
         and only the sentences i need no need to add title or any additional information.
         Also if there are no data provided then tell that they did not take the "Individual Performance Commitment and Review Form"
         Objectives and Ratings (0 - 7):
         """
 
         opportunities_prompt = """
-        Based on the following evaluation data, what are the opportunities? Make it atleast 2-3 sentences with less than 490 characters
+        Based on the following evaluation data, what are the opportunities? Make it atleast 2-3 sentences and should not exceed 350 characters in total
         and only the sentences i need no need to add title or any additional information.
         Also if there are no data provided then tell that they did not take the "Individual Performance Commitment and Review Form"
         Objectives and Ratings (0 - 7):
         """
 
         threats_prompt = """
-        Based on the following evaluation data, what are the threats? Make it atleast 2-3 sentences with less than 490 characters
+        Based on the following evaluation data, what are the threats? Make it atleast 2-3 sentences and should not exceed 350 characters in total
         and only the sentences i need no need to add title or any additional information.
         Also if there are no data provided then tell that they did not take the "Individual Performance Commitment and Review Form"
         Objectives and Ratings (0 - 7):
