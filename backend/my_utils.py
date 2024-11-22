@@ -31,7 +31,7 @@ from g4f.client import Client
 from uuid import uuid4
 from . import models, forms_text
 from django.db.models import Count
-
+import json
 
 
 
@@ -91,7 +91,21 @@ def generate_text(promt : str):
         return str(response.choices[0].message.content)
     except Exception as e:
         return str(e)
-
+ 
+def generate_text_v2(promt: str):
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4-turbo",
+            messages=[{"role": "user", "content": promt}],
+        )
+        result = str(response.choices[0].message.content)
+        try:
+            result_json : dict = json.loads(result)
+            return result_json
+        except json.JSONDecodeError as e:
+            return {'error' : str(e) }  # Return the raw string if it can't be decoded as JSON
+    except Exception as e:
+        return {'error' : str(e) }
 
 
 def send_verification_email(user_email, verification_code , template , masbate_locker_email , subject, request):

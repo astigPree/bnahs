@@ -797,6 +797,7 @@ class COTForm(models.Model):
     
    
     def get_information(self):
+        
         data =  {
             'form' : 'COTForm',
             'school_id' : self.school_id,
@@ -850,6 +851,32 @@ class COTForm(models.Model):
                 
         return data
     
+    def generatePromtTemplateNew(self):
+        all_promt = """
+        Based on the following evaluation data, what are the strengths? what are the weaknesses? what are the opportunities? what are the threats?  Make it atleast 2-3 sentences and should not exceed 350 characters in total
+        and only the sentences i need no need to add title or any additional information.
+        Also if there are no data provided then tell that they did not take the "Individual Performance Commitment and Review Form"
+        After generating convert it to a dictionary like this :
+        {
+            "strengths_prompt" : "Put the sentences here.",
+            "weaknesses_prompt" : "Put the sentences here.",
+            "opportunities_prompt" : "Put the sentences here.",
+            "threats_prompt" : "Put the sentences here.",
+        }
+        Objectives and Ratings (0 - 7):
+        """
+        
+        if self.content:
+            if 'Questions' in self.content:
+                questions = self.content['Questions']
+
+                for q_id, q_info in questions.items():
+                    all_promt += f"Objective: {q_info['Objective']} - Selected Rate: {q_info['Selected']}\n"
+
+                if 'Comments' in self.content:
+                    all_promt += "Comments: " + self.content["Comments"]
+                    
+        return all_promt
     def generatePromtTemplate(self):
         strengths_prompt = """
         Based on the following evaluation data, 

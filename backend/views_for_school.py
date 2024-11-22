@@ -106,6 +106,7 @@ def add_people_by_school(request):
             
             school_user = models.School.objects.filter(email_address=request.user.username).first()
             if not school_user:
+
                 return JsonResponse({
                     'message' : 'User not found',
                 }, status=400)
@@ -1436,10 +1437,10 @@ def school_summary_swot(request):
             if cot_4:
                 if cot_4.is_checked:
                     latest_cot = cot_4
-            
+            error = "Wala namam"
             if latest_cot:
                 if not latest_cot.isAlreadyAIGenerated():
-                    data = latest_cot.generatePromtTemplate() 
+                    data = latest_cot.generatePromtTemplateNew() 
                     # while True:
                     #     strength = my_utils.generate_text(data['strengths'])
                     #     if strength:
@@ -1462,16 +1463,17 @@ def school_summary_swot(request):
                     #     if threat:
                     #         if len(threat) < 500: 
                     #             break
-                    strength = my_utils.generate_text(data['strengths'])
-                    weakness = my_utils.generate_text(data['weaknesses'])
-                    opportunity = my_utils.generate_text(data['opportunities'])
-                    threat = my_utils.generate_text(data['threats'])
-                    latest_cot.strengths_prompt = strength
-                    latest_cot.weaknesses_prompt = weakness
-                    latest_cot.opportunities_prompt = opportunity
-                    latest_cot.threats_prompt = threat
+                    # strength = my_utils.generate_text(data['strengths'])
+                    # weakness = my_utils.generate_text(data['weaknesses'])
+                    # opportunity = my_utils.generate_text(data['opportunities'])
+                    # threat = my_utils.generate_text(data['threats'])
+                    result = my_utils.generate_text_v2(data) 
+                    latest_cot.strengths_prompt = result.get('strengths_prompt', None)
+                    latest_cot.weaknesses_prompt = result.get('weaknesses_prompt', None)
+                    latest_cot.opportunities_prompt = result.get('opportunities_prompt', None)
+                    latest_cot.threats_prompt = result.get('threats_prompt', None)
                     latest_cot.save()
-                     
+                    error = result.get('error', None)
                 else :
                     strength = latest_cot.strengths_prompt
                     weakness = latest_cot.weaknesses_prompt
@@ -1484,6 +1486,7 @@ def school_summary_swot(request):
                 'weakness' : weakness,
                 'opportunity' : opportunity,
                 'threat' : threat,
+                'error' : error
             }, status=200)
             
             
