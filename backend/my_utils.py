@@ -100,8 +100,17 @@ def generate_text(promt : str):
 def exponential_backoff(attempt, base=2):
     return base ** attempt
 
+import json
+import time
+import logging
+import random
+
+def exponential_backoff(attempt, base=2, max_backoff=60):
+    return min(base ** attempt + random.uniform(0, 1), max_backoff)
+
 def generate_text_v2(prompt: str):
-    max_retries = 5
+    max_retries = 10  # Increase retries if needed
+    attempt_info = []
 
     for attempt in range(max_retries):
         try:
@@ -109,26 +118,52 @@ def generate_text_v2(prompt: str):
                 model="gpt-3.5-turbo",
                 messages=[{"role": "user", "content": prompt}],
             )
-            result = str(response.choices[0].message.content)
+            # Log the raw response for debugging
+            raw_result = str(response.choices[0].message.content)
+            logging.debug(f"Raw API Response: {raw_result}")
+
+            if not raw_result.strip():
+                raise ValueError("Empty response received from API")
+
             try:
-                result_json: dict = json.loads(result)
+                result_json: dict = json.loads(raw_result)
                 return result_json
             except json.JSONDecodeError as e:
-                return {'error': str(e)}  # Return the raw string if it can't be decoded as JSON
+                logging.warning(f"JSON decode error: {e}. Returning raw string.")
+                return {'error': f"JSONDecodeError: {e}", 'raw_response': raw_result}
 
         except Exception as e:
             error_message = str(e)
+            attempt_info.append({'attempt': attempt + 1, 'error': error_message})
 
             if "Too Many Requests" in error_message or "Rate limit reached" in error_message:
                 wait_time = exponential_backoff(attempt)
-                logging.warning(f"Rate limit reached, retrying in {wait_time} seconds... (Attempt {attempt + 1})")
+                logging.warning(f"Rate limit reached, retrying in {wait_time:.2f} seconds... (Attempt {attempt + 1})")
                 time.sleep(wait_time)
             else:
                 logging.error(f"Error during API call: {error_message}")
-                return {'error': error_message}
+                return {'error': error_message, 'details': attempt_info}
     
-    return {'error' : "Failed to generate text after multiple attempts."}
+    logging.error(f"Failed to generate text after {max_retries} attempts. Details: {attempt_info}")
+    return {'error': "Failed to generate text after multiple attempts.", 'details': attempt_info}
 
+# # Example usage
+# data = {
+#     'strengths': 'What are the strengths?',
+#     'weaknesses': 'What are the weaknesses?',
+#     'opportunities': 'What are the opportunities?',
+#     'threats': 'What are the threats?'
+# }
+
+# strength = generate_text_v2(data['strengths'])
+# weakness = generate_text_v2(data['weaknesses'])
+# opportunity = generate_text_v2(data['opportunities'])
+# threat = generate_text_v2(data['threats'])
+
+# print(strength)
+# print(weakness)
+# print(opportunity)
+# print(threat)
 
 
 def send_verification_email(user_email, verification_code , template , masbate_locker_email , subject, request):
