@@ -90,7 +90,7 @@ def generate_text(promt : str):
         )
         return str(response.choices[0].message.content)
     except Exception as e:
-        return None
+        return str(e)
 
 
 
