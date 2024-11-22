@@ -912,6 +912,9 @@ class COTForm(models.Model):
         }
     
     def isAlreadyAIGenerated(self):
+        if not self.strengths_prompt:
+            return False
+        
         if len(self.strengths_prompt) > 0:
             return True
         return False
