@@ -31,7 +31,10 @@ from g4f.client import Client
 from uuid import uuid4
 from . import models, forms_text
 from django.db.models import Count
+
 import json
+import time
+import logging
 
 
 
@@ -92,20 +95,40 @@ def generate_text(promt : str):
     except Exception as e:
         return str(e)
  
-def generate_text_v2(promt: str):
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4-turbo",
-            messages=[{"role": "user", "content": promt}],
-        )
-        result = str(response.choices[0].message.content)
+
+
+def exponential_backoff(attempt, base=2):
+    return base ** attempt
+
+def generate_text_v2(prompt: str):
+    max_retries = 5
+
+    for attempt in range(max_retries):
         try:
-            result_json : dict = json.loads(result)
-            return result_json
-        except json.JSONDecodeError as e:
-            return {'error' : str(e) }  # Return the raw string if it can't be decoded as JSON
-    except Exception as e:
-        return {'error' : str(e) }
+            response = client.chat.completions.create(
+                model="gpt-4-turbo",
+                messages=[{"role": "user", "content": prompt}],
+            )
+            result = str(response.choices[0].message.content)
+            try:
+                result_json: dict = json.loads(result)
+                return result_json
+            except json.JSONDecodeError as e:
+                return {'error': str(e)}  # Return the raw string if it can't be decoded as JSON
+
+        except Exception as e:
+            error_message = str(e)
+
+            if "Too Many Requests" in error_message or "Rate limit reached" in error_message:
+                wait_time = exponential_backoff(attempt)
+                logging.warning(f"Rate limit reached, retrying in {wait_time} seconds... (Attempt {attempt + 1})")
+                time.sleep(wait_time)
+            else:
+                logging.error(f"Error during API call: {error_message}")
+                return {'error': error_message}
+    
+    return {'error' : "Failed to generate text after multiple attempts."}
+
 
 
 def send_verification_email(user_email, verification_code , template , masbate_locker_email , subject, request):
