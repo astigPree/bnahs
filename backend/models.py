@@ -785,10 +785,10 @@ class COTForm(models.Model):
     quarter = models.CharField(max_length=255, blank=True, default='') # Quarter 1, Quarter 2, Quarter 3, Quarter 4
     subject = models.CharField(max_length=255, blank=True, default='Not Assigned')
 
-    strengths_prompt = models.TextField(blank=True, default='')
-    weaknesses_prompt = models.TextField(blank=True, default='')
-    opportunities_prompt = models.TextField(blank=True, default='')
-    threats_prompt = models.TextField(blank=True, default='')
+    strengths_prompt = models.TextField(blank=True, null=True, default='')
+    weaknesses_prompt = models.TextField(blank=True, null=True, default='')
+    opportunities_prompt = models.TextField(blank=True,null=True, default='')
+    threats_prompt = models.TextField(blank=True, null=True, default='')
 
 
 
