@@ -88,7 +88,7 @@ def generate_text(promt : str):
             model="gpt-4-turbo",
             messages=[{"role": "user", "content": promt}],
         )
-        return response.choices[0].message.content
+        return str(response.choices[0].message.content)
     except Exception as e:
         return None
 
