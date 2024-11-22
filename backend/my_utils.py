@@ -115,7 +115,7 @@ def generate_text_v2(prompt: str):
     for attempt in range(max_retries):
         try:
             response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model="gpt-4o-mini",
                 messages=[{"role": "user", "content": prompt}],
             )
             # Log the raw response for debugging
