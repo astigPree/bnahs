@@ -130,7 +130,7 @@ def generate_text_v2(prompt: str):
                 return result_json
             except json.JSONDecodeError as e:
                 logging.warning(f"JSON decode error: {e}. Returning raw string.")
-                return {'error': f"JSONDecodeError: {e}", 'raw_response': raw_result}
+                return {'error': f"JSONDecodeError: {e} {raw_result}"}
 
         except Exception as e:
             error_message = str(e)
