@@ -281,13 +281,20 @@ def evaluator_check_rpms_attachment(request):
                 {
                     'rpms_id' : 'rpms_id',
                     'content' : {...} !Content/Checked of RPMS form from teacher
+                    'index' : string,
                 }
             """
             
             rpms_id = request.POST.get('rpms_id')
             content : dict[str , dict] = json.loads(request.POST.get('content', None))
             comment = request.POST.get('comment', None)
+            index = request.POST.get('index', None)
             
+            if not rpms_id:
+                return JsonResponse({
+                   'message' : 'Please provide rpms_id',
+                    }, status=400)
+                
             if not rpms_id:
                 return JsonResponse({
                    'message' : 'Please provide rpms_id',
@@ -309,9 +316,39 @@ def evaluator_check_rpms_attachment(request):
                     'message' : 'Invalid RPMS ID',
                     }, status=400)
             
+            if index == '1':
+                rpms.file_is_checked = True
+                rpms.comment_1 = comment 
+            elif index == '2':
+                rpms.file2_is_checked = True
+                rpms.comment_2 = comment 
+            elif index == '3':
+                rpms.file3_is_checked = True
+                rpms.comment_3 = comment 
+            if index == '4':
+                rpms.file4_is_checked = True 
+                rpms.comment_4 = comment 
+                
+            if rpms.title == "KRA 1: Content Knowledge and Pedagogy" or rpms.title == "KRA 2: Learning Environment and Diversity of Learners":
+                if ( rpms.file_is_checked and rpms.file2_is_checked and 
+                    rpms.file3_is_checked and rpms.file4_is_checked):
+                    rpms.is_submitted = True
+                    rpms.is_checked = True
+                
+            if rpms.title == "KRA 3: Curriculum and Planning" or rpms.title == "KRA 4:  Curriculum and Planning & Assessment and Reporting":
+                if ( rpms.file_is_checked and rpms.file2_is_checked and 
+                    rpms.file3_is_checked):
+                    rpms.is_submitted = True
+                    rpms.is_checked = True
+
+            if rpms.title == "PLUS FACTOR":
+                if ( rpms.file_is_checked ):
+                    rpms.is_submitted = True
+                    rpms.is_checked = True
+                
             
             rpms.evaluator_id = user.employee_id
-            my_utils.update_rpms_attachment(rpms_attachment=rpms, content=content , comment=comment)
+            my_utils.update_rpms_attachment(rpms_attachment=rpms, content=content)
             
             teacher = models.People.objects.filter(is_accepted = True, employee_id=rpms.employee_id, role='Teacher').first()
             evaluation = ""

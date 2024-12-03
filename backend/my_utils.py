@@ -943,22 +943,10 @@ def create_rpms_class_works_for_highly_proficient(rpms_folder_id : str, school_i
     plus_factor.save()
 
 
-def update_rpms_attachment( rpms_attachment : models.RPMSAttachment, content : dict , comment : str):
-    attachment_comment = models.Comment.objects.filter(post_id=rpms_attachment.post_id).first()
-    
-    if attachment_comment:
-        attachment_comment.content = comment
-        attachment_comment.save()
-    else:
-        models.Comment.objects.create(
-            post_id = rpms_attachment.post_id,
-            content = comment,
-            is_private = True,
-        )
+def update_rpms_attachment( rpms_attachment : models.RPMSAttachment, content : dict):
+
     rpms_attachment.check_date = timezone.now()
-    rpms_attachment.is_submitted = True
     rpms_attachment.grade = content
-    rpms_attachment.is_checked = True
     rpms_attachment.save()
     
     
