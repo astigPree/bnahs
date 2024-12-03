@@ -54,7 +54,14 @@ def generate_report_by_teacher(school : models.School , user : models.People):
     buffer = io.BytesIO()
 
     # Create a PDF document
-    doc = SimpleDocTemplate(buffer, pagesize=landscape(A4))
+    doc = SimpleDocTemplate(buffer, pagesize=landscape(A4),
+                            
+        leftMargin=0.5 * inch, # Remove left margin
+        rightMargin=0.5 * inch, # Remove right margin
+        topMargin=0.5 * inch, # Remove top margin
+        bottomMargin=0.5 * inch # Remove bottom margin
+        
+        )
     elements = []
 
     # Add logo/image in the center
