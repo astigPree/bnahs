@@ -296,18 +296,18 @@ def teacher_turn_in_rpms_work(request):
             
             files = []
             class_work_id = request.POST.get('class_work_id')
-            file = request.FILES.get('file')
-            if file:
-                files.append(file)
-            # i = 0
-            # while True:
-            #     file = request.FILES.get(f'file{i}')
-            #     if not file:
-            #         break
-            #     files.append(file)
-            #     i += 1
+            # file = request.FILES.get('file')
+            index = request.POST.get('index') # 1,2,3,4 represent the objectives
+            for i in range(4):
+                file = request.FILES.get(f'file{i+1}') # file1, file2, file3 , file4
+                if file:
+                    files.append(file) 
             
-            
+            if not index: 
+                return JsonResponse({
+                    'message' : 'index not found',
+                },status=400)
+             
             if not class_work_id:
                 return JsonResponse({
                     'message' : 'class_work_id not found',
@@ -315,7 +315,7 @@ def teacher_turn_in_rpms_work(request):
             
             if not files or len(files) == 0:
                 return JsonResponse({
-                    'message' : 'files not found or empty files used name convention "file" ',
+                    'message' : 'files not found or empty files used name convention "file1", ... ',
                 },status=400)
             
             classwork = models.RPMSClassWork.objects.filter(class_work_id=class_work_id).order_by('-created_at').first()
@@ -339,25 +339,29 @@ def teacher_turn_in_rpms_work(request):
             
             past_attachments = models.RPMSAttachment.objects.filter( is_submitted=False, employee_id=user.employee_id, class_work_id=class_work_id).order_by('-created_at').first()
             
-            attachment_id = past_attachments.attachment_id if past_attachments else str(uuid4())
-            post_id = past_attachments.post_id if past_attachments else str(uuid4())
             
-            for file in files:
-                attachment = models.RPMSAttachment.objects.create(
-                    school_id=user.school_id,
-                    employee_id=user.employee_id,
-                    class_work_id=class_work_id, # IDENTIFIER FOR WHAT TYPE OF CLASSWORK
-                    file=file,
-                    is_submitted = True
-                )
+            
+            # attachment_id = past_attachments.attachment_id if past_attachments else str(uuid4())
+            # post_id = past_attachments.post_id if past_attachments else str(uuid4())
+            
+            # for file in files:
+            #     attachment = models.RPMSAttachment.objects.create(
+            #         school_id=user.school_id,
+            #         employee_id=user.employee_id,
+            #         class_work_id=class_work_id, # IDENTIFIER FOR WHAT TYPE OF CLASSWORK
+            #         file=file,
+            #         is_submitted = True
+            #     )
                 
-                attachment.submit_date = timezone.now()
-                attachment.is_for_teacher_proficient = my_utils.is_proficient_faculty(user)
-                attachment.title = classwork.title
-                attachment.grade = classwork.get_grade()
-                attachment.attachment_id = attachment_id
-                attachment.post_id = post_id
-                attachment.save()
+            #     attachment.submit_date = timezone.now()
+            #     attachment.is_for_teacher_proficient = my_utils.is_proficient_faculty(user)
+            #     attachment.title = classwork.title
+            #     attachment.grade = classwork.get_grade()
+            #     attachment.attachment_id = attachment_id
+            #     attachment.post_id = post_id
+            #     attachment.save()
+            
+            
             
             return JsonResponse({
                 'message' : 'Files uploaded successfully',

@@ -1100,9 +1100,13 @@ class RPMSAttachment(models.Model):
     
     title = models.CharField(max_length=255, blank=True, default='') # Name of classwork
     file = models.FileField(upload_to='rpms_attachments' , blank=True, null=True) # Objectives 1 
+    file_is_checked = models.BooleanField(default=False) 
     file2 = models.FileField(upload_to='rpms_attachments' , blank=True, null=True) # Objectives 2
+    file2_is_checked = models.BooleanField(default=False) 
     file3 = models.FileField(upload_to='rpms_attachments' , blank=True, null=True) # Objectives 3
+    file3_is_checked = models.BooleanField(default=False) 
     file4 = models.FileField(upload_to='rpms_attachments' , blank=True, null=True) # Objectives 4
+    file4_is_checked = models.BooleanField(default=False) 
     
     grade : dict[str, dict] = models.JSONField(default=dict, blank=True)
     """
@@ -1130,6 +1134,13 @@ class RPMSAttachment(models.Model):
     is_submitted = models.BooleanField(default=False) # Used to identify if submitted
     post_id = models.CharField(max_length=255, blank=True, default='') # Used to identify the comment 
     
+    teacher_comment = models.TextField(blank=True, default='')
+    comment_1 = models.TextField(blank=True, default='')
+    comment_2 = models.TextField(blank=True, default='')
+    comment_3 = models.TextField(blank=True, default='')
+    comment_4 = models.TextField(blank=True, default='')
+    
+    
     def __str__(self):
         return f"{self.class_work_id} - {self.employee_id} - {self.evaluator_id} - {self.attachment_id}" 
     
@@ -1150,7 +1161,16 @@ class RPMSAttachment(models.Model):
             'is_submitted' : self.is_submitted,
             'comment' : None,
             'submit_date' : self.submit_date,
-            'check_date' : self.check_date
+            'check_date' : self.check_date,
+            'file_is_checked' : self.file_is_checked,
+            'file2_is_checked' : self.file2_is_checked,
+            'file3_is_checked' : self.file3_is_checked,
+            'file4_is_checked' : self.file4_is_checked,
+            'teacher_comment' : self.teacher_comment,
+            'comment_1' : self.comment_1,
+            'comment_2' : self.comment_2,
+            'comment_3' : self.comment_3,
+            'comment_4' : self.comment_4,
         }
         """
         {
@@ -1168,7 +1188,7 @@ class RPMSAttachment(models.Model):
             comment = Comment.objects.filter(post_id=self.post_id).first()
             if comment:
                 data['comment'] = comment.get_comment()
-            
+
             
             data['file'] = self.file.url if self.file else None
             data['file2'] = self.file2.url if self.file2 else None
