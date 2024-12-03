@@ -294,6 +294,7 @@ def teacher_turn_in_rpms_work(request):
                     'message' : 'User not found',
                 }, status=400)
             
+            
             files = []
             class_work_id = request.POST.get('class_work_id')
             # file = request.FILES.get('file')
@@ -549,17 +550,48 @@ def teacher_unsubmit_class_work(request):
                 }, status=400)
 
             class_work_id = request.POST.get('class_work_id')
-
+            index = request.POST.get('index') # 1,2,3,4 represent the objectives
+            
+            
+            if not index: 
+                return JsonResponse({
+                    'message' : 'index not found',
+                },status=400)
+                
+                
             if not class_work_id:
                 return JsonResponse({
                     'message' : 'class_work_id not found',
                 },status=400)
             
             
-            attachments = models.RPMSAttachment.objects.filter(class_work_id=class_work_id, is_submitted=True, employee_id=user.employee_id).order_by('-created_at')
-            for attachment in attachments:
-                attachment.is_submitted = False
-                attachment.save()
+            attachment = models.RPMSAttachment.objects.filter(class_work_id=class_work_id, employee_id=user.employee_id).order_by('-created_at').first()
+            if not attachment:
+                return JsonResponse({
+                    'message' : 'Attachments not found',
+                },status=400)
+            
+            if attachment.is_checked:
+                return JsonResponse({
+                    'message' : 'Files already submitted and checked',
+                },status=400)
+ 
+            if index == '1':
+                attachment.file = None
+            elif index == '2':
+                attachment.file2 = None
+            elif index == '3':
+                attachment.file3 = None
+            elif index == '4':
+                attachment.file4 = None
+            else:
+                return JsonResponse({
+                    'message' : 'Invalid index',
+                },status=400)
+
+            attachment.is_submitted = False
+            attachment.save()
+                
             
             return JsonResponse({
                 'message' : 'Files unsubmitted successfully',
