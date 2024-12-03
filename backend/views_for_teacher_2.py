@@ -330,16 +330,70 @@ def teacher_turn_in_rpms_work(request):
                     'message' : 'Folder not found',
                 },status=400)
             
-            past_attachments = models.RPMSAttachment.objects.filter( is_submitted=True, employee_id=user.employee_id, class_work_id=class_work_id).order_by('-created_at')
+            # past_attachments = models.RPMSAttachment.objects.filter( is_submitted=True, employee_id=user.employee_id, class_work_id=class_work_id).order_by('-created_at')
+            
+            # if past_attachments:
+            #     return JsonResponse({
+            #         'message' : 'Unsubmit before adding new ',
+            #     },status=400)
+            
+            past_attachments = models.RPMSAttachment.objects.filter( employee_id=user.employee_id, class_work_id=class_work_id).order_by('-created_at').first()
             
             if past_attachments:
-                return JsonResponse({
-                    'message' : 'Unsubmit before adding new ',
-                },status=400)
-            
-            past_attachments = models.RPMSAttachment.objects.filter( is_submitted=False, employee_id=user.employee_id, class_work_id=class_work_id).order_by('-created_at').first()
-            
-            
+                if index == "1":
+                    past_attachments.file = files[0]
+                elif index == "2":
+                    past_attachments.file2 = files[0]
+                elif index == "3":
+                    past_attachments.file3 = files[0]
+                elif index == "4":
+                    past_attachments.file4 = files[0]
+                
+                past_attachments.submit_date = timezone.now()
+                past_attachments.save()
+                
+                if past_attachments.title == "KRA 1: Content Knowledge and Pedagogy" or past_attachments.title == "KRA 2: Learning Environment and Diversity of Learners":
+                    if ( past_attachments.file and past_attachments.file2 and 
+                        past_attachments.file3 and past_attachments.file4):
+                        past_attachments.is_submitted = True
+                 
+                if past_attachments.title == "KRA 3: Curriculum and Planning" or past_attachments.title == "KRA 4:  Curriculum and Planning & Assessment and Reporting":
+                    if ( past_attachments.file and past_attachments.file2 and 
+                        past_attachments.file3):
+                        past_attachments.is_submitted = True
+
+                if past_attachments.title == "PLUS FACTOR":
+                    if ( past_attachments.file ):
+                        past_attachments.is_submitted = True
+                
+                past_attachments.save()
+            else :
+                attachment = models.RPMSAttachment.objects.create(
+                    school_id=user.school_id,
+                    employee_id=user.employee_id,
+                    class_work_id=class_work_id, # IDENTIFIER FOR WHAT TYPE OF CLASSWORK
+                    attachment_id=str(uuid4()),
+                    post_id = str(uuid4())
+                )
+                
+                if index == "1":
+                    attachment.file = files[0]
+                elif index == "2":
+                    attachment.file2 = files[0]
+                elif index == "3":
+                    attachment.file3 = files[0]
+                elif index == "4":
+                    attachment.file4 = files[0]
+                    
+                    
+                attachment.submit_date = timezone.now()
+                attachment.title = classwork.title
+                attachment.is_for_teacher_proficient = my_utils.is_proficient_faculty(user)
+                attachment.grade = classwork.get_grade()
+                if classwork.title == "PLUS FACTOR":
+                    attachment.is_submitted = True
+                attachment.save()
+                
             
             # attachment_id = past_attachments.attachment_id if past_attachments else str(uuid4())
             # post_id = past_attachments.post_id if past_attachments else str(uuid4())
