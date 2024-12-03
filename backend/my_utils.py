@@ -553,6 +553,8 @@ def recommend_rank(teacher : models.People):
         if score_classification == "Outstanding":
             recommendation.append("Master Teacher IV")
     
+    
+    
     return recommendation
 
 
@@ -1265,7 +1267,5 @@ def generate_report(school : models.School):
     buffer.seek(0)
     return buffer
     # return HttpResponse(buffer, as_attachment=True, content_type='application/pdf')
-
-
 
 

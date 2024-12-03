@@ -261,6 +261,7 @@ urlpatterns = [
     
     path('teacher/get/ipcrf/specific/' , views.teacher_get_ipcrf),
      
-    path('teacher/forms/cot/get/', views.get_cot_from_by_teacher)
+    path('teacher/forms/cot/get/', views.get_cot_from_by_teacher),
+    path('teacher/download/summary/report', views.teacher_download_report)
 ]
 

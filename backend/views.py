@@ -38,6 +38,7 @@ from .views_for_evaluator_2 import *
 
 from .views_for_teacher import * 
 from .views_for_teacher_2 import *
+from .views_for_teacher_3 import *
 
 from .views_2 import *
 
