@@ -304,6 +304,9 @@ def teacher_turn_in_rpms_work(request):
                 if file:
                     files.append(file) 
             
+            
+            comment = request.POST.get('comment' , None)
+            
             if not index: 
                 return JsonResponse({
                     'message' : 'index not found',
@@ -367,6 +370,9 @@ def teacher_turn_in_rpms_work(request):
                     if ( past_attachments.file ):
                         past_attachments.is_submitted = True
                 
+                if comment:
+                    past_attachments.teacher_comment = comment
+                
                 past_attachments.save()
             else :
                 attachment = models.RPMSAttachment.objects.create(
@@ -393,6 +399,10 @@ def teacher_turn_in_rpms_work(request):
                 attachment.grade = classwork.get_grade()
                 if classwork.title == "PLUS FACTOR":
                     attachment.is_submitted = True
+                
+                if comment:
+                    attachment.teacher_comment = comment
+                
                 attachment.save()
                 
             
@@ -432,7 +442,7 @@ def teacher_turn_in_rpms_work(request):
         }, status=400)
 
 
-@csrf_exempt
+@csrf_exempt 
 def teacher_get_rpms_work_attachments(request):
     try:
         
