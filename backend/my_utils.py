@@ -717,7 +717,7 @@ def update_ipcrf_form_part_1_by_evaluator(
     content : dict[str, dict]
     ):
     
-    ipcrf_form.content_for_teacher = content
+    ipcrf_form.content_for_evaluator = content
     ipcrf_form.is_checked_by_evaluator = True
     ipcrf_form.save()
 

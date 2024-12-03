@@ -1099,7 +1099,11 @@ class RPMSAttachment(models.Model):
         ))
     
     title = models.CharField(max_length=255, blank=True, default='') # Name of classwork
-    file = models.FileField(upload_to='rpms_attachments' , blank=True, null=True)
+    file = models.FileField(upload_to='rpms_attachments' , blank=True, null=True) # Objectives 1 
+    file2 = models.FileField(upload_to='rpms_attachments' , blank=True, null=True) # Objectives 2
+    file3 = models.FileField(upload_to='rpms_attachments' , blank=True, null=True) # Objectives 3
+    file4 = models.FileField(upload_to='rpms_attachments' , blank=True, null=True) # Objectives 4
+    
     grade : dict[str, dict] = models.JSONField(default=dict, blank=True)
     """
         {
@@ -1117,11 +1121,11 @@ class RPMSAttachment(models.Model):
     """
     
     is_checked = models.BooleanField(default=False) 
-    is_for_teacher_proficient = models.BooleanField(default=False)
+    is_for_teacher_proficient = models.BooleanField(default=False) 
     school_year = models.CharField(max_length=255, blank=True, default='')
     
-    check_date = models.DateTimeField(blank=True, null=True, default=None)
-    submit_date = models.DateTimeField(blank=True, null=True, default=None)
+    check_date = models.DateTimeField(blank=True, null=True, default=None) # Objective 1
+    submit_date = models.DateTimeField(blank=True, null=True, default=None) # Objective 1
 
     is_submitted = models.BooleanField(default=False) # Used to identify if submitted
     post_id = models.CharField(max_length=255, blank=True, default='') # Used to identify the comment 
@@ -1167,6 +1171,10 @@ class RPMSAttachment(models.Model):
             
             
             data['file'] = self.file.url if self.file else None
+            data['file2'] = self.file2.url if self.file2 else None
+            data['file3'] = self.file3.url if self.file3 else None
+            data['file4'] = self.file4.url if self.file4 else None
+            
             
             overall_score = 0
             if self.grade:

@@ -275,7 +275,7 @@ def evaluator_check_rpms_attachment(request):
                     'message' : 'User not found',
                     }, status=400)
             
-            # TODO : WAIT FOR UPDATE IN IDENTIFICATION ID OF OBSERVER AND Teacher
+            # TODO : Update the content
             """
             evaluator/school/check/rpms/attachment/
                 {
