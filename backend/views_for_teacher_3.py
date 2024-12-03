@@ -29,7 +29,7 @@ def teacher_download_report(request):
                     'message' : 'School not found',
                 }, status=400)
 
-            buffer = my_utils_2.generate_report_by_teacher(user)
+            buffer = my_utils_2.generate_report_by_teacher(school , user)
             if not buffer:
                 return JsonResponse({
                     'message' : 'Report not found',
