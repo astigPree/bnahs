@@ -1061,7 +1061,8 @@ class RPMSClassWork(models.Model):
             'due_date' : self.due_date,
             'created_at' : self.created_at
         }
-        data["attachment"] = RPMSAttachment.objects.filter(class_work_id=self.class_work_id).order_by('-created_at').first()
+        attachment = RPMSAttachment.objects.filter(class_work_id=self.class_work_id).order_by('-created_at').first()
+        data["attachment"] = attachment.get_information() if attachment else None
         return data
 
     def get_grade(self):
