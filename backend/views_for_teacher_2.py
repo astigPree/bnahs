@@ -471,7 +471,7 @@ def teacher_get_rpms_work_attachments(request):
             submmited = []
             for attachment in submitted_attachments:
                 if any([attachment.file , attachment.file2, attachment.file3, attachment.file4]):
-                    submmited.append(attachment)
+                    submmited.append(attachment.get_information())
             
             return JsonResponse({
                     'submitted' : submmited,
