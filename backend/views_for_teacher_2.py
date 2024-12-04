@@ -466,11 +466,15 @@ def teacher_get_rpms_work_attachments(request):
                     'message' : 'class_work_id not found',
                 },status=400)
             
-            submitted_attachments = models.RPMSAttachment.objects.filter( is_submitted=True, class_work_id=class_work_id, employee_id=user.employee_id).order_by('-created_at')
+            submitted_attachments = models.RPMSAttachment.objects.filter( class_work_id=class_work_id, employee_id=user.employee_id).order_by('-created_at')
             unsubmitted_attachments = models.RPMSAttachment.objects.filter( is_submitted=False, class_work_id=class_work_id, employee_id=user.employee_id).order_by('-created_at')
+            submmited = []
+            for attachment in submitted_attachments:
+                if any([attachment.file , attachment.file2, attachment.file3, attachment.file4]):
+                    submmited.append(attachment)
             
             return JsonResponse({
-                    'submitted' : [attachment.get_information() for attachment in submitted_attachments],
+                    'submitted' : submmited,
                     'unsumitted' : [ attachment.get_information() for attachment in unsubmitted_attachments]
                 },status=200)
             
