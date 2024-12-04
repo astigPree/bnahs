@@ -287,7 +287,7 @@ def evaluator_check_rpms_attachment(request):
             
             rpms_id = request.POST.get('rpms_id')
             content : dict[str , dict] = json.loads(request.POST.get('content', None))
-            comment = request.POST.get('comment', None)
+            comment = request.POST.get('comment', '')
             index = request.POST.get('index', None)
             
             if not rpms_id:
@@ -304,11 +304,7 @@ def evaluator_check_rpms_attachment(request):
                 return JsonResponse({
                     'message' : 'content is required',
                     }, status=400)
-            
-            if not comment:
-                return JsonResponse({
-                    'message' : 'comment is required',
-                    }, status=400)
+             
             
             rpms = models.RPMSAttachment.objects.filter(attachment_id=rpms_id).order_by('-created_at').first()
             if not rpms:
