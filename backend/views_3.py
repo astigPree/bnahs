@@ -41,9 +41,17 @@ def get_school_year_kra(request):
                     }, status=404)
 
             rmps_folders = models.RPMSFolder.objects.filter(school_id=user.school_id).order_by('-created_at')
-            school_years = []
+            school_years = {
+                'proficient': [],
+                'highly_proficient': []
+            }
             for rmps_folder in rmps_folders:
-                school_years.append(rmps_folder.rpms_folder_school_year)
+                if rmps_folder.is_for_teacher_proficient:
+                    if rmps_folder.rpms_folder_school_year not in school_years['proficient']:
+                        school_years['proficient'].append(rmps_folder.rpms_folder_school_year)
+                else:
+                    if rmps_folder.rpms_folder_school_year not in school_years['highly_proficient']:
+                        school_years['highly_proficient'].append(rmps_folder.rpms_folder_school_year)
             
             return JsonResponse({
                 "school_years": school_years,
@@ -69,9 +77,17 @@ def get_school_year_cot(request):
                     }, status=404)
                     
             cots = models.COTForm.objects.filter(school_id=user.school_id).order_by('-created_at')
-            school_years = []
+            school_years = {
+                'proficient': [],
+                'highly_proficient': []
+            }
             for cot in cots:
-                school_years.append(cot.school_year)
+                if cot.is_for_teacher_proficient:
+                    if cot.school_year not in school_years['proficient']:
+                        school_years['proficient'].append(cot.school_year)
+                else:
+                    if cot.school_year not in school_years['highly_proficient']:
+                        school_years['highly_proficient'].append(cot.school_year) 
             
             return JsonResponse({
                 "school_years": school_years,
@@ -96,10 +112,18 @@ def get_school_year_ipcrf(request):
                         "message": "User not found",
                     }, status=404)
 
-            ipcrfs = models.IPCRFForm.objects.filter(school_id=user.school_id).order_by('-created_at')
-            school_years = []
+            ipcrfs = models.IPCRFForm.objects.filter(school_id=user.school_id , form_type="PART 1").order_by('-created_at')
+            school_years = {
+                'proficient': [],
+                'highly_proficient': []
+            }
             for ipcrf in ipcrfs:
-                school_years.append(ipcrf.school_year)
+                if ipcrf.is_for_teacher_proficient:
+                    if ipcrf.school_year not in school_years['proficient']:
+                        school_years['proficient'].append(ipcrf.school_year)
+                else:
+                    if ipcrf.school_year not in school_years['highly_proficient']:
+                        school_years['highly_proficient'].append(ipcrf.school_year)
             
             return JsonResponse({
                 "school_years": school_years,
