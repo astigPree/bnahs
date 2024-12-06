@@ -313,7 +313,7 @@ def get_ipcrf_forms_by_years(employee_id : str ):
     return ipcrf_yearly_dict
 
 
-def get_rpms_forms_by_title(employee_id : str):
+def get_rpms_forms_by_title(employee_id : str , school_year = None):
     
     # Filter and group by title
     
@@ -335,7 +335,11 @@ def get_rpms_forms_by_title(employee_id : str):
     }
     
     teacher = models.People.objects.filter(employee_id = employee_id).first()
-    attachments = models.RPMSAttachment.objects.filter(employee_id=teacher.employee_id, school_id=teacher.school_id).order_by("-created_at")
+    if school_year :
+        attachments = models.RPMSAttachment.objects.filter(employee_id=teacher.employee_id, school_id=teacher.school_id).order_by("-created_at")
+    else :
+        attachments = models.RPMSAttachment.objects.filter(employee_id=teacher.employee_id, school_id=teacher.school_id , school_year=school_year).order_by("-created_at")
+    
     for attachment in attachments:
         title = attachment.title
         if title in titles:
@@ -444,7 +448,7 @@ def get_recommendation_result_with_percentage(employee_id : str):
     return result
 
 
-def get_kra_breakdown_of_a_teacher(employee_id : str):
+def get_kra_breakdown_of_a_teacher(employee_id : str , school_year = None):
     """
         Return dictionary of the RPMSAttachment of the teacher
         breakdown = {
@@ -458,7 +462,7 @@ def get_kra_breakdown_of_a_teacher(employee_id : str):
         'averages' : []
     }
     
-    results = get_rpms_forms_by_title(employee_id)
+    results = get_rpms_forms_by_title(employee_id , school_year)
     
     total_score = 0.0
     for kra, scores in results.items():
