@@ -41,6 +41,7 @@ from .views_for_teacher_2 import *
 from .views_for_teacher_3 import *
 
 from .views_2 import *
+from .views_3 import *
 
 # Create your views here.
 

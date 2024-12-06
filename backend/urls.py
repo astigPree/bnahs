@@ -40,8 +40,9 @@ urlpatterns = [
     path('user/get/rpms/attachments', views.no_time_get_all_teacher_rpms_attachments),
     path('download/rpms/', views.no_time_download_rpms),
     
-    
-    
+    path('user/get/school/years/rpms/', views.get_school_year_kra), 
+    path('user/get/school/years/cots/', views.get_school_year_cot),
+    path('user/get/school/years/ipcrfs/', views.get_school_year_ipcrf),
     
     
     
