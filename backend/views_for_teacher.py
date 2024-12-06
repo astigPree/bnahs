@@ -251,7 +251,7 @@ def teacher_forms(request ):
 @csrf_exempt
 def teacher_kba_breakdown(request ):
     try:
-        if request.method == 'GET':
+        if request.method == 'POST':
             
             user = models.People.objects.filter(employee_id=request.user.username).first()
             
