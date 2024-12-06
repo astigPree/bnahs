@@ -773,9 +773,23 @@ def no_time_download_rpms(request):
                     'message' : 'RPMS attachment not found',
                     'rpms_id' : rpms_id
                 }, status=400)
-            
+                
             attachment = rpms_attachment
-            file_path = os.path.join(settings.MEDIA_ROOT, attachment.file.name)
+            index = request.POST.get('index') 
+                
+            if index == "1":
+                file_path = os.path.join(settings.MEDIA_ROOT, attachment.file.name)
+            elif index == "2":
+                file_path = os.path.join(settings.MEDIA_ROOT, attachment.file2.name)
+            elif index == "3":
+                file_path = os.path.join(settings.MEDIA_ROOT, attachment.file3.name)
+            elif index == "4":
+                file_path = os.path.join(settings.MEDIA_ROOT, attachment.file4.name)
+            else :
+                return JsonResponse({
+                    'message' : 'index not found',
+                }, status=400)
+            
             if os.path.exists(file_path):
                 response = FileResponse(open(file_path, 'rb'), content_type='application/pdf')
                 response['Content-Disposition'] = f'attachment; filename={os.path.basename(file_path)}'
