@@ -1005,7 +1005,7 @@ class RPMSClassWork(models.Model):
     
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
-    
+    school_year = models.CharField(max_length=255, blank=True, default='') # School Year of the classwork
     rpms_folder_id = models.CharField(max_length=255, blank=True, default='')
     class_work_id = models.CharField(max_length=255, blank=True, default='') # id of the class work
     

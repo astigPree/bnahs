@@ -380,7 +380,8 @@ def teacher_turn_in_rpms_work(request):
                     employee_id=user.employee_id,
                     class_work_id=class_work_id, # IDENTIFIER FOR WHAT TYPE OF CLASSWORK
                     attachment_id=str(uuid4()),
-                    post_id = str(uuid4())
+                    post_id = str(uuid4()),
+                    school_year = class_work_id.school_year
                 )
                 
                 if index == "1":
