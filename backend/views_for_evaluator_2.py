@@ -1016,7 +1016,7 @@ def evaluator_get_records_cot(request):
 @csrf_exempt
 def evaluator_get_records_rpms(request):
     try:
-        if request.method == "GET":
+        if request.method == "POST":
             
             user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
             if not user:
@@ -1028,6 +1028,8 @@ def evaluator_get_records_rpms(request):
                 "school_year": [],
                 "rpms_taker": [],
             }
+            
+            school_year = request.POST.get('school_year', None)
 
             rpms = models.RPMSFolder.objects.filter(school_id=user.school_id).order_by('-created_at')
             for rpm in rpms:
@@ -1071,7 +1073,7 @@ def evaluator_get_records_rpms(request):
 @csrf_exempt
 def evaluator_get_records_ipcrf(request):
     try:
-        if request.method == "GET":
+        if request.method == "POST":
             
             user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
             if not user:
@@ -1085,8 +1087,14 @@ def evaluator_get_records_ipcrf(request):
                 "quarter": [],
                 "ipcrf_taker": [],
             }
-
-            ipcrfs = models.IPCRFForm.objects.filter(school_id=user.school_id, form_type="PART 1").order_by('-created_at')
+            
+            
+            school_year = request.POST.get('school_year', None)
+            if school_year : 
+                ipcrfs = models.IPCRFForm.objects.filter(school_id=user.school_id, form_type="PART 1" , school_year=school_year).order_by('-created_at')
+            else :
+                ipcrfs = models.IPCRFForm.objects.filter(school_id=user.school_id, form_type="PART 1").order_by('-created_at')
+            
             for ipcrf in ipcrfs:
                 if ipcrf.school_year not in data["school_year"]:
                     data["school_year"].append(ipcrf.school_year)
