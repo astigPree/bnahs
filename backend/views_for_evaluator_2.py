@@ -1083,7 +1083,8 @@ def evaluator_get_records_ipcrf(request):
             
 
             data = {
-                "school_year": [],
+                "hp_school_year": [],
+                "p_school_year": [],
                 "quarter": [],
                 "ipcrf_taker": [],
             }
@@ -1096,8 +1097,10 @@ def evaluator_get_records_ipcrf(request):
                 ipcrfs = models.IPCRFForm.objects.filter(school_id=user.school_id, form_type="PART 1").order_by('-created_at')
             
             for ipcrf in ipcrfs:
-                if ipcrf.school_year not in data["school_year"]:
-                    data["school_year"].append(ipcrf.school_year)
+                if ipcrf.school_year not in data["p_school_year"] and ipcrf.is_for_teacher_proficient :
+                    data["p_school_year"].append(ipcrf.school_year)
+                if ipcrf.school_year not in data["hp_school_year"] and not ipcrf.is_for_teacher_proficient :
+                    data["hp_school_year"].append(ipcrf.school_year)
 
                 ipcrf_record = {
                     "school_year": ipcrf.school_year,
