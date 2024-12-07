@@ -292,8 +292,9 @@ def school_summary_rpms(request):
                     'message' : 'Teacher not found',
                     }, status=400)
 
+            school_year = request.POST.get('school_year', None)
             
-            return JsonResponse( my_utils.get_kra_breakdown_of_a_teacher(employee_id=teacher.employee_id) , status=200)
+            return JsonResponse( my_utils.get_kra_breakdown_of_a_teacher(employee_id=teacher.employee_id , school_year=school_year) , status=200)
     
     except Exception as e:
         return JsonResponse({
