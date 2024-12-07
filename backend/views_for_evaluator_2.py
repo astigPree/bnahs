@@ -950,7 +950,7 @@ def evaluator_summary_swot(request):
 @csrf_exempt
 def evaluator_get_records_cot(request):
     try:
-        if request.method == "GET":
+        if request.method == "POST":
             
             user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
             if not user:
@@ -965,7 +965,11 @@ def evaluator_get_records_cot(request):
                 "cot_taker" : [],
             }
             
-            cots = models.COTForm.objects.filter(school_id=user.school_id).order_by('-created_at')
+            school_year = request.POST.get('school_year', school_year)
+            if school_year:
+                cots = models.COTForm.objects.filter(school_id=user.school_id).order_by('-created_at')
+            else:
+                cots = models.COTForm.objects.filter(school_id=user.school_id , school_year=school_year).order_by('-created_at')
             for cot in cots:
                 if cot.quarter not in data["quarter"]:
                     data["quarter"].append(cot.quarter)
