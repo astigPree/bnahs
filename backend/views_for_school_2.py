@@ -603,7 +603,7 @@ def get_all_teacher_by_status(request):
 def teacher_generate_report_by_school(request):
     try:
         
-        if request.method == "GET":
+        if request.method == "POST":
             user = models.School.objects.filter(email_address=request.user.username).first()
             if not user:
                 return JsonResponse({
@@ -611,7 +611,7 @@ def teacher_generate_report_by_school(request):
                     }, status=400)
             
             
-            
+            school_year = request.POST.get('school_year', None)
              
             teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher')
             
@@ -625,11 +625,15 @@ def teacher_generate_report_by_school(request):
                 
                 data['job'] = teacher.get_job_years()
                 data['recommendation'] = my_utils.get_recommendation_result_with_percentage(employee_id=teacher.employee_id)
+                if school_year :
+                    ipcrf = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1', school_year=school_year).order_by('-created_at').first()
+                else :
+                    ipcrf = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()
                 
-                ipcrf = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()
+                
                 data['rating'] = ipcrf.get_information() if ipcrf else None
                 data['performance_rating'] = my_utils.classify_ipcrf_score(ipcrf.evaluator_rating if ipcrf else 0.0)
-                data['ranking'] = my_utils.recommend_rank(teacher)
+                data['ranking'] = my_utils.recommend_rank(teacher=teacher , school_year=school_year)
                 data['teacher'] = teacher.get_information()
                 data['rater'] = None
                 if ipcrf:

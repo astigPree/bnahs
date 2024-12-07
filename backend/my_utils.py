@@ -532,10 +532,15 @@ def classify_ipcrf_score(score):
         return "Unknown"
 
 
-def recommend_rank(teacher : models.People):
+def recommend_rank(teacher : models.People , school_year = None):
     tenure = teacher.working_years()
     current_rank = teacher.position
-    recent_form = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1', is_expired=False).order_by('-created_at').first()
+    
+    if school_year: 
+        recent_form = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1', school_year=school_year).order_by('-created_at').first()
+    else:
+        recent_form = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()
+    
     recent_ipcrf_score = recent_form.evaluator_rating if recent_form else 0  # Assume this method returns the most recent IPCRF score
     score_classification = classify_ipcrf_score(recent_ipcrf_score)
     
