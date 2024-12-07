@@ -965,11 +965,11 @@ def evaluator_get_records_cot(request):
                 "cot_taker" : [],
             }
             
-            school_year = request.POST.get('school_year', school_year)
+            school_year = request.POST.get('school_year', None)
             if school_year:
-                cots = models.COTForm.objects.filter(school_id=user.school_id).order_by('-created_at')
-            else:
                 cots = models.COTForm.objects.filter(school_id=user.school_id , school_year=school_year).order_by('-created_at')
+            else:
+                cots = models.COTForm.objects.filter(school_id=user.school_id).order_by('-created_at')
             for cot in cots:
                 if cot.quarter not in data["quarter"]:
                     data["quarter"].append(cot.quarter)
