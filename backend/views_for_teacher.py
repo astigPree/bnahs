@@ -266,7 +266,7 @@ def teacher_kba_breakdown(request ):
                     }, status=400)
              
             
-            school_year = request.GET.get('school_year', None)
+            school_year = request.POST.get('school_year', None)
             
             return JsonResponse( my_utils.get_kra_breakdown_of_a_teacher(employee_id=user.employee_id , school_year=school_year) , status=200)
     
