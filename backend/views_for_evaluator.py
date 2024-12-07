@@ -305,7 +305,7 @@ def evaluator_records(request):
 @csrf_exempt
 def evaluator_get_annual_ratings(request):
     try:
-        if request.method == 'GET':
+        if request.method == 'POST':
             user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username).first()
             # TODO : IDENTIFY IF THE USER IS EVALUATOR OR NOT
             if not user:
@@ -328,13 +328,20 @@ def evaluator_get_annual_ratings(request):
                 },
             }
             
+            school_year = request.POST.request('school_year' , None)
+            
             
             teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher').order_by('-created_at')
             if not teachers:
                 return JsonResponse(teachers_ratings, status=400)
             
             for teacher in teachers:
-                ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first() 
+                
+                if school_year:
+                    ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1' , school_year=school_year).order_by('-created_at').first() 
+                else:
+                    ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first() 
+                
                 if ipcrf_1:
                     if my_utils.is_proficient_faculty(teacher):
                         teachers_ratings["proficient"]["names"].append(teacher.first_name)
