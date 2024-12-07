@@ -328,7 +328,7 @@ def evaluator_get_annual_ratings(request):
                 },
             }
             
-            school_year = request.POST.request('school_year' , None)
+            school_year = request.POST.get('school_year' , None)
             
             
             teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher').order_by('-created_at')
