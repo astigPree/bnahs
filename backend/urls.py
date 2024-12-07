@@ -43,6 +43,7 @@ urlpatterns = [
     path('user/get/school/years/rpms/', views.get_school_year_kra), 
     path('user/get/school/years/cots/', views.get_school_year_cot),
     path('user/get/school/years/ipcrfs/', views.get_school_year_ipcrf),
+    path('user/get/school/years/ipcrfs/all/', views.get_school_year_ipcrf_all),
     
     
     

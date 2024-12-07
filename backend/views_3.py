@@ -137,5 +137,32 @@ def get_school_year_ipcrf(request):
 
 
 
+@csrf_exempt
+def get_school_year_ipcrf_all(request):
+    try:
+        if request.method == "GET": 
+
+            ipcrfs = models.IPCRFForm.objects.filter(form_type="PART 1").order_by('-created_at')
+            school_years = {
+                'proficient': [],
+                'highly_proficient': []
+            }
+            for ipcrf in ipcrfs:
+                if ipcrf.is_for_teacher_proficient:
+                    if ipcrf.school_year not in school_years['proficient']:
+                        school_years['proficient'].append(ipcrf.school_year)
+                else:
+                    if ipcrf.school_year not in school_years['highly_proficient']:
+                        school_years['highly_proficient'].append(ipcrf.school_year)
+            
+            return JsonResponse({
+                "school_years": school_years,
+            }, status=200)
+
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)})
+
+    return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400) 
+
 
 
