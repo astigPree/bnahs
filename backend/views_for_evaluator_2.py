@@ -959,7 +959,8 @@ def evaluator_get_records_cot(request):
                     }, status=400)
             
             data = {
-                "school_year" : [],
+                "hp_school_year" : [],
+                "p_school_year" : [],
                 "quarter" : [],
                 "cot_taker" : [],
             }
@@ -968,8 +969,10 @@ def evaluator_get_records_cot(request):
             for cot in cots:
                 if cot.quarter not in data["quarter"]:
                     data["quarter"].append(cot.quarter)
-                if cot.school_year not in data["school_year"]:
-                    data["school_year"].append(cot.school_year)
+                if cot.school_year not in data["p_school_year"] and cot.is_for_teacher_proficient:
+                    data["p_school_year"].append(cot.school_year)
+                if cot.school_year not in data["hp_school_year"] and not cot.is_for_teacher_proficient:
+                    data["hp_school_year"].append(cot.school_year)
                 
                 cot_taker = {
                     "school_year" : cot.school_year,
