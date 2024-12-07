@@ -1025,16 +1025,21 @@ def evaluator_get_records_rpms(request):
                     }, status=400)
             
             data = {
-                "school_year": [],
+                "hp_school_year" : [],
+                "p_school_year" : [],
                 "rpms_taker": [],
             }
             
             school_year = request.POST.get('school_year', None)
-
-            rpms = models.RPMSFolder.objects.filter(school_id=user.school_id).order_by('-created_at')
+            if school_year:
+                rpms = models.RPMSFolder.objects.filter(school_id=user.school_id , rpms_folder_school_year=school_year).order_by('-created_at')
+            else:
+                rpms = models.RPMSFolder.objects.filter(school_id=user.school_id).order_by('-created_at')
             for rpm in rpms:
-                if rpm.rpms_folder_school_year not in data["school_year"]:
-                    data["school_year"].append(rpm.rpms_folder_school_year)
+                if rpm.rpms_folder_school_year not in data["p_school_year"] and rpm.is_for_teacher_proficient:
+                    data["p_school_year"].append(rpm.rpms_folder_school_year)
+                if rpm.rpms_folder_school_year not in data["hp_school_year"] and not rpm.is_for_teacher_proficient:
+                    data["hp_school_year"].append(rpm.rpms_folder_school_year)
 
                 classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpm.rpms_folder_id, school_id=user.school_id).order_by('-created_at')
                 for classwork in classworks:
