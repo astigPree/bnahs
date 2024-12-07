@@ -432,7 +432,7 @@ def number_of_pending_evaluation(request):
 def evaluation_submission_rate(request):
     # Get the number of evaluated teacher each school
     try:
-        if request.method == 'GET':
+        if request.method == 'POST':
             
             user = models.MainAdmin.objects.filter(username=request.user.username).first()
             if not user:
@@ -451,6 +451,9 @@ def evaluation_submission_rate(request):
                 'values_100' : []
             }
             
+            
+            school_year = request.POST.get('school_year', None)
+            
             schools = models.School.objects.filter(is_accepted=True).order_by('-created_at')
             for school in schools:
                 data['labels'].append(school.school_name)
@@ -459,7 +462,13 @@ def evaluation_submission_rate(request):
                 teachers = models.People.objects.filter(is_accepted=True , school_id=school.school_id, role='Teacher').order_by('-created_at')
                 number_of_teacher = teachers.count() if teachers.count() > 0 else 1 
                 for teacher in teachers:
-                    ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()
+            
+                    if school_year:
+                        ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1', school_year=school_year).order_by('-created_at').first()
+                    else:
+                        ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()
+            
+            
                     if ipcrf_1:
                         total_rating += ipcrf_1.evaluator_rating
                     else:
