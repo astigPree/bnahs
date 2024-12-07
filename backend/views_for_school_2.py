@@ -668,7 +668,7 @@ def teacher_generate_report_by_school(request):
 @csrf_exempt
 def school_get_records_cot(request):
     try:
-        if request.method == "GET":
+        if request.method == "POST":
             
             user = models.School.objects.filter(email_address=request.user.username).first()
             if not user:
@@ -678,17 +678,24 @@ def school_get_records_cot(request):
             
             
             data = {
-                "school_year" : [],
+                "hp_school_year" : [],
+                "p_school_year" : [],
                 "quarter" : [],
                 "cot_taker" : [],
             }
             
-            cots = models.COTForm.objects.filter(school_id=user.school_id).order_by('-created_at')
+            school_year = request.POST.get('school_year', None)
+            if school_year:
+                cots = models.COTForm.objects.filter(school_id=user.school_id , school_year=school_year).order_by('-created_at')
+            else:
+                cots = models.COTForm.objects.filter(school_id=user.school_id).order_by('-created_at')
             for cot in cots:
                 if cot.quarter not in data["quarter"]:
                     data["quarter"].append(cot.quarter)
-                if cot.school_year not in data["school_year"]:
-                    data["school_year"].append(cot.school_year)
+                if cot.school_year not in data["p_school_year"] and cot.is_for_teacher_proficient:
+                    data["p_school_year"].append(cot.school_year)
+                if cot.school_year not in data["hp_school_year"] and not cot.is_for_teacher_proficient:
+                    data["hp_school_year"].append(cot.school_year)
                 
                 cot_taker = {
                     "school_year" : cot.school_year,
@@ -728,7 +735,7 @@ def school_get_records_cot(request):
 @csrf_exempt
 def school_get_records_rpms(request):
     try:
-        if request.method == "GET":
+        if request.method == "POST":
             user = models.School.objects.filter(email_address=request.user.username).first()
             if not user:
                 return JsonResponse({
@@ -736,14 +743,21 @@ def school_get_records_rpms(request):
                 }, status=400)
 
             data = {
-                "school_year": [],
+                "hp_school_year" : [],
+                "p_school_year" : [],
                 "rpms_taker": [],
             }
 
-            rpms = models.RPMSFolder.objects.filter(school_id=user.school_id).order_by('-created_at')
+            school_year = request.POST.get('school_year', None)
+            if school_year:
+                rpms = models.RPMSFolder.objects.filter(school_id=user.school_id , rpms_folder_school_year=school_year).order_by('-created_at')
+            else:
+                rpms = models.RPMSFolder.objects.filter(school_id=user.school_id).order_by('-created_at')
             for rpm in rpms:
-                if rpm.rpms_folder_school_year not in data["school_year"]:
-                    data["school_year"].append(rpm.rpms_folder_school_year)
+                if rpm.rpms_folder_school_year not in data["p_school_year"] and rpm.is_for_teacher_proficient:
+                    data["p_school_year"].append(rpm.rpms_folder_school_year)
+                if rpm.rpms_folder_school_year not in data["hp_school_year"] and not rpm.is_for_teacher_proficient:
+                    data["hp_school_year"].append(rpm.rpms_folder_school_year)
 
                 classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpm.rpms_folder_id, school_id=user.school_id).order_by('-created_at')
                 for classwork in classworks:
@@ -784,7 +798,7 @@ def school_get_records_rpms(request):
 @csrf_exempt
 def school_get_records_ipcrf(request):
     try:
-        if request.method == "GET":
+        if request.method == "POST":
             user = models.School.objects.filter(email_address=request.user.username).first()
             if not user:
                 return JsonResponse({
@@ -792,15 +806,23 @@ def school_get_records_ipcrf(request):
                 }, status=400)
 
             data = {
-                "school_year": [],
+                "hp_school_year": [],
+                "p_school_year": [],
                 "quarter": [],
                 "ipcrf_taker": [],
             }
 
-            ipcrfs = models.IPCRFForm.objects.filter(school_id=user.school_id, form_type="PART 1").order_by('-created_at')
+            
+            school_year = request.POST.get('school_year', None)
+            if school_year : 
+                ipcrfs = models.IPCRFForm.objects.filter(school_id=user.school_id, form_type="PART 1" , school_year=school_year).order_by('-created_at')
+            else :
+                ipcrfs = models.IPCRFForm.objects.filter(school_id=user.school_id, form_type="PART 1").order_by('-created_at')
             for ipcrf in ipcrfs:
-                if ipcrf.school_year not in data["school_year"]:
-                    data["school_year"].append(ipcrf.school_year)
+                if ipcrf.school_year not in data["p_school_year"] and ipcrf.is_for_teacher_proficient :
+                    data["p_school_year"].append(ipcrf.school_year)
+                if ipcrf.school_year not in data["hp_school_year"] and not ipcrf.is_for_teacher_proficient :
+                    data["hp_school_year"].append(ipcrf.school_year)
 
                 ipcrf_record = {
                     "school_year": ipcrf.school_year,
