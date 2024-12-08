@@ -461,19 +461,24 @@ def get_kra_breakdown_of_a_teacher(employee_id : str , school_year = None):
 
     breakdown = {
         'kra' : [],
-        'averages' : []
+        'averages' : [],
+        'scores' : []
     }
     
     results = get_rpms_forms_by_title(employee_id , school_year)
     
     total_score = 0.0
+    real_total_score = 0
     for kra, scores in results.items():
         breakdown['kra'].append(kra)
+        breakdown['scores'].append(scores)
+        real_total_score = real_total_score + (sum(scores) if len(scores) > 0 else 0)
         total_score = total_score + (sum(scores) / len(scores) if len(scores) > 0 else 0)
         breakdown['averages'].append(sum(scores) / len(scores) if len(scores) > 0 else 0)
     
     breakdown['averages'].append(total_score)
     breakdown['kra'].append("Total Score")
+    breakdown['scores'].append(total_score)
     
     
     return breakdown
