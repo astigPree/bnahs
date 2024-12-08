@@ -371,7 +371,7 @@ def teacher_turn_in_rpms_work(request):
                         past_attachments.is_submitted = True
                 
                 if comment:
-                    past_attachments.teacher_comment = comment
+                    past_attachments.teacher_comments.append({'comment' : comment, 'date' : (timezone.now())})
                 
                 past_attachments.save()
             else :
@@ -402,7 +402,7 @@ def teacher_turn_in_rpms_work(request):
                     attachment.is_submitted = True
                 
                 if comment:
-                    attachment.teacher_comment = comment
+                    attachment.teacher_comments.append({'comment' : comment, 'date' : (timezone.now())})
                 
                 attachment.save()
                 

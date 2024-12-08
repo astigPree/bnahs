@@ -252,6 +252,7 @@ urlpatterns = [
     path('teacher/school/get/rpms/folder/classwork/', views.teacher_get_rpms_work),
     path('teacher/school/rpms/folder/classwork/turnin/', views.teacher_turn_in_rpms_work),
     path('teacher/school/get/rpms/folder/classwork/attachments/', views.teacher_get_rpms_work_attachments),
+    path('teacher/school/get/rpms/folder/classwork/attachments/comment/', views.teacher_private_comment),
     path('teacher/school/get/rpms/attachment/result/', views.teacher_get_rpms_attachment_result),
     path('teacher/school/rpms/folder/classwork/unsubmit/', views.teacher_unsubmit_class_work),
     
