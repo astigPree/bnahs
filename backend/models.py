@@ -1,6 +1,7 @@
 from django.db import models 
 from django.conf import settings
 from django.utils import timezone
+from .models_2 import *
 
 from dateutil.relativedelta import relativedelta
 
@@ -108,137 +109,7 @@ def calculate_individual_averages_for_ipcrf(content):
 
 
 
-
-class Post(models.Model):
-    post_owner = models.CharField(max_length=255, blank=True, default='') # Action ID of owner of post
-    content = models.TextField(blank=True, default='') # Content of post
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-
-    post_id = models.CharField(max_length=255, blank=True, default='') # Generated id by system to identify post
-    liked = models.JSONField(default=list, blank=True)
-    """
-        liked = [
-            action_id,
-            action_id,
-        ]
-    """
-    
-    commented = models.JSONField(default=list, blank=True)
-    """
-        commented = [
-            action_id,
-            action_id,
-        ]
-    """
-    
-    mentions = models.JSONField(default=list, blank=True)
-    """
-        mentions = [
-            action_id,
-            action_id,
-        ]
-    """
-    
-    
-    def __str__(self):
-        return f"{self.post_owner} - {self.post_id}"
-    
-    
-    def get_post(self, action_id = None):
-        data = {
-            'post_owner' : self.post_owner,
-            'content' : self.content,
-            'created_at' : self.created_at,
-            'number_of_likes' : 0,
-            'liked' : False,
-            'commented' : False,
-            'created_at' : self.created_at
-        }
-        
-        if self.liked:
-            data['number_of_likes'] = len(self.liked)
-        
-        if action_id:
-            if action_id in self.liked:
-                data['liked'] = True
-            if action_id in self.commented:
-                data['commented'] = True
-        
-        return data
-        
-           
-
-class PostAttachment(models.Model):
-    ppst_owner = models.CharField(max_length=255, blank=True, default='')
-    post_id = models.CharField(max_length=255, blank=True, default='')
-    attachment = models.FileField(upload_to='uploads/', default='', blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    
-    def __str__(self):
-        return f"{self.post_id} - {self.attachment}"
-
-    def get_attachment(self):
-        return {
-            'attachment' : self.attachment.url if self.attachment else '',
-            'created_at' : self.created_at,
-        }
-    
-
-class Comment(models.Model):
-    content = models.TextField(blank=True, default='')
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-
-    post_id = models.CharField(max_length=255, blank=True, default='') # post_id of post where comment is posted
-    comment_owner = models.CharField(max_length=255, blank=True, default='') # Action ID of owner of comment
-
-    is_private = models.BooleanField(default=False) # Used to identify if it private
-    replied_to = models.CharField(max_length=255, blank=True, default='') # Action ID where comment is replied
-    is_seen = models.JSONField(default=list, blank=True)
-    """
-        is_seen = [
-            action_id,
-            action_id,
-        ]
-    """ 
-    
-    def __str__(self):
-        return f"{self.comment_owner} - {self.post_id}"
-    
-    def get_comment(self , action_id = None):
-        data = {
-            'content' : self.content,
-            'created_at' : self.created_at,
-            'post_id' : self.post_id,
-            'comment_owner' : self.comment_owner,
-            'replied_to' : self.replied_to, 
-            'created_at' : self.created_at,
-            'is_private' : self.is_private,
-        }
-         
-        if action_id:
-            if action_id in self.is_seen:
-                data['is_seen'] = True 
-        
-        return data
-    
-    
-    def update_is_seen(self, action_id):
-        if action_id not in self.is_seen:
-            self.is_seen.append(action_id)
-            self.save()
-    
-    def is_seen(self, action_id):
-        """
-            Returns True if action_id == replied_to
-            Returns False if action_id != replied_to
-            
-            Returns None if action_id is not in is_seen
-            Returns boolean if action_id is in is_seen
-        """
-        if action_id != self.replied_to:
-            return (False, None)
-        return ( True, action_id in self.is_seen)
-
+ 
 
 class IPCRFForm(models.Model):
     """

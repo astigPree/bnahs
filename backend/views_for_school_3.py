@@ -58,6 +58,57 @@ def get_school_feeds(request):
 
 
 @csrf_exempt
+def school_replied_to(request):
+    try:
+        if request.method == "POST":
+            
+            user = models.School.objects.filter(email_address=request.user.username).first()
+            
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+                
+            comment_text = request.POST.get('comment')
+            if not comment_text:
+                return JsonResponse({
+                    'message' : 'comment_text is required',
+                    }, status=400)
+            
+            post_id = request.POST.get('post_id')
+            if not post_id:
+                return JsonResponse({
+                    'message' : 'post_id is required',
+                    }, status=400)
+            
+            
+            post = models.Post.objects.filter(post_id=post_id).first()
+            if not post:
+                return JsonResponse({
+                    'message' : 'Post not found',
+                    }, status=400)
+            
+            reply_to = request.POST.get('replied_to')
+            replied_comment = None
+            if reply_to is not None and reply_to != '':
+                replied_comment = models.Comment.objects.filter(post_id=post_id, comment_owner=reply_to).first()
+            
+            
+            
+            comment = models.Comment.objects.create(
+                
+                comment_owner=user.action_id,
+            )
+    
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Something went wrong : {e}'
+            }, status=500)
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+@csrf_exempt
 def get_school_notifications(request):
     
     return JsonResponse({
