@@ -44,9 +44,7 @@ def get_school_feeds(request):
                     "attachments" : [attachment.get_attachment() for attachment in attachments]
                 }
                 
-            return JsonResponse({
-                'feeds' : feeds
-            },status=200)
+            return JsonResponse( feeds,status=200)
         
     except Exception as e:
         return JsonResponse({
