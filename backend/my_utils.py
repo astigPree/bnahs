@@ -471,7 +471,7 @@ def get_kra_breakdown_of_a_teacher(employee_id : str , school_year = None):
     real_total_score = 0
     for kra, scores in results.items():
         breakdown['kra'].append(kra)
-        breakdown['scores'].append(scores)
+        breakdown['scores'].append(sum(scores))
         real_total_score = real_total_score + (sum(scores) if len(scores) > 0 else 0)
         total_score = total_score + (sum(scores) / len(scores) if len(scores) > 0 else 0)
         breakdown['averages'].append(sum(scores) / len(scores) if len(scores) > 0 else 0)
