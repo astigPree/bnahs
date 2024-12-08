@@ -29,6 +29,7 @@ import json
 
 from .views_for_school import *
 from .views_for_school_2 import *
+from .views_for_school_3 import *
 
 from .views_for_admin import *
 from .views_for_admin_2 import *
