@@ -1047,7 +1047,7 @@ class RPMSAttachment(models.Model):
             'comment_2' : self.comment_2,
             'comment_3' : self.comment_3,
             'comment_4' : self.comment_4,
-            'teacher_comments' : teacher_comments
+            'teacher_comments' : self.teacher_comments
         }
         """
         {
