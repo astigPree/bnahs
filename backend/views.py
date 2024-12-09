@@ -548,6 +548,8 @@ def register_school(request):
             if models.School.objects.filter(school_id=school_id).exists():
                 return JsonResponse({ 'message': 'School ID already exists'}, status=400)
             
+            if models.People.objects.filter(email_address=email_address , school_id=school_id).exists():
+                return JsonResponse({ 'message': 'School Email already exists'}, status=400)
 
             school = models.School.objects.create(
                 name=name,
@@ -628,6 +630,9 @@ def register_people(request):
                 return JsonResponse({ 'message': 'School does not exist'}, status=400)
             
             # Check if the already people exist
+            if models.School.objects.filter(email_address=email_address).exists():
+                return JsonResponse({ 'message': 'People Email already exists'}, status=400)
+            
             if models.People.objects.filter(email_address=email_address , role=role).exists():
                 return JsonResponse({ 'message': 'People Email already exists'}, status=400)
 
