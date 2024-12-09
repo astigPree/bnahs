@@ -243,7 +243,7 @@ def get_rating_sheet_for_all_teacher(request):
             for quarter in quarters:
                 cots = models.COTForm.objects.filter(quarter=quarter , school_id=user.school_id).order_by('-created_at')
                 for cot in cots:
-                    teacher = models.People.objects.filter(school_id=user.school_id, employee_id=cot.evaluated_id).first()
+                    teacher = models.People.objects.filter(school_id=user.school_id, employee_id=cot.evaluated_id , department=user.department).first()
                     if teacher:
                         quarters[quarter].append({
                             'teacher' : teacher.get_information(),
@@ -380,7 +380,7 @@ def evaluator_get_list_of_rpms_takers(request):
                     }, status=400)
                 
 
-            teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher').order_by('-created_at')
+            teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher', department=user.department).order_by('-created_at')
             
             
             teachers_rpms = []
