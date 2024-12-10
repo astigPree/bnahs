@@ -168,3 +168,5 @@ class LastFormCreated(models.Model):
     school_id = models.CharField(max_length=255, blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
+    def __str__(self):
+        return f"{self.form_type} - {self.school_year}"
