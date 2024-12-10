@@ -142,6 +142,24 @@ def create_rating_sheet(request):
                 }, status=400)
                 
             for school in schools:
+                if for_proficient == 'Proficient':
+                    models.LastFormCreated.objects.create(
+                        school_id = school.school_id,
+                        form_type = "COT",
+                        form_id = "Empty", 
+                        school_year = school_year,
+                        is_for_teacher_proficient = True,
+                    )
+                if for_proficient == 'Highly Proficient':
+                    models.LastFormCreated.objects.create(
+                        school_id = school.school_id,
+                        form_type = "COT",
+                        form_id = "Empty", 
+                        school_year = school_year,
+                        is_for_teacher_proficient = False,
+                    )
+                    
+                
                 teachers = models.People.objects.filter(is_accepted = True, role='Teacher', school_id=school.school_id)
                 # evaluator = models.People.objects.filter(is_accepted = True, role='Evaluator', school_id=school.school_id).first()
                 
@@ -253,6 +271,16 @@ def create_ipcrf_form(request):
             schools = models.School.objects.filter(is_accepted=True)
             for school in schools:
                 if position == 'Proficient':
+                    
+                    models.LastFormCreated.objects.create(
+                        school_id = school.school_id,
+                        form_type = "IPCRF",
+                        form_id = "Empty",
+                        is_for_teacher_proficient = True,
+                        school_year = school_year
+                    )
+                    
+                    
                     teachers = models.People.objects.filter(
                         is_accepted = True, 
                         role='Teacher', 
@@ -262,7 +290,18 @@ def create_ipcrf_form(request):
                     for teacher in teachers:
                         my_utils.create_ipcrf_form_proficient(school=school, teacher=teacher , school_year=school_year)
                     
+                    
                 elif position == "Highly Proficient":
+                    
+                    models.LastFormCreated.objects.create(
+                        school_id = school.school_id,
+                        form_type = "IPCRF",
+                        form_id = "Empty",
+                        is_for_teacher_proficient = False,
+                        school_year = school_year
+                    )
+                    
+                    
                     teachers = models.People.objects.filter(
                         is_accepted = True, 
                         role='Teacher', 

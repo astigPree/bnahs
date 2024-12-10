@@ -93,7 +93,11 @@ def register_people_by_school(request):
             
             # teacher = models.People.objects.filter(employee_id=people.employee_id, role='Teacher' , school_id=school_user.school_id).first()
             # latest_cot = models.COTForm.objects.filter(school_id=school_user.school_id).order_by('-created_at').first()
-            latest_cot = models.LastFormCreated.objects.filter(school_id=school_user.school_id, form_type='COT').order_by('-created_at').first()
+            latest_cot = models.LastFormCreated.objects.filter(
+                school_id=school_user.school_id, 
+                form_type='COT',
+                is_for_teacher_proficient = True if my_utils.is_proficient_faculty(people) else False
+                ).order_by('-created_at').first()
             if people.role == 'Teacher' and latest_cot: 
                 #   school : models.School , evaluator : models.People , 
                 #     subject : str , cot_date : str, quarter : str, cot_type : str, 
@@ -123,7 +127,11 @@ def register_people_by_school(request):
                             school_year=latest_cot.school_year
                         )
             
-            latest_ipcrf = models.LastFormCreated.objects.filter(school_id=school_user.school_id, form_type='IPCRF').order_by('-created_at').first()
+            latest_ipcrf = models.LastFormCreated.objects.filter(
+                school_id=school_user.school_id, 
+                form_type='IPCRF', 
+                is_for_teacher_proficient = True if my_utils.is_proficient_faculty(people) else False
+                ).order_by('-created_at').first()
             # latest_ipcrf = models.IPCRFForm.objects.filter( school_id=school_user.school_id, form_type='PART 1').order_by('-created_at').first()
             if latest_ipcrf and people.role == 'Teacher':                
                 if my_utils.is_proficient_faculty(people):
@@ -185,7 +193,11 @@ def add_people_by_school(request):
             
             # teacher = models.People.objects.filter(employee_id=people.employee_id, role='Teacher' , school_id=school_user.school_id).first()
             # latest_cot = models.COTForm.objects.filter(school_id=school_user.school_id).order_by('-created_at').first()
-            latest_cot = models.LastFormCreated.objects.filter(school_id=school_user.school_id, form_type='COT').order_by('-created_at').first()
+            latest_cot = models.LastFormCreated.objects.filter(
+                school_id=school_user.school_id, 
+                form_type='COT',
+                is_for_teacher_proficient = True if my_utils.is_proficient_faculty(people) else False
+                ).order_by('-created_at').first()
             
             if people.role == 'Teacher' and latest_cot: 
                 #   school : models.School , evaluator : models.People , 
@@ -217,7 +229,11 @@ def add_people_by_school(request):
                         )
             
             
-            latest_ipcrf = models.LastFormCreated.objects.filter(school_id=school_user.school_id, form_type='IPCRF').order_by('-created_at').first()
+            latest_ipcrf = models.LastFormCreated.objects.filter(
+                school_id=school_user.school_id, 
+                form_type='IPCRF',
+                is_for_teacher_proficient = True if my_utils.is_proficient_faculty(people) else False 
+                ).order_by('-created_at').first()
             # latest_ipcrf = models.IPCRFForm.objects.filter( school_id=school_user.school_id, form_type='PART 1').order_by('-created_at').first()
             if latest_ipcrf and people.role == 'Teacher':                
                 if my_utils.is_proficient_faculty(people):
