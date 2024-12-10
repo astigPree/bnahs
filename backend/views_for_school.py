@@ -91,45 +91,45 @@ def register_people_by_school(request):
                 password=make_password(password)
             )
             
-            teacher = models.People.objects.filter(employee_id=people.employee_id, role='Teacher' , school_id=school_user.school_id).first()
-            latest_cot = models.COTForm.objects.filter(school_id=school_user.school_id).order_by('-created_at').first()
-            
-            if teacher and latest_cot: 
+            # teacher = models.People.objects.filter(employee_id=people.employee_id, role='Teacher' , school_id=school_user.school_id).first()
+            # latest_cot = models.COTForm.objects.filter(school_id=school_user.school_id).order_by('-created_at').first()
+            latest_cot = models.LastFormCreated.objects.filter(school_id=school_user.school_id, form_type='COT').order_by('-created_at').first()
+            if people.role == 'Teacher' and latest_cot: 
                 #   school : models.School , evaluator : models.People , 
                 #     subject : str , cot_date : str, quarter : str, cot_type : str, 
                 #     school_year : str ): :
-                if my_utils.is_proficient_faculty(teacher):
+                if my_utils.is_proficient_faculty(people):
                     for quarter in [ "Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4" ]:
                         my_utils.create_cot_form(
                             school=school_user,
                             evaluator=None, 
-                            teacher=teacher,
+                            teacher=people,
                             subject='', 
                             cot_date='', 
                             quarter=f'{quarter}',
-                            cot_type='Proficient' if my_utils.is_proficient_faculty(teacher) else 'Highly Proficient',
+                            cot_type='Proficient' if my_utils.is_proficient_faculty(people) else 'Highly Proficient',
                             school_year=latest_cot.school_year
                         ) 
-                if my_utils.is_highly_proficient_faculty(teacher):
+                if my_utils.is_highly_proficient_faculty(people):
                     for quarter in [ "Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4" ]:
                         my_utils.create_cot_form(
                             school=school_user,
                             evaluator=None, 
-                            teacher=teacher,
+                            teacher=people,
                             subject='', 
                             cot_date='', 
                             quarter=f'{quarter}',
-                            cot_type='Proficient' if my_utils.is_proficient_faculty(teacher) else 'Highly Proficient',
+                            cot_type='Proficient' if my_utils.is_proficient_faculty(people) else 'Highly Proficient',
                             school_year=latest_cot.school_year
                         )
             
-            
-            latest_ipcrf = models.IPCRFForm.objects.filter( school_id=school_user.school_id, form_type='PART 1').order_by('-created_at').first()
-            if latest_ipcrf and teacher:                
-                if my_utils.is_proficient_faculty(teacher):
-                    my_utils.create_ipcrf_form_proficient(school=school_user, teacher=teacher , school_year=latest_ipcrf.school_year)
-                if my_utils.is_highly_proficient_faculty(teacher):
-                    my_utils.create_ipcrf_form_highly_proficient(school=school_user, teacher=teacher,  school_year=latest_ipcrf.school_year)     
+            latest_ipcrf = models.LastFormCreated.objects.filter(school_id=school_user.school_id, form_type='IPCRF').order_by('-created_at').first()
+            # latest_ipcrf = models.IPCRFForm.objects.filter( school_id=school_user.school_id, form_type='PART 1').order_by('-created_at').first()
+            if latest_ipcrf and people.role == 'Teacher':                
+                if my_utils.is_proficient_faculty(people):
+                    my_utils.create_ipcrf_form_proficient(school=school_user, teacher=people , school_year=latest_ipcrf.school_year)
+                if my_utils.is_highly_proficient_faculty(people):
+                    my_utils.create_ipcrf_form_highly_proficient(school=school_user, teacher=people,  school_year=latest_ipcrf.school_year)     
                 
           
             
@@ -183,45 +183,47 @@ def add_people_by_school(request):
                 )).start()
             
             
-            teacher = models.People.objects.filter(employee_id=people.employee_id, role='Teacher' , school_id=school_user.school_id).first()
-            latest_cot = models.COTForm.objects.filter(school_id=school_user.school_id).order_by('-created_at').first()
+            # teacher = models.People.objects.filter(employee_id=people.employee_id, role='Teacher' , school_id=school_user.school_id).first()
+            # latest_cot = models.COTForm.objects.filter(school_id=school_user.school_id).order_by('-created_at').first()
+            latest_cot = models.LastFormCreated.objects.filter(school_id=school_user.school_id, form_type='COT').order_by('-created_at').first()
             
-            if teacher and latest_cot: 
+            if people.role == 'Teacher' and latest_cot: 
                 #   school : models.School , evaluator : models.People , 
                 #     subject : str , cot_date : str, quarter : str, cot_type : str, 
                 #     school_year : str ): :
-                if my_utils.is_proficient_faculty(teacher):
+                if my_utils.is_proficient_faculty(people):
                     for quarter in [ "Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4" ]:
                         my_utils.create_cot_form(
                             school=school_user,
                             evaluator=None, 
-                            teacher=teacher,
+                            teacher=people,
                             subject='', 
                             cot_date='', 
                             quarter=f'{quarter}',
-                            cot_type='Proficient' if my_utils.is_proficient_faculty(teacher) else 'Highly Proficient',
+                            cot_type='Proficient' if my_utils.is_proficient_faculty(people) else 'Highly Proficient',
                             school_year=latest_cot.school_year
                         ) 
-                if my_utils.is_highly_proficient_faculty(teacher):
+                if my_utils.is_highly_proficient_faculty(people):
                     for quarter in [ "Quarter 1", "Quarter 2", "Quarter 3", "Quarter 4" ]:
                         my_utils.create_cot_form(
                             school=school_user,
                             evaluator=None, 
-                            teacher=teacher,
+                            teacher=people,
                             subject='', 
                             cot_date='', 
                             quarter=f'{quarter}',
-                            cot_type='Proficient' if my_utils.is_proficient_faculty(teacher) else 'Highly Proficient',
+                            cot_type='Proficient' if my_utils.is_proficient_faculty(people) else 'Highly Proficient',
                             school_year=latest_cot.school_year
                         )
             
             
-            latest_ipcrf = models.IPCRFForm.objects.filter( school_id=school_user.school_id, form_type='PART 1').order_by('-created_at').first()
-            if latest_ipcrf and teacher:                
-                if my_utils.is_proficient_faculty(teacher):
-                    my_utils.create_ipcrf_form_proficient(school=school_user, teacher=teacher , school_year=latest_ipcrf.school_year)
-                if my_utils.is_highly_proficient_faculty(teacher):
-                    my_utils.create_ipcrf_form_highly_proficient(school=school_user, teacher=teacher,  school_year=latest_ipcrf.school_year)     
+            latest_ipcrf = models.LastFormCreated.objects.filter(school_id=school_user.school_id, form_type='IPCRF').order_by('-created_at').first()
+            # latest_ipcrf = models.IPCRFForm.objects.filter( school_id=school_user.school_id, form_type='PART 1').order_by('-created_at').first()
+            if latest_ipcrf and people.role == 'Teacher':                
+                if my_utils.is_proficient_faculty(people):
+                    my_utils.create_ipcrf_form_proficient(school=school_user, teacher=people , school_year=latest_ipcrf.school_year)
+                if my_utils.is_highly_proficient_faculty(people):
+                    my_utils.create_ipcrf_form_highly_proficient(school=school_user, teacher=people,  school_year=latest_ipcrf.school_year)     
                 
                     
             

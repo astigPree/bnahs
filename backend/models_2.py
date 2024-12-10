@@ -151,5 +151,20 @@ class Comment(models.Model):
         if action_id != self.replied_to:
             return (False, None)
         return ( True, action_id in self.is_seen)
-
  
+class LastFormCreated(models.Model):
+    school_year = models.CharField(max_length=255, blank=True, default='')    
+    is_for_teacher_proficient = models.BooleanField(default=False) # If True, the folder is for teacher proffecient
+    form_id = models.CharField(max_length=255, blank=True, default='') 
+    form_type = models.CharField(max_length=255, blank=True, default='')
+    
+    """
+        form_type = 'COT'
+        form_type = 'IPCRF'
+        form_type = 'RPMSFolder' 
+        form_type = 'RPMSClassWork' 
+        form_type = 'RPMSAttachment' 
+    """
+    school_id = models.CharField(max_length=255, blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+
