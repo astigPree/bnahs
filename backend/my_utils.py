@@ -617,6 +617,22 @@ def create_cot_form(
     cot_form.content = content
     cot_form.is_for_teacher_proficient = True if cot_type == 'Proficient' else False
     cot_form.save()
+    
+    
+    
+    models.LastFormCreated.objects.create(
+        school_id = school.school_id,
+        form_type = "COT",
+        form_id = cot_form.cot_form_id,
+        is_for_teacher_proficient = cot_form.is_for_teacher_proficient,
+        school_year = school_year
+    )
+    
+    
+    
+    
+    
+    
     return cot_form
 
 
@@ -677,6 +693,15 @@ def create_ipcrf_form_proficient( school : models.School , teacher : models.Peop
     ipcrf_form_part_3.connection_to_other = connection_to_other
     ipcrf_form_part_3.save()
     
+    
+    models.LastFormCreated.objects.create(
+        school_id = school.school_id,
+        form_type = "IPCRF",
+        form_id = ipcrf_form_part_1.content_for_teacher,
+        is_for_teacher_proficient = True,
+        school_year = school_year
+    )
+    
     return (ipcrf_form_part_1, ipcrf_form_part_2, ipcrf_form_part_3)
     
 
@@ -724,6 +749,14 @@ def create_ipcrf_form_highly_proficient(school : models.School , teacher : model
     ipcrf_form_part_3.content_for_teacher = forms_text.form_for_ipcrf_part_3_proficient()
     ipcrf_form_part_3.connection_to_other = connection_to_other
     ipcrf_form_part_3.save()
+    
+    models.LastFormCreated.objects.create(
+        school_id = school.school_id,
+        form_type = "IPCRF",
+        form_id = ipcrf_form_part_1.content_for_teacher,
+        is_for_teacher_proficient = False,
+        school_year = school_year
+    )
     
     return (ipcrf_form_part_1, ipcrf_form_part_2, ipcrf_form_part_3)
     
