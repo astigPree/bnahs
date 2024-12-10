@@ -697,7 +697,7 @@ def create_ipcrf_form_proficient( school : models.School , teacher : models.Peop
     models.LastFormCreated.objects.create(
         school_id = school.school_id,
         form_type = "IPCRF",
-        form_id = ipcrf_form_part_1.content_for_teacher,
+        form_id = ipcrf_form_part_1.connection_to_other,
         is_for_teacher_proficient = True,
         school_year = school_year
     )
@@ -753,7 +753,7 @@ def create_ipcrf_form_highly_proficient(school : models.School , teacher : model
     models.LastFormCreated.objects.create(
         school_id = school.school_id,
         form_type = "IPCRF",
-        form_id = ipcrf_form_part_1.content_for_teacher,
+        form_id = ipcrf_form_part_1.connection_to_other,
         is_for_teacher_proficient = False,
         school_year = school_year
     )
