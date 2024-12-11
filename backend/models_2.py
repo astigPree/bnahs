@@ -150,6 +150,14 @@ class Comment(models.Model):
         ]
     """
     
+    notifications : list = models.JSONField(default=list, blank=True)
+    """
+        notifications = [
+            [action_id, action, name],
+            [action_id, action, name],
+        ] 
+    """
+    
     def __str__(self):
         return f"{self.comment_owner} - {self.post_id}"
     
@@ -162,13 +170,22 @@ class Comment(models.Model):
             'replied_to' : self.replied_to, 
             'created_at' : self.created_at,
             'is_private' : self.is_private,
-            'comment_id' : self.comment_id,
-            'commented' : self.commented
+            'comment_id' : self.comment_id, 
+            'mentions' : self.mentions
         }
          
         if action_id:
             if action_id in self.is_seen:
                 data['is_seen'] = True 
+        
+        if self.liked:
+            data['number_of_likes'] = len(self.liked)
+        
+        if action_id:
+            if action_id in self.liked:
+                data['liked'] = True
+            if action_id in self.commented:
+                data['commented'] = True
         
         return data
     
@@ -189,6 +206,33 @@ class Comment(models.Model):
         if action_id != self.replied_to:
             return (False, None)
         return ( True, action_id in self.is_seen)
+ 
+ 
+    def add_notification(self, action_id, action, name):
+        content_len = 20
+        if action == "liked":
+            action = f"{name} liked your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            self.notifications.append([action_id, action, name])
+        elif action == "commented":
+            action = f"{name} commented on your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            self.notifications.append([action_id, action, name])
+        elif action == "mentioned":
+            action = f"{name} mentioned you in your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            self.notifications.append([action_id, action, name])
+        elif action == "replied":
+            action = f"{name} replied to your comment in post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            self.notifications.append([action_id, action, name])
+        elif action == "posted":
+            action = f"{name} posted a new post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            self.notifications.append([action_id, action, name])
+        self.save()
+    
+ 
+ 
+ 
+ 
+ 
+ 
  
 class LastFormCreated(models.Model):
     school_year = models.CharField(max_length=255, blank=True, default='')    

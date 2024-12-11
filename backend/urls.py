@@ -46,7 +46,7 @@ urlpatterns = [
     path('user/get/school/years/ipcrfs/all/', views.get_school_year_ipcrf_all),
     
     path('user/react/post/' , views.react_post),
-    
+    path('user/comment/post/' , views.comment_post),
     
     
     

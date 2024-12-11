@@ -217,3 +217,55 @@ def react_post(request):
         return JsonResponse({"status": "error", "message": str(e)})
     
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
+
+
+
+
+@csrf_exempt
+def comment_post(request):
+    try:
+        if request.method == "POST":
+
+            user_type = "People"
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            if not user:
+                user_type = "School"
+                user = models.School.objects.filter(email_address=request.user.username).first()
+                if not user:
+                    return JsonResponse({"status": "error", "message": "User not found"}, status=404)
+
+
+            post_id = request.POST.get('post_id')
+            if not post_id:
+                return JsonResponse({"status": "error", "message": "Post ID is required"}, status=400)
+            
+            comment = request.POST.get('comment')
+            if not comment:
+                return JsonResponse({"status": "error", "message": "Comment is required"}, status=400)
+            
+            
+            post = models.Post.objects.filter(post_id=post_id).first()
+            if not post:
+                return JsonResponse({"status": "error", "message": "Post not found"}, status=404)
+            
+            
+            replied_to = request.POST.get('replied_to' , None) # Action id of the user responded
+            
+            
+            comment_id = str(uuid4())
+            comment = models.Comment.objects.create( 
+                content=comment, 
+                comment_id=comment_id, 
+                comment_owner = user.action_id,
+                post_id = post_id,
+            )
+            
+            if replied_to:
+                comment.replied_to = replied_to
+            
+            
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)})
+    
+    return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
+
