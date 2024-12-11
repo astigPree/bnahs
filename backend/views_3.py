@@ -202,7 +202,11 @@ def react_post(request):
             if liked == "true":
                 if user.action_id not in post.liked:
                     post.liked.append(user.action_id) 
-                    post.add_notification(user.action_id, "liked", user.fullname if user_type == "People" else user.school_name)
+                    # post.add_notification(user.action_id, "liked", user.fullname if user_type == "People" else user.school_name)
+                    
+                    school = models.School.objects.filter(school_id=user.school_id).first()
+                    if school:
+                        post.add_notification(school.action_id, "liked", user.fullname if user_type == "People" else user.school_name)
             else:
                 if user.action_id in post.liked:
                     post.liked.remove(user.action_id)
