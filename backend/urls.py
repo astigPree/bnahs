@@ -48,6 +48,7 @@ urlpatterns = [
     path('user/react/post/' , views.react_post),
     path('user/comment/post/' , views.comment_post),
     
+    path('user/get/school/details/', views.get_faculty_school_details),
     
     
     

@@ -58,7 +58,7 @@ def get_school_year_kra(request):
             }, status=200)
             
     except Exception as e:
-        return JsonResponse({"status": "error", "message": str(e)})
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
 
@@ -94,7 +94,7 @@ def get_school_year_cot(request):
             }, status=200)
 
     except Exception as e:
-        return JsonResponse({"status": "error", "message": str(e)})
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
 
@@ -130,7 +130,7 @@ def get_school_year_ipcrf(request):
             }, status=200)
 
     except Exception as e:
-        return JsonResponse({"status": "error", "message": str(e)})
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400) 
 
@@ -160,7 +160,7 @@ def get_school_year_ipcrf_all(request):
             }, status=200)
 
     except Exception as e:
-        return JsonResponse({"status": "error", "message": str(e)})
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400) 
 
@@ -218,7 +218,7 @@ def react_post(request):
             return JsonResponse({"status": "success", "message": "Post updated successfully"}, status=200)
     
     except Exception as e:
-        return JsonResponse({"status": "error", "message": str(e)})
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
     
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
 
@@ -279,7 +279,22 @@ def comment_post(request):
             
             
     except Exception as e:
-        return JsonResponse({"status": "error", "message": str(e)})
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
     
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
 
+
+
+@csrf_exempt
+def get_faculty_school_details(request):
+    try:
+        if request.method == "GET":
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            if not user: 
+                return JsonResponse({"status": "error", "message": "User not found"}, status=404)
+            school = models.School.objects.filter(school_id=user.school_id).first()
+            return JsonResponse( school.get_school_information() if school else {} , status=200) 
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
+    
+    return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
