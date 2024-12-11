@@ -70,7 +70,16 @@ class Post(models.Model):
                
                
     def add_notification(self, action_id, action, name):
-        self.notifications.append([action_id, action, name])
+        
+        if action == "liked":
+            action = f"{name} liked your post : {self.content[:10] if len(self.content) > 10 else self.content}..."
+            self.notifications.append([action_id, action, name])
+        elif action == "commented":
+            action = f"{name} commented on your post : {self.content[:10] if len(self.content) > 10 else self.content}..."
+            self.notifications.append([action_id, action, name])
+        elif action == "mentioned":
+            action = f"{name} mentioned you in your post : {self.content[:10] if len(self.content) > 10 else self.content}..."
+            self.notifications.append([action_id, action, name])
         self.save()
     
     def add_commented(self, action_id):
@@ -120,6 +129,23 @@ class Comment(models.Model):
         commented = [
             action_id,
             action_id,
+        ]
+    """
+    
+    liked : list = models.JSONField(default=list, blank=True)
+    """
+        liked = [
+            action_id,
+            action_id,
+        ]
+    """
+    
+        
+    mentions : list = models.JSONField(default=list, blank=True)
+    """
+        mentions = [
+            [action_id, name],
+            [action_id, name],
         ]
     """
     

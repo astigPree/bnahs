@@ -172,6 +172,16 @@ def get_school_year_ipcrf_all(request):
 def react_post(request):
     try:
         if request.method == "POST":
+            
+            user_type = "People"
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            if not user:
+                user_type = "School"
+                user = models.School.objects.filter(email_address=request.user.username).first()
+                if not user:
+                    return JsonResponse({"status": "error", "message": "User not found"}, status=404)
+            
+            
             post_id = request.POST.get('post_id')
             if not post_id:
                 return JsonResponse({"status": "error", "message": "Post ID is required"}, status=400)
@@ -183,11 +193,21 @@ def react_post(request):
             post = models.Post.objects.filter(post_id=post_id).first()
             if not post:
                 return JsonResponse({"status": "error", "message": "Post not found"}, status=404)
-            
+            """
+                liked = [
+                    action_id,
+                    action_id,
+                ]
+            """
             if liked == "true":
-                post.liked.append(request.user.username)
+                if user.action_id not in post.liked:
+                    post.liked.append(user.action_id) 
+                    post.add_notification(user.action_id, "liked", user.fullname if user_type == "People" else user.school_name)
             else:
-                post.liked.remove(request.user.username)
+                if user.action_id in post.liked:
+                    post.liked.remove(user.action_id)
+                
+            
             
             post.save()
             
