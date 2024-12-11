@@ -173,6 +173,9 @@ urlpatterns = [
     path('evaluator/update_education/', views.people_update_education),
     path('evaluator/profile/', views.evaluator_profile),
     
+    path('evaluator/post/notifications/', views.get_school_notifications_by_evaluator), # WORKING 
+    path('evaluator/faculties/', views.get_all_school_faculty_by_evaluator), 
+    
     path('evaluator/forms/', views.evaluator_forms), 
     path('evaluator/evaluated/', views.evaluator_records), # NEW API
     
