@@ -106,13 +106,6 @@ def school_replied_to(request):
     
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
-@csrf_exempt
-def get_school_notifications(request):
-    
-    return JsonResponse({
-        'message' : 'Not yet implemented'
-    },status=400)
-
 
 @csrf_exempt
 def school_post(request):
@@ -151,16 +144,18 @@ def school_post(request):
             
             
             post.post_id = str(uuid4())
+            post.save() 
             post.add_notification( user.action_id, "posted", user.school_name)
-            post.save()
-            
             
             for content_file in content_files:
                 models.PostAttachment.objects.create(
                     post_id=post.post_id,
                     attachment=content_file
                 )
-                
+            
+            people = models.People.objects.filter(school_id=user.school_id)
+            for person in people:
+                post.add_notification( person.action_id, "posted", user.school_name)
             
             return JsonResponse({
                 'message' : 'Post created successfully'
@@ -177,4 +172,35 @@ def school_post(request):
     return JsonResponse({
         'message' : 'Invalid request method'
     },status=400)
+
+
+
+@csrf_exempt
+def get_school_notifications(request):
+    try:
+        if request.method == "GET":
+
+            user = models.School.objects.filter(email_address=request.user.username).first()
+
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                    }, status=400)
+
+            notifications = models.Notifications.objects.filter( 
+                notification_type="POST",
+                action_id = user.action_id
+            ).order_by('-created_at')
+
+            return JsonResponse({
+                'notifications' : [notification.get_notification_by_array() for notification in notifications]
+            })
+        
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'Something went wrong : {e}'
+            }, status=500)
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 

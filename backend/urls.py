@@ -104,6 +104,7 @@ urlpatterns = [
     path('school/people/add', views.add_people_by_school), # NEW API
     path('school/feeds/', views.get_school_feeds), # WORKING
     path('school/post/', views.school_post), # WORKING
+    path('school/post/notifications/', views.get_school_notifications), # WORKING
     path('school/faculties/', views.get_all_school_faculty), 
     path('school/faculties/search/', views.search_school_faculty),
     path('school/profile/', views.get_school_information), # WORKING
