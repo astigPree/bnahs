@@ -89,13 +89,16 @@ class Post(models.Model):
             'created_at' : self.created_at,
             'post_id' : self.post_id,
             'mentions' : self.mentions,
-            'notifications' : []
+            'notifications' : [],
+            'number_of_comments' : 0
         }
         
         notifications = Notifications.objects.filter(post_id=self.post_id , notification_type = "POST").order_by('-created_at')
         for notification in notifications:
             data['notifications'].append(notification.get_notification_by_array())
- 
+
+        number_of_comments = Comment.objects.filter(post_id=self.post_id).count()
+        data['number_of_comments'] = number_of_comments
         
         if self.liked:
             data['number_of_likes'] = len(self.liked)
