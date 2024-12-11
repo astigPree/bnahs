@@ -55,6 +55,7 @@ class Post(models.Model):
             'created_at' : self.created_at,
             'post_id' : self.post_id,
             'mentions' : self.mentions,
+            'notifications' : self.notifications
         }
         
         if self.liked:
