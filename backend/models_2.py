@@ -71,15 +71,15 @@ class Post(models.Model):
                
                
     def add_notification(self, action_id, action, name):
-        
+        content_len = 20
         if action == "liked":
-            action = f"{name} liked your post : {self.content[:10] if len(self.content) > 10 else self.content}..."
+            action = f"{name} liked your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
             self.notifications.append([action_id, action, name])
         elif action == "commented":
-            action = f"{name} commented on your post : {self.content[:10] if len(self.content) > 10 else self.content}..."
+            action = f"{name} commented on your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
             self.notifications.append([action_id, action, name])
         elif action == "mentioned":
-            action = f"{name} mentioned you in your post : {self.content[:10] if len(self.content) > 10 else self.content}..."
+            action = f"{name} mentioned you in your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
             self.notifications.append([action_id, action, name])
         self.save()
     
