@@ -1,13 +1,15 @@
 from django.contrib import admin
-from .models import LastFormCreated, VerificationLink, People, Post, Comment , IPCRFForm , COTForm , RPMSFolder , RPMSClassWork , RPMSAttachment, School, MainAdmin, PostAttachment
+from .models import Notifications, LastFormCreated, VerificationLink, People, Post, Comment , IPCRFForm , COTForm , RPMSFolder , RPMSClassWork , RPMSAttachment, School, MainAdmin, PostAttachment
 
 # Register your models here.
 
 admin.site.register(VerificationLink)
 admin.site.register(MainAdmin)
-admin.site.register(School)
-
+admin.site.register(School) 
 admin.site.register(People)
+
+
+admin.site.register(Notifications)
 admin.site.register(Post)
 admin.site.register(Comment)
 admin.site.register(PostAttachment)

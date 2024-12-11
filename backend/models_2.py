@@ -1,6 +1,40 @@
 from django.db import models  
- 
 
+
+
+class Notifications(models.Model):
+    action_id = models.CharField(max_length=255, blank=True, default='')
+    action = models.CharField(max_length=255, blank=True, default='')
+    name = models.CharField(max_length=255, blank=True, default='')
+    content = models.CharField(max_length=255, blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True) 
+    post_id = models.CharField(max_length=255, blank=True, default='')
+    comment_id = models.CharField(max_length=255, blank=True, default='')
+    notification_type = models.CharField(max_length=255, blank=True, default='')
+    """
+        notification_type = "POST"
+    """
+
+    def __str__(self):
+        return f"{self.action_id} - {self.action} - {self.name} - {self.content} - {self.created_at} - {self.seen}"
+    
+    def get_notification_by_array(self):
+        return [
+            self.action_id,
+            self.content,
+            self.name
+        ]
+
+    def get_notification(self):
+        return {
+            'action_id' : self.action_id,
+            'action' : self.action,
+            'name' : self.name,
+            'content' : self.content,
+            'created_at' : self.created_at,
+            'notification_type' : self.notification_type,
+            'post_id' : self.post_id
+        }
 
 class Post(models.Model):
     post_owner = models.CharField(max_length=255, blank=True, default='') # Action ID of owner of post
@@ -55,8 +89,13 @@ class Post(models.Model):
             'created_at' : self.created_at,
             'post_id' : self.post_id,
             'mentions' : self.mentions,
-            'notifications' : self.notifications
+            'notifications' : []
         }
+        
+        notifications = Notifications.objects.filter(post_id=self.post_id , notification_type = "POST").order_by('-created_at')
+        for notification in notifications:
+            data['notifications'].append(notification.get_notification_by_array())
+ 
         
         if self.liked:
             data['number_of_likes'] = len(self.liked)
@@ -73,20 +112,50 @@ class Post(models.Model):
     def add_notification(self, action_id, action, name):
         content_len = 20
         if action == "liked":
-            action = f"{name} liked your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.insert( 0, [action_id, action, name])
+            content = f"{name} liked your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            # self.notifications.insert( 0, [action_id, action, name])
+            Notifications.objects.create(
+                action_id=action_id, action=action, 
+                name=name, content=content, 
+                post_id=self.post_id,
+                notification_type = "POST"
+            )
         elif action == "commented":
-            action = f"{name} commented on your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.insert( 0, [action_id, action, name])
+            content = f"{name} commented on your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            # self.notifications.insert( 0, [action_id, action, name])
+            Notifications.objects.create(
+                action_id=action_id, action=action, 
+                name=name, content=content, 
+                post_id=self.post_id,
+                notification_type = "POST"
+            )
         elif action == "mentioned":
-            action = f"{name} mentioned you in your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.insert( 0, [action_id, action, name])        
+            content = f"{name} mentioned you in your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            # self.notifications.insert( 0, [action_id, action, name])  
+            Notifications.objects.create(
+                action_id=action_id, action=action, 
+                name=name, content=content, 
+                post_id=self.post_id,
+                notification_type = "POST"
+            )      
         elif action == "replied":
-            action = f"{name} replied to your comment : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.insert( 0, [action_id, action, name])
+            content = f"{name} replied to your comment : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            # self.notifications.insert( 0, [action_id, action, name])
+            Notifications.objects.create(
+                action_id=action_id, action=action, 
+                name=name, content=content, 
+                post_id=self.post_id,
+                notification_type = "POST"
+            )
         elif action == "posted":
-            action = f"{name} posted a new post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.insert( 0, [action_id, action, name])
+            content = f"{name} posted a new post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            # self.notifications.insert( 0, [action_id, action, name])
+            Notifications.objects.create(
+                action_id=action_id, action=action, 
+                name=name, content=content, 
+                post_id=self.post_id,
+                notification_type = "POST"
+            )
         self.save()
     
     def add_commented(self, action_id):
@@ -177,9 +246,14 @@ class Comment(models.Model):
             'created_at' : self.created_at,
             'is_private' : self.is_private,
             'comment_id' : self.comment_id, 
-            'mentions' : self.mentions
+            'mentions' : self.mentions,
+            'notifications' : []
         }
-         
+        
+        notifications = Notifications.objects.filter(post_id=self.comment_id , notification_type = "POST").order_by('-created_at')
+        for notification in notifications:
+            data['notifications'].append(notification.get_notification_by_array())
+        
         if action_id:
             if action_id in self.is_seen:
                 data['is_seen'] = True 
@@ -217,20 +291,50 @@ class Comment(models.Model):
     def add_notification(self, action_id, action, name):
         content_len = 20
         if action == "liked":
-            action = f"{name} liked your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.insert( 0, [action_id, action, name])
+            content = f"{name} liked your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            # self.notifications.insert( 0, [action_id, action, name])
+            Notifications.objects.create(
+                action_id=action_id, action=action, 
+                name=name, content=content, 
+                comment_id=self.comment_id,
+                notification_type = "POST"
+            )
         elif action == "commented":
-            action = f"{name} commented on your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.insert( 0, [action_id, action, name])
+            content = f"{name} commented on your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            # self.notifications.insert( 0, [action_id, action, name])
+            Notifications.objects.create(
+                action_id=action_id, action=action, 
+                name=name, content=content, 
+                comment_id=self.comment_id,
+                notification_type = "POST"
+            )
         elif action == "mentioned":
-            action = f"{name} mentioned you in your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.insert( 0, [action_id, action, name])
+            content = f"{name} mentioned you in your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            # self.notifications.insert( 0, [action_id, action, name])
+            Notifications.objects.create(
+                action_id=action_id, action=action, 
+                name=name, content=content, 
+                comment_id=self.comment_id,
+                notification_type = "POST"
+            )
         elif action == "replied":
-            action = f"{name} replied to your comment : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.insert( 0, [action_id, action, name])
+            content = f"{name} replied to your comment : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            # self.notifications.insert( 0, [action_id, action, name])
+            Notifications.objects.create(
+                action_id=action_id, action=action, 
+                name=name, content=content, 
+                comment_id=self.comment_id,
+                notification_type = "POST"
+            )
         elif action == "posted":
-            action = f"{name} posted a new post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.insert( 0, [action_id, action, name])
+            content = f"{name} posted a new post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            # self.notifications.insert( 0, [action_id, action, name])
+            Notifications.objects.create(
+                action_id=action_id, action=action, 
+                name=name, content=content, 
+                comment_id=self.comment_id,
+                notification_type = "POST"
+            )
         self.save()
     
  
