@@ -261,7 +261,16 @@ def comment_post(request):
             )
             
             if replied_to:
-                comment.replied_to = replied_to
+                replied_people = models.People.objects.filter(action_id=replied_to).first()
+                if replied_people :
+                    comment.replied_to = replied_to
+                    comment.add_notification(replied_to, "replied", user.fullname if user_type == "People" else user.school_name)
+            
+            comment.save()
+            
+            post.add_notification(user.action_id, "commented", user.fullname if user_type == "People" else user.school_name)
+            
+            return JsonResponse({"status": "success", "message": "Comment added successfully"}, status=200)
             
             
     except Exception as e:

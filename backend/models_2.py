@@ -80,6 +80,12 @@ class Post(models.Model):
             self.notifications.append([action_id, action, name])
         elif action == "mentioned":
             action = f"{name} mentioned you in your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            self.notifications.append([action_id, action, name])        
+        elif action == "replied":
+            action = f"{name} replied to your comment : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            self.notifications.append([action_id, action, name])
+        elif action == "posted":
+            action = f"{name} posted a new post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
             self.notifications.append([action_id, action, name])
         self.save()
     
@@ -220,7 +226,7 @@ class Comment(models.Model):
             action = f"{name} mentioned you in your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
             self.notifications.append([action_id, action, name])
         elif action == "replied":
-            action = f"{name} replied to your comment in post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            action = f"{name} replied to your comment : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
             self.notifications.append([action_id, action, name])
         elif action == "posted":
             action = f"{name} posted a new post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."

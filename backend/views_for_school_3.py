@@ -149,8 +149,11 @@ def school_post(request):
                 content=content,
             )
             
+            
             post.post_id = str(uuid4())
+            post.add_notification( user.action_id, "posted", user.school_name)
             post.save()
+            
             
             for content_file in content_files:
                 models.PostAttachment.objects.create(
