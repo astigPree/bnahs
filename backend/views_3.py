@@ -166,3 +166,34 @@ def get_school_year_ipcrf_all(request):
 
 
 
+
+
+@csrf_exempt
+def react_post(request):
+    try:
+        if request.method == "POST":
+            post_id = request.POST.get('post_id')
+            if not post_id:
+                return JsonResponse({"status": "error", "message": "Post ID is required"}, status=400)
+            
+            liked = request.POST.get('liked')
+            if not liked:
+                return JsonResponse({"status": "error", "message": "Liked is required"}, status=400)
+            
+            post = models.Post.objects.filter(post_id=post_id).first()
+            if not post:
+                return JsonResponse({"status": "error", "message": "Post not found"}, status=404)
+            
+            if liked == "true":
+                post.liked.append(request.user.username)
+            else:
+                post.liked.remove(request.user.username)
+            
+            post.save()
+            
+            return JsonResponse({"status": "success", "message": "Post updated successfully"}, status=200)
+    
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)})
+    
+    return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)

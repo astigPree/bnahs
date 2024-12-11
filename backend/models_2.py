@@ -101,6 +101,7 @@ class Comment(models.Model):
     content = models.TextField(blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
+    comment_id = models.CharField(max_length=255, blank=True, default='') # Generated id by system to identify comment
     post_id = models.CharField(max_length=255, blank=True, default='') # post_id of post where comment is posted
     comment_owner = models.CharField(max_length=255, blank=True, default='') # Action ID of owner of comment
 
@@ -114,6 +115,14 @@ class Comment(models.Model):
         ]
     """ 
     
+    commented : list = models.JSONField(default=list, blank=True)
+    """
+        commented = [
+            action_id,
+            action_id,
+        ]
+    """
+    
     def __str__(self):
         return f"{self.comment_owner} - {self.post_id}"
     
@@ -126,6 +135,8 @@ class Comment(models.Model):
             'replied_to' : self.replied_to, 
             'created_at' : self.created_at,
             'is_private' : self.is_private,
+            'comment_id' : self.comment_id,
+            'commented' : self.commented
         }
          
         if action_id:

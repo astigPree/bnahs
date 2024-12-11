@@ -45,6 +45,7 @@ urlpatterns = [
     path('user/get/school/years/ipcrfs/', views.get_school_year_ipcrf),
     path('user/get/school/years/ipcrfs/all/', views.get_school_year_ipcrf_all),
     
+    path('user/react/post/' , views.react_post),
     
     
     
