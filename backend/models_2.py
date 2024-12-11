@@ -74,19 +74,19 @@ class Post(models.Model):
         content_len = 20
         if action == "liked":
             action = f"{name} liked your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.append([action_id, action, name])
+            self.notifications.insert( 0, [action_id, action, name])
         elif action == "commented":
             action = f"{name} commented on your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.append([action_id, action, name])
+            self.notifications.insert( 0, [action_id, action, name])
         elif action == "mentioned":
             action = f"{name} mentioned you in your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.append([action_id, action, name])        
+            self.notifications.insert( 0, [action_id, action, name])        
         elif action == "replied":
             action = f"{name} replied to your comment : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.append([action_id, action, name])
+            self.notifications.insert( 0, [action_id, action, name])
         elif action == "posted":
             action = f"{name} posted a new post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.append([action_id, action, name])
+            self.notifications.insert( 0, [action_id, action, name])
         self.save()
     
     def add_commented(self, action_id):
@@ -218,19 +218,19 @@ class Comment(models.Model):
         content_len = 20
         if action == "liked":
             action = f"{name} liked your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.append([action_id, action, name])
+            self.notifications.insert( 0, [action_id, action, name])
         elif action == "commented":
             action = f"{name} commented on your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.append([action_id, action, name])
+            self.notifications.insert( 0, [action_id, action, name])
         elif action == "mentioned":
             action = f"{name} mentioned you in your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.append([action_id, action, name])
+            self.notifications.insert( 0, [action_id, action, name])
         elif action == "replied":
             action = f"{name} replied to your comment : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.append([action_id, action, name])
+            self.notifications.insert( 0, [action_id, action, name])
         elif action == "posted":
             action = f"{name} posted a new post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
-            self.notifications.append([action_id, action, name])
+            self.notifications.insert( 0, [action_id, action, name])
         self.save()
     
  
