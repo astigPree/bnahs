@@ -271,8 +271,9 @@ def comment_post(request):
                     comment.add_notification(replied_to, "replied", user.fullname if user_type == "People" else user.school_name)
             
             comment.save()
-            
-            post.add_notification(user.action_id, "commented", user.fullname if user_type == "People" else user.school_name)
+            school = models.School.objects.filter(school_id=user.school_id).first()
+            if school and user_type == "People":
+                post.add_notification(school.action_id, "commented", user.fullname if user_type == "People" else user.school_name)
             
             return JsonResponse({"status": "success", "message": "Comment added successfully"}, status=200)
             
