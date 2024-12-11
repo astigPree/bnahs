@@ -39,7 +39,7 @@ def get_school_feeds(request):
                 comments = models.Comment.objects.filter(post_id=post.post_id).order_by('-created_at')
                 attachments = models.PostAttachment.objects.filter(post_id=post.post_id).order_by('-created_at')
                 feeds[post.post_id] = {
-                    "post" : post.get_post(),
+                    "post" : post.get_post(action_id=user.action_id),
                     "comments" : [comment.get_comment() for comment in comments],
                     "attachments" : [attachment.get_attachment() for attachment in attachments]
                 }
