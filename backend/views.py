@@ -640,16 +640,16 @@ def register_people(request):
                 return JsonResponse({ 'message': 'People ID already exists'}, status=400)
             
             
-            # verification =  models.VerificationLink.objects.filter(email=email_address).first()
+            verification =  models.VerificationLink.objects.filter(email=email_address).first()
             
-            # if verification:
-            #     if not verification.is_expired():
-            #         return JsonResponse({'message': 'Please check your email or wait for 30 mins'})
-            #     else :
-            #         verification.delete()
-            #         school = models.People.objects.filter(email_address=email_address).first()
-            #         if school:
-            #             school.delete()
+            if verification:
+                if not verification.is_expired():
+                    return JsonResponse({'message': 'Please check your email or wait for 30 mins'})
+                else :
+                    verification.delete()
+                    school = models.People.objects.filter(email_address=email_address).first()
+                    if school:
+                        school.delete()
             
             people = People.objects.create(
                 role=role,
@@ -671,19 +671,19 @@ def register_people(request):
             job_started_date = my_utils.parse_date_string(job_started)
             people.job_started = job_started_date
             
-            # verification.delete()
+            verification.delete()
             
             
-            people.is_verified = True # Remove for testing only 
+            # people.is_verified = True # Remove for testing only 
             people.save()
             
              
-            # verification = models.VerificationLink.generate_link(email_address)
+            verification = models.VerificationLink.generate_link(email_address)
             
-            # # verification_code , template , masbate_locker_email , subject
-            # Thread(target=my_utils.send_verification_email, args=(
-            #     email_address, verification , 'email-template.html', settings.EMAIL_HOST_USER, f'{role} Registration' , request
-            # )).start()
+            # verification_code , template , masbate_locker_email , subject
+            Thread(target=my_utils.send_verification_email, args=(
+                email_address, verification , 'email-template.html', settings.EMAIL_HOST_USER, f'{role} Registration' , request
+            )).start()
             
 
             return JsonResponse({
