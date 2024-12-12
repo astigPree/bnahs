@@ -374,7 +374,7 @@ def teacher_turn_in_rpms_work(request):
                     past_attachments.teacher_comments.append(
                         {
                             'comment' : comment, 
-                            'date' : (timezone.now()) , 
+                            'date' : str(timezone.now()) , 
                             'role' : 'Teacher', 
                             'name' : user.fullname,
                             'image' : user.profile.url if user.profile else ''
@@ -413,7 +413,7 @@ def teacher_turn_in_rpms_work(request):
                     attachment.teacher_comments.append(
                         {
                             'comment' : comment, 
-                            'date' : (timezone.now()) , 
+                            'date' : str(timezone.now()), 
                             'role' : 'Teacher', 
                             'name' : user.fullname,
                             'image' : user.profile.url if user.profile else ''

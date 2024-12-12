@@ -75,7 +75,7 @@ def teacher_private_comment(request):
             attachment.teacher_comments.append(
                         {
                             'comment' : comment, 
-                            'date' : (timezone.now()) , 
+                            'date' : str(timezone.now()) , 
                             'role' : 'Teacher', 
                             'name' : user.fullname,
                             'image' : user.profile.url if user.profile else ''

@@ -1016,7 +1016,7 @@ class RPMSAttachment(models.Model):
     comment_4 = models.TextField(blank=True, default='')
     teacher_comments : list = models.JSONField(default=list, blank=True)
     """
-        {'comment' : comment, 'date' : (timezone.now()) , 'role' : 'Teacher'}
+        {'comment' : comment, 'date' : str(timezone.now()) , 'role' : 'Teacher'}
     """
     
     def __str__(self):
