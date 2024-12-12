@@ -305,7 +305,7 @@ class Comment(models.Model):
                 notification_type = "POST"
             )
         elif action == "commented":
-            content = f"{name} commented on your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            content = f"{name} commented in the post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
             # self.notifications.insert( 0, [action_id, action, name])
             Notifications.objects.create(
                 action_id=action_id, action=action, 
