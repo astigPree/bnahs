@@ -260,8 +260,7 @@ class Comment(models.Model):
             if action_id in self.is_seen:
                 data['is_seen'] = True 
         
-        if self.liked:
-            data['number_of_likes'] = len(self.liked)
+        data['number_of_likes'] = len(self.liked)
         
         if action_id:
             if action_id in self.liked:
