@@ -250,7 +250,9 @@ class Comment(models.Model):
             'comment_id' : self.comment_id, 
             'mentions' : self.mentions,
             'notifications' : [],
-            'number_of_likes' : 0
+            'number_of_likes' : 0,
+            'liked' : False,
+            'commented' : False,
         }
         
         # notifications = Notifications.objects.filter(post_id=self.comment_id , notification_type = "POST").order_by('-created_at')
