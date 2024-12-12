@@ -31,13 +31,13 @@ def get_all_school_faculty_by_evaluator(request):
         if request.method == 'GET':
              
                         
-            user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username).first()
+            user = models.People.objects.filter(is_deactivated = False, is_accepted = True, employee_id=request.user.username).first()
             if not user:
                 return JsonResponse({
                    'message' : 'User not found',
                     }, status=400)
              
-            people = models.People.objects.filter(is_accepted = True, school_id=user.school_id).order_by('-created_at')
+            people = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id).order_by('-created_at')
             people_informations = [person.get_information() for person in people]
             school = models.School.objects.filter(school_id=user.school_id).first()
             people_informations.append(school.get_school_information())
@@ -63,7 +63,7 @@ def get_school_notifications_by_evaluator(request):
     try:
         if request.method == "GET":
 
-            user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username).first()
+            user = models.People.objects.filter(is_deactivated = False, is_accepted = True, employee_id=request.user.username).first()
 
             if not user:
                 return JsonResponse({

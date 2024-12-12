@@ -342,7 +342,7 @@ def get_total_number_of_teachers_in_all_school(request):
                     'message' : 'User is not an admin',
                 }, status=400)
 
-            teachers = models.People.objects.filter(is_accepted = True, role='Teacher')
+            teachers = models.People.objects.filter(is_deactivated = False, is_accepted = True, role='Teacher')
             
             return JsonResponse({
                 'total_teachers' :  teachers.count() if teachers else 0,
@@ -377,7 +377,7 @@ def number_of_evaluation_conducted(request):
                     'message' : 'User is not an admin',
                 }, status=400)
               
-            teachers = models.People.objects.filter(is_accepted = True, role='Teacher', is_evaluated=True)
+            teachers = models.People.objects.filter(is_deactivated = False, is_accepted = True, role='Teacher', is_evaluated=True)
             
             return JsonResponse({
                 'total_evaluation_conducted' : teachers.count() if teachers else 0,
@@ -411,7 +411,7 @@ def number_of_pending_evaluation(request):
                     'message' : 'User is not an admin',
                 }, status=400)
                 
-            teachers = models.People.objects.filter(is_accepted = True, role='Teacher', is_evaluated=False)  
+            teachers = models.People.objects.filter(is_deactivated = False, is_accepted = True, role='Teacher', is_evaluated=False)  
 
             return JsonResponse({
                 'total_pending_evaluation' : teachers.count() if teachers else 0,
@@ -513,7 +513,7 @@ def all_teacher_recommendations(request):
             number_of_termination = 0
             number_of_retention = 0
             
-            teachers = models.People.objects.filter(is_accepted = True, role='Teacher').order_by('-created_at')
+            teachers = models.People.objects.filter(is_deactivated = False, is_accepted = True, role='Teacher').order_by('-created_at')
             for teacher in teachers:
                 result = my_utils.get_recommendation_result(employee_id=teacher.employee_id)
                 if result == 'Promotion':
@@ -562,7 +562,7 @@ def get_tenure_of_all_teachers(request):
                     'message' : 'User is not an admin',
                 }, status=400)
         
-            people = People.objects.filter( is_accepted = True, role='Teacher')
+            people = People.objects.filter( is_deactivated = False, is_accepted = True, role='Teacher')
             total_count = people.count()
             
             if total_count == 0:

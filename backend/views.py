@@ -169,7 +169,7 @@ def get_all_teachers(request):
                     'message' : 'User not found',
                 }, status=400)
             
-            teachers = models.People.objects.filter(is_accepted = True, role="Teacher", school_id=user.school_id)
+            teachers = models.People.objects.filter(is_deactivated = False, is_accepted = True, role="Teacher", school_id=user.school_id)
             if not teachers:
                 return JsonResponse({
                     'message' : 'No teachers found',
@@ -425,7 +425,7 @@ def forgot_password(request):
             user = models.School.objects.filter(email_address=email).first()
             
             if user is None:
-                user = models.People.objects.filter(is_accepted = True, email_address=email).first()
+                user = models.People.objects.filter(is_deactivated = False, is_accepted = True, email_address=email).first()
                 if user is None:
                     return JsonResponse({
                         'message' : 'User not found',

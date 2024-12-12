@@ -160,7 +160,7 @@ def create_rating_sheet(request):
                     )
                     
                 
-                teachers = models.People.objects.filter(is_accepted = True, role='Teacher', school_id=school.school_id)
+                teachers = models.People.objects.filter(is_deactivated = False, is_accepted = True, role='Teacher', school_id=school.school_id)
                 # evaluator = models.People.objects.filter(is_accepted = True, role='Evaluator', school_id=school.school_id).first()
                 
                 for teacher in teachers:
@@ -378,7 +378,7 @@ def get_annual_ratings(request):
             for school in schools:
                 school_ratings[school.school_id] = {}
                 school_ratings[school.school_id]['Name'] = school.name
-                teachers = models.People.objects.filter( is_accepted = True, school_id=user.school_id, role='Teacher')
+                teachers = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, role='Teacher')
                 teacher_ratings = []
                 for teacher in teachers: 
                     ipcrf_1 = models.IPCRFForm.objects.filter(employee_id=teacher.employee_id, form_type='PART 1').order_by('-created_at').first()

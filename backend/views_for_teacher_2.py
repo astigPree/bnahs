@@ -937,7 +937,7 @@ def get_cot_from_by_teacher(request):
                     'message' : 'COT ID is required',
                     }, status=400)
 
-            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',
@@ -946,7 +946,7 @@ def get_cot_from_by_teacher(request):
             cots = models.COTForm.objects.filter(school_id=user.school_id, quarter=quarter , evaluated_id=teacher_id , cot_form_id=cot_id).order_by('-created_at').first()
             rater = None
             if cots :
-                rater = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=cots.employee_id , role='Evaluator').first()
+                rater = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, employee_id=cots.employee_id , role='Evaluator').first()
                 if rater:
                     rater = rater.get_information()
             return JsonResponse({

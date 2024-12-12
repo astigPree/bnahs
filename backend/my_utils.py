@@ -493,7 +493,7 @@ def get_kra_breakdown_of_school(school_id: str):
     }
     """
     school = models.School.objects.filter(school_id=school_id).first()
-    teachers = models.People.objects.filter(is_accepted = True, school_id=school.id)
+    teachers = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=school.id)
     breakdown = {
         'kra': [],
         'averages': []
@@ -1274,7 +1274,7 @@ def generate_report(school : models.School):
         # ["Jane Smith", "85", "88", "90", "89", "82","80", "0.34", "Very Good"]
     ]
     
-    teachers = models.People.objects.filter(school_id=school.school_id).filter(is_accepted = True)
+    teachers = models.People.objects.filter(school_id=school.school_id).filter(is_deactivated = False, is_accepted = True)
     for teacher in teachers:
         teacher_data_individual = []
         teacher_data_individual.append(teacher.fullname)

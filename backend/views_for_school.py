@@ -351,7 +351,7 @@ def get_all_school_faculty(request):
                     'message' : 'User not found',
                     }, status=400)
             
-            people = models.People.objects.filter(is_accepted = True, school_id=user.school_id).order_by('-created_at')
+            people = models.People.objects.filter( is_accepted = True, school_id=user.school_id).order_by('-created_at')
             people_informations = [person.get_information() for person in people]
             people_informations.append(user.get_school_information())
             return JsonResponse({
@@ -381,7 +381,7 @@ def get_number_of_school_faculty(request):
                     'message' : 'User not found',
                     }, status=400)
 
-            people = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role="Teacher")
+            people = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, role="Teacher")
 
             return JsonResponse({
                 'number_of_school_faculty' : len(people)
@@ -409,7 +409,7 @@ def get_number_of_school_faculty_evaluated(request):
                     'message' : 'User not found',
                     }, status=400)
 
-            people = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role="Teacher", is_evaluated=True)
+            people = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, role="Teacher", is_evaluated=True)
 
             return JsonResponse({
                 'number_of_school_faculty_evaluated' : len(people)
@@ -437,7 +437,7 @@ def get_number_of_school_faculty_not_evaluated(request):
                     'message' : 'User not found',
                     }, status=400)
 
-            people = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role="Teacher", is_evaluated=False)
+            people = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, role="Teacher", is_evaluated=False)
 
             return JsonResponse({
                 'number_of_school_faculty_evaluated' : len(people)
@@ -474,7 +474,7 @@ def search_school_faculty(request):
                     }, status=400)
             
             
-            people = models.People.objects.filter(is_accepted = True, fullname__icontains=query , school_id=user.school_id).all()
+            people = models.People.objects.filter(is_deactivated = False, is_accepted = True, fullname__icontains=query , school_id=user.school_id).all()
             
             people_information = [person.get_information() for person in people]
             
@@ -514,7 +514,7 @@ def get_search_school_faculty_for_mentioning(request):
                     }, status=400)
                 
             
-            search_people = models.People.objects.filter(is_accepted = True, school_id=user.school_id, fullname__icontains=query) # Search by name
+            search_people = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, fullname__icontains=query) # Search by name
             if not search_people:
                 return JsonResponse({
                     'people' : [],
@@ -657,7 +657,7 @@ def school_get_teacher_recommendations(request):
             
             
             # FOR ALL TEACHER
-            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher')
+            teachers = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, role='Teacher')
             proficient_count = 0
             highly_proficient_count = 0
             for teacher in teachers:
@@ -726,7 +726,7 @@ def school_get_annual_ratings(request):
                     'message' : 'User not found',
                     }, status=400)
             
-            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher')
+            teachers = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, role='Teacher')
             labels = []
             ratings = []
             for teacher in teachers:
@@ -775,7 +775,7 @@ def school_get_performance_true_year(request):
                     'message' : 'User not found',
                     }, status=400)
              
-            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher') 
+            teachers = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, role='Teacher') 
             if not teachers:
                 return JsonResponse({
                     'message' : 'Teachers not found',

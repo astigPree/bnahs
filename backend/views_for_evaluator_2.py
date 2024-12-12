@@ -34,7 +34,7 @@ def check_teacher_ipcrf_form_part_1_by_evaluator(request):
         
         if request.method == 'POST':
             
-            user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
+            user = models.People.objects.filter(is_deactivated = False, is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
@@ -114,7 +114,7 @@ def check_teacher_ipcrf_form_part_1_by_evaluator(request):
                     'message' : 'Invalid IPCRF ID',
                     }, status=400)
             
-            teacher = models.People.objects.filter(is_accepted = True, employee_id=part_1.employee_id, role='Teacher').first()
+            teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, employee_id=part_1.employee_id, role='Teacher').first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',
@@ -166,14 +166,14 @@ def check_teacher_ipcrf_form_part_1_by_evaluator(request):
 def get_all_teacher_in_school(request):
     try:
         if request.method == 'GET':
-            user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username).first() 
+            user = models.People.objects.filter(is_deactivated = False, is_accepted = True, employee_id=request.user.username).first() 
             
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
                 }, status=400)
   
-            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher').order_by('-created_at')
+            teachers = models.People.objects.filter(is_deactivated = False,is_accepted = True, school_id=user.school_id, role='Teacher').order_by('-created_at')
             
             teachers_data = []
             for teacher in teachers:
@@ -227,7 +227,7 @@ def get_rating_sheet_for_all_teacher(request):
     try:
         if request.method == 'GET':
             
-            user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username, role='Evaluator').first()
+            user = models.People.objects.filter(is_deactivated = False, is_accepted = True, employee_id=request.user.username, role='Evaluator').first()
             if not user:
                 return JsonResponse({
                    'message' : 'User not found',
@@ -269,7 +269,7 @@ def evaluator_check_rpms_attachment(request):
         
         if request.method == 'POST':
             
-            user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
+            user = models.People.objects.filter(is_deactivated = False, is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
@@ -346,7 +346,7 @@ def evaluator_check_rpms_attachment(request):
             rpms.evaluator_id = user.employee_id
             my_utils.update_rpms_attachment(rpms_attachment=rpms, content=content)
             
-            teacher = models.People.objects.filter(is_accepted = True, employee_id=rpms.employee_id, role='Teacher').first()
+            teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, employee_id=rpms.employee_id, role='Teacher').first()
             evaluation = ""
             if not teacher.is_evaluated:
                 evaluation = teacher.update_is_evaluted()
@@ -373,7 +373,7 @@ def evaluator_get_list_of_rpms_takers(request):
     try:
         
         if request.method == 'GET':
-            user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
+            user = models.People.objects.filter(is_deactivated = False, is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
@@ -714,7 +714,7 @@ def evaluator_summary_recommendations(request):
                     'message' : 'teacher_id is required',
                     }, status=400)
             
-            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',
@@ -759,7 +759,7 @@ def evaluator_summary_performance(request):
                     'message' : 'teacher_id is required',
                     }, status=400)
 
-            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            teacher = models.People.objects.filter(is_deactivated = False,is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',
@@ -803,7 +803,7 @@ def evaluator_summary_rpms(request):
                     'message' : 'teacher_id is required',
                     }, status=400)
 
-            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',
@@ -843,7 +843,7 @@ def evaluator_summary_swot(request):
                     'message' : 'teacher_id is required',
                     }, status=400)
 
-            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            teacher = models.People.objects.filter(is_deactivated = False,is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',
@@ -952,7 +952,7 @@ def evaluator_get_records_cot(request):
     try:
         if request.method == "POST":
             
-            user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
+            user = models.People.objects.filter(is_deactivated = False,is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
@@ -1018,7 +1018,7 @@ def evaluator_get_records_rpms(request):
     try:
         if request.method == "POST":
             
-            user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
+            user = models.People.objects.filter(is_deactivated = False, is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
@@ -1080,7 +1080,7 @@ def evaluator_get_records_ipcrf(request):
     try:
         if request.method == "POST":
             
-            user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
+            user = models.People.objects.filter(is_deactivated = False, is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
@@ -1144,7 +1144,7 @@ def evaluator_get_records_ipcrf(request):
 def evaluator_get_ipcrf(request):
     try:
         if request.method == 'POST':
-            user = models.People.objects.filter(is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
+            user = models.People.objects.filter(is_deactivated = False, is_accepted = True, employee_id=request.user.username , role='Evaluator').first()
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
@@ -1164,7 +1164,7 @@ def evaluator_get_ipcrf(request):
                     'message' : 'IPCRF ID is required',
                     }, status=400)
             
-            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',

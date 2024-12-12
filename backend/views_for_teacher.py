@@ -41,7 +41,7 @@ def login_teacher(request):
                     'message' : 'Please provide employee_id and password',
                     }, status=400)
             
-            user = models.People.objects.filter(is_accepted = True, employee_id=employee_id, password=password).first()
+            user = models.People.objects.filter(is_deactivated = False, is_accepted = True, employee_id=employee_id, password=password).first()
             if not user:
                 return JsonResponse({
                     'message' : 'Invalid employee_id or password',

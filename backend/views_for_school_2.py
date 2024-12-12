@@ -153,7 +153,7 @@ def school_summary(request):
                     'message' : 'User not found',
                     }, status=400)
             
-            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher')
+            teachers = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, role='Teacher')
             teacher_count = teachers.count()
             evaluated_teacher_count = teachers.filter(is_evaluated = True).count()
             un_evaluated_teacher_count = teachers.filter(is_evaluated = False).count()
@@ -199,7 +199,7 @@ def school_summary_recommendations(request):
                     'message' : 'teacher_id is required',
                     }, status=400)
             
-            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',
@@ -243,7 +243,7 @@ def school_summary_performance(request):
                     'message' : 'teacher_id is required',
                     }, status=400)
 
-            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',
@@ -286,7 +286,7 @@ def school_summary_rpms(request):
                     'message' : 'teacher_id is required',
                     }, status=400)
 
-            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',
@@ -332,7 +332,7 @@ def school_get_kras_scores(request):
                 
             } 
 
-            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher')
+            teachers = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, role='Teacher')
             kra1 = 0.0
             kra2 = 0.0
             kra3 = 0.0
@@ -384,7 +384,7 @@ def school_summary_swot(request):
                     'message' : 'teacher_id is required',
                     }, status=400)
 
-            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',
@@ -498,7 +498,7 @@ def get_all_teachers_by_school(request):
                     }, status=400)
             
             
-            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher').all()
+            teachers = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, role='Teacher').all()
             data = {
                 "proficient" : [],
                 "highly_proficient" : [],
@@ -614,7 +614,7 @@ def teacher_generate_report_by_school(request):
             
             school_year = request.POST.get('school_year', None)
              
-            teachers = models.People.objects.filter(is_accepted = True, school_id=user.school_id, role='Teacher')
+            teachers = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, role='Teacher')
             
             main_data = []
             
@@ -885,7 +885,7 @@ def get_rating_sheet_by_school(request):
                     'message' : 'Quarter is required',
                     }, status=400)
             
-            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',
@@ -936,7 +936,7 @@ def school_get_ipcrf(request):
                     'message' : 'IPCRF ID is required',
                     }, status=400)
             
-            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',
@@ -984,7 +984,7 @@ def deactivate_faculty(request):
                     'message' : 'Teacher ID is required',
                     }, status=400)
             
-            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',
@@ -1038,7 +1038,7 @@ def get_cot_from_school(request):
                     'message' : 'COT ID is required',
                     }, status=400)
 
-            teacher = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',
@@ -1047,7 +1047,7 @@ def get_cot_from_school(request):
             cots = models.COTForm.objects.filter(school_id=user.school_id, quarter=quarter , evaluated_id=teacher_id , cot_form_id=cot_id).order_by('-created_at').first()
             rater = None
             if cots :
-                rater = models.People.objects.filter(is_accepted = True, school_id=user.school_id, employee_id=cots.employee_id , role='Evaluator').first()
+                rater = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, employee_id=cots.employee_id , role='Evaluator').first()
                 if rater:
                     rater = rater.get_information()
             return JsonResponse({
