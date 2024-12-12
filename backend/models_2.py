@@ -249,7 +249,8 @@ class Comment(models.Model):
             'is_private' : self.is_private,
             'comment_id' : self.comment_id, 
             'mentions' : self.mentions,
-            'notifications' : []
+            'notifications' : [],
+            'number_of_likes' : 0
         }
         
         notifications = Notifications.objects.filter(post_id=self.comment_id , notification_type = "POST").order_by('-created_at')
@@ -260,7 +261,8 @@ class Comment(models.Model):
             if action_id in self.is_seen:
                 data['is_seen'] = True 
         
-        data['number_of_likes'] = len(self.liked)
+        if self.liked:
+            data['number_of_likes'] = len(self.liked)
         
         if action_id:
             if action_id in self.liked:
