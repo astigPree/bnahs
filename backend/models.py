@@ -408,7 +408,7 @@ class IPCRFForm(models.Model):
         
         # Find the evaluator
         if self.evaluator_id or self.evaluator_id != '':
-            evaluator = People.objects.filter(school_id=self.school_id, employee_id=self.evaluator_id).first()
+            evaluator = People.objects.filter(is_deactivated = False, school_id=self.school_id, employee_id=self.evaluator_id).first()
             if evaluator:
                 data['rater'] = evaluator.fullname
         
@@ -690,7 +690,7 @@ class COTForm(models.Model):
         }
         try:
             
-            rater = People.objects.filter(school_id=self.school_id, employee_id=self.employee_id).first()
+            rater = People.objects.filter(is_deactivated = False, school_id=self.school_id, employee_id=self.employee_id).first()
             if rater:
                 data['rater'] = rater.fullname
             
@@ -1289,7 +1289,7 @@ class People(models.Model):
             data['is_checked'] = ipcrf.is_checked
             data['is_checked_by_evaluator'] = ipcrf.is_checked_by_evaluator
             if ipcrf.is_checked_by_evaluator:
-                rater = People.objects.filter(employee_id=ipcrf.evaluator_id).first()
+                rater = People.objects.filter(is_deactivated = False, employee_id=ipcrf.evaluator_id).first()
                 if rater:
                     data['evaluator'] = rater.get_information()
         

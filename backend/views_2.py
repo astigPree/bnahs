@@ -74,7 +74,7 @@ def get_feeds(request):
     try:
         if request.method == 'GET':  
             
-            user = models.People.objects.filter(employee_id=request.user.username).first()
+            user = models.People.objects.filter(is_deactivated = False, employee_id=request.user.username).first()
             
             if not user:
                 return JsonResponse({
@@ -120,7 +120,7 @@ def get_notifications(request):
     try:
         if request.method == 'GET':  
             
-            user = models.People.objects.filter(username=request.user.username).first()
+            user = models.People.objects.filter(is_deactivated = False, username=request.user.username).first()
             
             if not user:
                 return JsonResponse({
@@ -174,7 +174,7 @@ def people_update_education(request ):
                 }, status=400)
                 
             if educations:
-                user = models.People.objects.filter(employee_id=request.user.username).first()
+                user = models.People.objects.filter(is_deactivated = False, employee_id=request.user.username).first()
                 if not user:
                     return JsonResponse({
                         'message' : 'User not found',
@@ -288,7 +288,7 @@ def people_update_education(request ):
 @csrf_exempt
 def people_update_profile(request):
     if request.method == 'POST':
-        user = models.People.objects.filter(employee_id=request.user.username).first()
+        user = models.People.objects.filter(is_deactivated = False, employee_id=request.user.username).first()
         based_user = User.objects.filter(username=request.user.username).first()
         
         if not user or not based_user:
@@ -378,7 +378,7 @@ def get_what_user(request):
                     'data' : school.get_school_information()
                 }, status=200)
             
-            teacher = models.People.objects.filter(employee_id=request.user.username).first()
+            teacher = models.People.objects.filter(is_deactivated = False, employee_id=request.user.username).first()
             if teacher:
                 return JsonResponse({
                     'role': 'teacher',

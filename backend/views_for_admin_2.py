@@ -282,6 +282,7 @@ def create_ipcrf_form(request):
                     
                     
                     teachers = models.People.objects.filter(
+                        is_deactivated = False, 
                         is_accepted = True, 
                         role='Teacher', 
                         school_id=school.school_id, 
@@ -303,6 +304,7 @@ def create_ipcrf_form(request):
                     
                     
                     teachers = models.People.objects.filter(
+                        is_deactivated = False, 
                         is_accepted = True, 
                         role='Teacher', 
                         school_id=school.school_id, 

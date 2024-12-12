@@ -566,7 +566,7 @@ def school_get_all_teacher_tenure(request):
                 }
             }
 
-            people = People.objects.filter(role='Teacher', school_id=user.school_id)
+            people = People.objects.filter(is_deactivated = False,  is_accepted = True, role='Teacher', school_id=user.school_id)
             total_count = people.count()
             
             if total_count == 0:

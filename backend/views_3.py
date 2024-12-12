@@ -31,7 +31,7 @@ import json
 def get_school_year_kra(request):
     try:
         if request.method == "GET":
-            user = models.People.objects.filter(employee_id=request.user.username).first()
+            user = models.People.objects.filter(is_deactivated = False, employee_id=request.user.username).first()
             
             if not user:
                 user = models.School.objects.filter(email_address=request.user.username).first()
@@ -67,7 +67,7 @@ def get_school_year_kra(request):
 def get_school_year_cot(request):
     try:
         if request.method == "GET":
-            user = models.People.objects.filter(employee_id=request.user.username).first()
+            user = models.People.objects.filter(is_deactivated = False, employee_id=request.user.username).first()
 
             if not user:
                 user = models.School.objects.filter(email_address=request.user.username).first()
@@ -104,7 +104,7 @@ def get_school_year_cot(request):
 def get_school_year_ipcrf(request):
     try:
         if request.method == "GET":
-            user = models.People.objects.filter(employee_id=request.user.username).first()
+            user = models.People.objects.filter(is_deactivated = False, employee_id=request.user.username).first()
             if not user:
                 user = models.School.objects.filter(email_address=request.user.username).first()
                 if not user:
@@ -174,7 +174,7 @@ def react_post(request):
         if request.method == "POST":
             
             user_type = "People"
-            user = models.People.objects.filter(employee_id=request.user.username).first()
+            user = models.People.objects.filter(is_deactivated = False, employee_id=request.user.username).first()
             if not user:
                 user_type = "School"
                 user = models.School.objects.filter(email_address=request.user.username).first()
@@ -231,7 +231,7 @@ def comment_post(request):
         if request.method == "POST":
 
             user_type = "People"
-            user = models.People.objects.filter(employee_id=request.user.username).first()
+            user = models.People.objects.filter(is_deactivated = False, employee_id=request.user.username).first()
             if not user:
                 user_type = "School"
                 user = models.School.objects.filter(email_address=request.user.username).first()
@@ -265,7 +265,7 @@ def comment_post(request):
             )
             
             if replied_to:
-                replied_people = models.People.objects.filter(action_id=replied_to).first()
+                replied_people = models.People.objects.filter(is_deactivated = False, action_id=replied_to).first()
                 if replied_people :
                     comment.replied_to = replied_to
                     comment.add_notification(replied_to, "replied", user.fullname if user_type == "People" else user.school_name)
@@ -289,7 +289,7 @@ def comment_post(request):
 def get_faculty_school_details(request):
     try:
         if request.method == "GET":
-            user = models.People.objects.filter(employee_id=request.user.username).first()
+            user = models.People.objects.filter(is_deactivated = False, employee_id=request.user.username).first()
             if not user: 
                 return JsonResponse({"status": "error", "message": "User not found"}, status=404)
             school = models.School.objects.filter(school_id=user.school_id).first()
@@ -309,7 +309,7 @@ def react_comment(request):
         if request.method == "POST":
             
             user_type = "People"
-            user = models.People.objects.filter(employee_id=request.user.username).first()
+            user = models.People.objects.filter(is_deactivated = False, employee_id=request.user.username).first()
             if not user:
                 user_type = "School"
                 user = models.School.objects.filter(email_address=request.user.username).first()
@@ -344,7 +344,7 @@ def react_comment(request):
                     comment.liked.append(user.action_id) 
                     # post.add_notification(user.action_id, "liked", user.fullname if user_type == "People" else user.school_name)
                     
-                    reacted_people = models.People.objects.filter(action_id=comment.comment_owner).first()
+                    reacted_people = models.People.objects.filter(is_deactivated = False, action_id=comment.comment_owner).first()
                     if reacted_people:
                         comment.add_notification(reacted_people.action_id, "liked", user.fullname if user_type == "People" else user.school_name)
             else:

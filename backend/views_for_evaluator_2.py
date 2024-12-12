@@ -243,7 +243,7 @@ def get_rating_sheet_for_all_teacher(request):
             for quarter in quarters:
                 cots = models.COTForm.objects.filter(quarter=quarter , school_id=user.school_id).order_by('-created_at')
                 for cot in cots:
-                    teacher = models.People.objects.filter(school_id=user.school_id, employee_id=cot.evaluated_id , department=user.department).first()
+                    teacher = models.People.objects.filter(is_deactivated = False, school_id=user.school_id, employee_id=cot.evaluated_id , department=user.department).first()
                     if teacher:
                         quarters[quarter].append({
                             'teacher' : teacher.get_information(),
@@ -380,7 +380,7 @@ def evaluator_get_list_of_rpms_takers(request):
                     }, status=400)
                 
 
-            teachers = models.People.objects.filter(school_id=user.school_id, role='Teacher', department=user.department).order_by('-created_at')
+            teachers = models.People.objects.filter(is_deactivated = False, school_id=user.school_id, role='Teacher', department=user.department).order_by('-created_at')
             
             
             teachers_rpms = []
@@ -456,7 +456,7 @@ def evaluator_get_rpms_folders(request):
     try:
         
         if request.method == 'POST':
-            user = models.People.objects.filter(employee_id=request.user.username).first() 
+            user = models.People.objects.filter(is_deactivated = False, employee_id=request.user.username).first() 
             if not user:
                 return JsonResponse({
                     'message' : 'User not found',
@@ -498,7 +498,7 @@ def evaluator_get_rpms_work(request):
         
         if request.method == 'POST':
             
-            user = models.People.objects.filter(employee_id=request.user.username).first()
+            user = models.People.objects.filter(is_deactivated = False, employee_id=request.user.username).first()
 
             if not user:
                 return JsonResponse({
@@ -538,7 +538,7 @@ def evaluator_get_rpms_work(request):
 def evaluator_get_rpms_folder(request):
     try:
         if request.method == 'POST':
-            user = models.People.objects.filter(employee_id=request.user.username).first()
+            user = models.People.objects.filter(is_deactivated = False, employee_id=request.user.username).first()
 
             if not user:
                 return JsonResponse({
@@ -581,7 +581,7 @@ def evaluator_get_rpms_work_attachments(request):
     try:
         
         if request.method == 'POST':
-            user = models.People.objects.filter(employee_id=request.user.username).first()
+            user = models.People.objects.filter(is_deactivated = False, employee_id=request.user.username).first()
              
             if not user:
                 return JsonResponse({
@@ -602,7 +602,7 @@ def evaluator_get_rpms_work_attachments(request):
                     'message' : 'teacher_id not found',
                 },status=400)
             
-            teacher = models.People.objects.filter(employee_id=teacher_id).first()
+            teacher = models.People.objects.filter(is_deactivated = False, employee_id=teacher_id).first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',
@@ -990,7 +990,7 @@ def evaluator_get_records_cot(request):
                 if evaluator:
                     cot_taker["cot_evaluator"] = evaluator.get_information()
                 
-                teacher = models.People.objects.filter(employee_id=cot.evaluated_id).first()
+                teacher = models.People.objects.filter(is_deactivated = False, employee_id=cot.evaluated_id).first()
                 if teacher:
                     cot_taker["cot_taker"] = teacher.get_information()
                 
@@ -1052,7 +1052,7 @@ def evaluator_get_records_rpms(request):
                             "rpms_rater": None
                         }
 
-                        rpms_taker = models.People.objects.filter(employee_id=attachment.employee_id, school_id=user.school_id).first()
+                        rpms_taker = models.People.objects.filter(is_deactivated = False, employee_id=attachment.employee_id, school_id=user.school_id).first()
                         if rpms_taker:
                             rpms_record["rpms_taker"] = rpms_taker.get_information()
 
@@ -1114,7 +1114,7 @@ def evaluator_get_records_ipcrf(request):
                     "ipcrf": ipcrf.get_information(),
                 }
 
-                ipcrf_taker = models.People.objects.filter(employee_id=ipcrf.employee_id, school_id=user.school_id).first()
+                ipcrf_taker = models.People.objects.filter(is_deactivated = False, employee_id=ipcrf.employee_id, school_id=user.school_id).first()
                 if ipcrf_taker:
                     ipcrf_record["ipcrf_taker"] = ipcrf_taker.get_information()
 

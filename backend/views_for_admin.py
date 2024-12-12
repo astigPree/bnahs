@@ -459,7 +459,7 @@ def evaluation_submission_rate(request):
                 data['labels'].append(school.school_name)
                 total_rating = 0.0
                 
-                teachers = models.People.objects.filter(is_accepted=True , school_id=school.school_id, role='Teacher').order_by('-created_at')
+                teachers = models.People.objects.filter(is_deactivated = False, is_accepted=True , school_id=school.school_id, role='Teacher').order_by('-created_at')
                 number_of_teacher = teachers.count() if teachers.count() > 0 else 1 
                 for teacher in teachers:
             
