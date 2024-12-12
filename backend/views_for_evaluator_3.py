@@ -87,3 +87,54 @@ def get_school_notifications_by_evaluator(request):
     
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
+
+
+
+@csrf_exempt
+def evaluator_private_comment(request):
+    try:
+        if request.method == "POST":
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            if not user:
+                return JsonResponse({
+                    'message' : 'User not found',
+                }, status=400)
+                
+            attachment_id = request.POST.get('attachment_id')
+            comment = request.POST.get('comment')
+            if not attachment_id:
+                return JsonResponse({
+                    'message' : 'Attachment ID is required',
+                }, status=400)
+                
+            if not comment:
+                return JsonResponse({
+                    'message' : 'Comment is required',
+                }, status=400)
+                
+            attachment = models.RPMSAttachment.objects.filter(attachment_id=attachment_id).first()
+            attachment.teacher_comments.append(
+                        {
+                            'comment' : comment, 
+                            'date' : (timezone.now()) , 
+                            'role' : 'Evaluator', 
+                            'name' : user.fullname,
+                            'image' : user.profile.url if user.profile else ''
+                        }
+                    )
+            attachment.save()
+            return JsonResponse({
+                'message' : 'Comment added successfully',
+                }, status=200)
+            
+                
+    except Exception as e:
+        return JsonResponse({
+            'message' : f'Something went wrong : {e}',
+            }, status=500)
+    
+    return JsonResponse({
+        'message' : 'Invalid request',
+        }, status=400)
+
+

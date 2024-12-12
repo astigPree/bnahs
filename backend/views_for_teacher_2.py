@@ -371,7 +371,15 @@ def teacher_turn_in_rpms_work(request):
                         past_attachments.is_submitted = True
                 
                 if comment:
-                    past_attachments.teacher_comments.append({'comment' : comment, 'date' : (timezone.now()) , 'role' : 'Teacher'})
+                    past_attachments.teacher_comments.append(
+                        {
+                            'comment' : comment, 
+                            'date' : (timezone.now()) , 
+                            'role' : 'Teacher', 
+                            'name' : user.fullname,
+                            'image' : user.profile.url if user.profile else ''
+                        }
+                    )
                 
                 past_attachments.save()
             else :
@@ -402,7 +410,15 @@ def teacher_turn_in_rpms_work(request):
                     attachment.is_submitted = True
                 
                 if comment:
-                    attachment.teacher_comments.append({'comment' : comment, 'date' : (timezone.now()) , 'role' : 'Teacher'})
+                    attachment.teacher_comments.append(
+                        {
+                            'comment' : comment, 
+                            'date' : (timezone.now()) , 
+                            'role' : 'Teacher', 
+                            'name' : user.fullname,
+                            'image' : user.profile.url if user.profile else ''
+                        }
+                    )
                 
                 attachment.save()
                 

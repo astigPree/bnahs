@@ -72,7 +72,15 @@ def teacher_private_comment(request):
                 }, status=400)
                 
             attachment = models.RPMSAttachment.objects.filter(attachment_id=attachment_id).first()
-            attachment.teacher_comments.append({'comment' : comment, 'date' : (timezone.now()) , 'role' : 'Teacher'})
+            attachment.teacher_comments.append(
+                        {
+                            'comment' : comment, 
+                            'date' : (timezone.now()) , 
+                            'role' : 'Teacher', 
+                            'name' : user.fullname,
+                            'image' : user.profile.url if user.profile else ''
+                        }
+                    )
             attachment.save()
             return JsonResponse({
                 'message' : 'Comment added successfully',
