@@ -298,3 +298,68 @@ def get_faculty_school_details(request):
         return JsonResponse({"status": "error", "message": str(e)}, status=500)
     
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
+
+
+
+
+
+@csrf_exempt
+def react_comment(request):
+    try:
+        if request.method == "POST":
+            
+            user_type = "People"
+            user = models.People.objects.filter(employee_id=request.user.username).first()
+            if not user:
+                user_type = "School"
+                user = models.School.objects.filter(email_address=request.user.username).first()
+                if not user:
+                    return JsonResponse({"status": "error", "message": "User not found"}, status=404)
+            
+            
+            comment_id = request.POST.get('comment_id')
+            if not comment_id:
+                return JsonResponse({"status": "error", "message": "comment_id is required"}, status=400)
+            
+            liked = request.POST.get('liked')
+            if not liked:
+                return JsonResponse({"status": "error", "message": "Liked is required"}, status=400)
+            
+            comment = models.Comment.objects.filter(comment_id=comment_id).first()
+            if not comment:
+                return JsonResponse({"status": "error", "message": "Comment not found"}, status=404)
+            
+            post = models.Post.objects.filter(post_id=comment.post_id).first()
+            if not post:
+                return JsonResponse({"status": "error", "message": "Post not found"}, status=404)
+            
+            """
+                liked = [
+                    action_id,
+                    action_id,
+                ]
+            """
+            if liked == "true":
+                if user.action_id not in comment.liked:
+                    comment.liked.append(user.action_id) 
+                    # post.add_notification(user.action_id, "liked", user.fullname if user_type == "People" else user.school_name)
+                    
+                    reacted_people = models.People.objects.filter(action_id=comment.comment_owner).first()
+                    if reacted_people:
+                        comment.add_notification(reacted_people.action_id, "liked", user.fullname if user_type == "People" else user.school_name)
+            else:
+                if user.action_id in comment.liked:
+                    comment.liked.remove(user.action_id)
+                
+            
+            
+            comment.save()
+            
+            return JsonResponse({"status": "success", "message": "Post updated successfully"}, status=200)
+    
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
+    
+    return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
+
+
