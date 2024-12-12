@@ -292,7 +292,7 @@ class Comment(models.Model):
     def add_notification(self, action_id, action, name):
         content_len = 20
         if action == "liked":
-            content = f"{name} liked your post : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
+            content = f"{name} liked your comment : {self.content[:content_len] if len(self.content) > content_len else self.content}..."
             # self.notifications.insert( 0, [action_id, action, name])
             Notifications.objects.create(
                 action_id=action_id, action=action, 
