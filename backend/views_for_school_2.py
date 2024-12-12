@@ -984,7 +984,7 @@ def deactivate_faculty(request):
                     'message' : 'Teacher ID is required',
                     }, status=400)
             
-            teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, employee_id=teacher_id , role='Teacher').first()
+            teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, school_id=user.school_id, employee_id=teacher_id ).first()
             if not teacher:
                 return JsonResponse({
                     'message' : 'Teacher not found',
