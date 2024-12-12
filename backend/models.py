@@ -1183,7 +1183,8 @@ class School(models.Model):
             'is_verified' : self.is_verified,
             'is_declined' : self.is_declined,
             'role' : 'School Admin',
-            'reason' : self.reason
+            'reason' : self.reason,
+            'action_id' : self.action_id
         }
         
         if self.school_logo:
