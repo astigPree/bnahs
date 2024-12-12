@@ -280,7 +280,7 @@ class Comment(models.Model):
             self.is_seen.append(action_id)
             self.save()
     
-    def is_seen(self, action_id):
+    def is_seen_by(self, action_id):
         """
             Returns True if action_id == replied_to
             Returns False if action_id != replied_to

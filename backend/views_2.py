@@ -131,7 +131,7 @@ def get_notifications(request):
             
             comments = models.Comment.objects.filter(user_id=user.id).order_by('-created_at')
             for comment in comments:
-                if comment.is_seen(user.action_id)[0]:
+                if comment.is_seen_by(user.action_id)[0]:
                     notifications.append(comment.get_comment())
             
             
