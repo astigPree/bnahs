@@ -253,9 +253,9 @@ class Comment(models.Model):
             'number_of_likes' : 0
         }
         
-        notifications = Notifications.objects.filter(post_id=self.comment_id , notification_type = "POST").order_by('-created_at')
-        for notification in notifications:
-            data['notifications'].append(notification.get_notification_by_array())
+        # notifications = Notifications.objects.filter(post_id=self.comment_id , notification_type = "POST").order_by('-created_at')
+        # for notification in notifications:
+        #     data['notifications'].append(notification.get_notification_by_array())
         
         if action_id:
             if action_id in self.is_seen:
