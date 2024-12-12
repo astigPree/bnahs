@@ -1015,6 +1015,9 @@ class RPMSAttachment(models.Model):
     comment_3 = models.TextField(blank=True, default='')
     comment_4 = models.TextField(blank=True, default='')
     teacher_comments : list = models.JSONField(default=list, blank=True)
+    """
+        {'comment' : comment, 'date' : (timezone.now()) , 'role' : 'Teacher'}
+    """
     
     def __str__(self):
         return f"{self.class_work_id} - {self.employee_id} - {self.evaluator_id} - {self.attachment_id}" 
