@@ -383,8 +383,10 @@ def evaluator_get_list_of_rpms_takers(request):
                     'message' : 'User not found',
                     }, status=400)
                 
-
-            teachers = models.People.objects.filter(is_deactivated = False, school_id=user.school_id, role='Teacher', department=user.department).order_by('-created_at')
+            if user.role == "N/A":
+                teachers = models.People.objects.filter(is_deactivated = False, school_id=user.school_id, role='Teacher').order_by('-created_at')
+            else:
+                teachers = models.People.objects.filter(is_deactivated = False, school_id=user.school_id, role='Teacher', department=user.department).order_by('-created_at')
             
             
             teachers_rpms = []
