@@ -241,7 +241,7 @@ def get_rating_sheet_for_all_teacher(request):
             }
             
             for quarter in quarters:
-                cots = models.COTForm.objects.filter( is_for_teacher_proficient=my_utils.is_proficient_faculty(user, is_faculty=True ) , quarter=quarter , school_id=user.school_id).order_by('-created_at')
+                cots = models.COTForm.objects.filter(quarter=quarter , school_id=user.school_id).order_by('-created_at')
                 for cot in cots:
                     if user.department == "N/A":
                         teacher = models.People.objects.filter(is_deactivated = False, school_id=user.school_id, employee_id=cot.evaluated_id).first()
