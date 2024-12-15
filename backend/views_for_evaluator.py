@@ -832,9 +832,9 @@ def get_iprcf_form_for_evaluator_part_1_of_all_teacher(request):
                 if ipcrf_form.employee_id not in highly_proficient_employee_ids:
                     
                     if user.department == "N/A":
-                        teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, employee_id=ipcrf_form.employee_id, role='Teacher', department=user.department).first()
-                    else :
                         teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, employee_id=ipcrf_form.employee_id, role='Teacher').first()
+                    else :
+                        teacher = models.People.objects.filter(is_deactivated = False, is_accepted = True, employee_id=ipcrf_form.employee_id, role='Teacher', department=user.department).first()
                     if teacher:
                         highly_proficient_employee_ids.append(ipcrf_form.employee_id)
                         ipcrf_forms_data_highly_proficient.append({
