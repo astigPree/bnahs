@@ -718,7 +718,7 @@ def teacher_get_records_cot(request):
                 if cot.school_year not in data["school_year"]:
                     data["school_year"].append(cot.school_year)
                 
-                if cot.employee_id == user.employee_id:
+                if cot.evaluated_id == user.employee_id:
                 
                     
                     cot_taker = {
