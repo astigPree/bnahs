@@ -712,28 +712,32 @@ def teacher_get_records_cot(request):
             else:
                 cots = models.COTForm.objects.filter(is_for_teacher_proficient=my_utils.is_proficient_faculty(user) ,school_id=user.school_id).order_by('-created_at')
             for cot in cots:
+                
                 if cot.quarter not in data["quarter"]:
                     data["quarter"].append(cot.quarter)
                 if cot.school_year not in data["school_year"]:
                     data["school_year"].append(cot.school_year)
                 
-                cot_taker = {
-                    "school_year" : cot.school_year,
-                    "quarter" : cot.quarter,
-                    "cot_evaluator" : None,
-                    "cot_taker" : None,
-                    "cot" : cot.get_information(),
-                }
+                if cot.employee_id == user.employee_id:
                 
-                evaluator = models.People.objects.filter(employee_id=cot.employee_id).first()
-                if evaluator:
-                    cot_taker["cot_evaluator"] = evaluator.get_information()
-                
-                teacher = models.People.objects.filter(is_deactivated = False, employee_id=cot.evaluated_id).first()
-                if teacher:
-                    cot_taker["cot_taker"] = teacher.get_information()
-                
-                data["cot_taker"].append(cot_taker)
+                    
+                    cot_taker = {
+                        "school_year" : cot.school_year,
+                        "quarter" : cot.quarter,
+                        "cot_evaluator" : None,
+                        "cot_taker" : None,
+                        "cot" : cot.get_information(),
+                    }
+                    
+                    evaluator = models.People.objects.filter(employee_id=cot.employee_id).first()
+                    if evaluator:
+                        cot_taker["cot_evaluator"] = evaluator.get_information()
+                    
+                    teacher = models.People.objects.filter(is_deactivated = False, employee_id=cot.evaluated_id).first()
+                    if teacher:
+                        cot_taker["cot_taker"] = teacher.get_information()
+                    
+                    data["cot_taker"].append(cot_taker)
             
             
             
