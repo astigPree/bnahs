@@ -923,7 +923,7 @@ class RPMSClassWork(models.Model):
     def __str__(self):
         return f"{self.rpms_folder_id} - {self.class_work_id} - {self.created_at}"
 
-    def get_rpms_classwork_information(self):
+    def get_rpms_classwork_information(self , attachment = None):
         data = {
             'rpms_folder_id' : self.rpms_folder_id,
             'class_work_id' : self.class_work_id,
@@ -932,11 +932,12 @@ class RPMSClassWork(models.Model):
             'due_date' : self.due_date,
             'created_at' : self.created_at
         }
-        attachment = RPMSAttachment.objects.filter(class_work_id=self.class_work_id).order_by('-created_at').first()
+        # attachment = RPMSAttachment.objects.filter(class_work_id=self.class_work_id).order_by('-created_at').first()
         data["attachment"] = attachment.get_information() if attachment else None
         return data
 
     def get_grade(self):
+        
         return self.objectives.get('Grade', {})
      
 

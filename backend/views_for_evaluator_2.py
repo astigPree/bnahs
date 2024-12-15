@@ -450,45 +450,6 @@ def evaluator_get_list_of_rpms_takers(request):
         }, status=400)
     
 
-@csrf_exempt
-def evaluator_get_rpms_folders(request):
-    # Used to view all the folder
-    try:
-        
-        if request.method == 'POST':
-            user = models.People.objects.filter(is_deactivated = False, employee_id=request.user.username).first() 
-            if not user:
-                return JsonResponse({
-                    'message' : 'User not found',
-                }, status=400)
-            
-            folder_type = request.POST.get('folder_type')
-            
-            if folder_type not in ['proficient', 'highly_proficient']:
-                return JsonResponse({
-                    'message' : 'Invalid folder_type must contain proficient or highly_proficient',
-                }, status=400)
-            
-            
-            
-            rpms_folders = models.RPMSFolder.objects.filter(
-                school_id=user.school_id,
-                is_for_teacher_proficient= True if folder_type == 'proficient' else False
-                ).order_by('-created_at')
-            
-            return JsonResponse({
-                'rpms_folders' : [rpms_folder.get_rpms_folder_information() for rpms_folder in rpms_folders],
-            },status=200)
-    
-    
-    except Exception as e:
-        return JsonResponse({
-            'message' : f'Something went wrong : {e}',
-            }, status=500)
-    
-    return JsonResponse({
-        'message' : 'Invalid request',
-    },status=400)
 
 
 
@@ -550,18 +511,38 @@ def evaluator_get_rpms_folder(request):
                 return JsonResponse({
                     'message' : 'rpms_folder_id not found',
                 }, status=400)
-            
-            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id).order_by('-created_at').first()
+             
+            # formData.append('teacher_id', teacher_id ); 
+            # formData.append('school_year', school_year);
+        
+            teacher_id = request.POST.get('teacher_id')
+            if not teacher_id:
+                return JsonResponse({
+                    'message' : 'teacher_id not found',
+                }, status=400)
+        
+            school_year = request.POST.get('school_year')
+            if not school_year:
+                return JsonResponse({
+                    'message' : 'school_year not found',
+                }, status=400)
+                
+            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_school_year=school_year, rpms_folder_id=rpms_folder_id).order_by('-created_at').first()
             if not rpms_folder:
                 return JsonResponse({
                     'message' : 'RPMS Folder not found',
                 }, status=400)
-                
+        
             classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpms_folder_id).order_by('-created_at')
+            rpms_classworks = []
+            for classwork in classworks:
+                attachement = models.RPMSAttachment.objects.filter(employee_id=teacher_id, class_work_id=classwork.class_work_id).order_by('-created_at').first()
+                if attachement:
+                    rpms_classworks.append(classwork.get_rpms_classwork_information( attachement ))
             
             return JsonResponse({
                 'rpms_folder' : rpms_folder.get_rpms_folder_information(),
-                'rpms_classworks' : [work.get_rpms_classwork_information() for work in classworks]
+                'rpms_classworks' : rpms_classworks
             },status=200)
             
     
