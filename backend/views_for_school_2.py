@@ -697,23 +697,24 @@ def school_get_records_cot(request):
                 if cot.school_year not in data["hp_school_year"] and not cot.is_for_teacher_proficient:
                     data["hp_school_year"].append(cot.school_year)
                 
-                cot_taker = {
-                    "school_year" : cot.school_year,
-                    "quarter" : cot.quarter,
-                    "cot_evaluator" : None,
-                    "cot_taker" : None,
-                    "cot" : cot.get_information(),
-                }
-                
-                evaluator = models.People.objects.filter(employee_id=cot.employee_id).first()
-                if evaluator:
-                    cot_taker["cot_evaluator"] = evaluator.get_information()
-                
                 teacher = models.People.objects.filter(is_deactivated = False, employee_id=cot.evaluated_id).first()
                 if teacher:
+                    cot_taker = {
+                        "school_year" : cot.school_year,
+                        "quarter" : cot.quarter,
+                        "cot_evaluator" : None,
+                        "cot_taker" : None,
+                        "cot" : cot.get_information(),
+                    }
                     cot_taker["cot_taker"] = teacher.get_information()
-                
-                data["cot_taker"].append(cot_taker)
+                    
+                    evaluator = models.People.objects.filter(employee_id=cot.employee_id).first()
+                    if evaluator:
+                        cot_taker["cot_evaluator"] = evaluator.get_information()
+                    
+                    
+                    
+                    data["cot_taker"].append(cot_taker)
             
             
             
@@ -761,24 +762,25 @@ def school_get_records_rpms(request):
 
                 classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpm.rpms_folder_id, school_id=user.school_id).order_by('-created_at')
                 for classwork in classworks:
-                    attachment = models.RPMSAttachment.objects.filter(class_work_id=classwork.class_work_id, school_id=user.school_id).order_by('-created_at').first()
-                    if attachment:
-                        rpms_record = {
-                            "school_year": rpm.rpms_folder_school_year,
-                            "rpms_taker": None,
-                            "rpms_data": attachment.get_information(),
-                            "rpms_rater": None
-                        }
+                    attachments = models.RPMSAttachment.objects.filter(class_work_id=classwork.class_work_id, school_id=user.school_id).order_by('-created_at')
+                    for attachment in attachments:
+                        if attachment:
+                            rpms_taker = models.People.objects.filter(is_deactivated = False, employee_id=attachment.employee_id, school_id=user.school_id).first()
+                            if rpms_taker:
+                                rpms_record = {
+                                    "school_year": rpm.rpms_folder_school_year,
+                                    "rpms_taker": None,
+                                    "rpms_data": attachment.get_information(),
+                                    "rpms_rater": None
+                                }
 
-                        rpms_taker = models.People.objects.filter(is_deactivated = False, employee_id=attachment.employee_id, school_id=user.school_id).first()
-                        if rpms_taker:
-                            rpms_record["rpms_taker"] = rpms_taker.get_information()
+                                rpms_record["rpms_taker"] = rpms_taker.get_information()
 
-                        rpms_rater = models.People.objects.filter(employee_id=attachment.evaluator_id, school_id=user.school_id).first()
-                        if rpms_rater:
-                            rpms_record["rpms_rater"] = rpms_rater.get_information()
+                                rpms_rater = models.People.objects.filter(employee_id=attachment.evaluator_id, school_id=user.school_id).first()
+                                if rpms_rater:
+                                    rpms_record["rpms_rater"] = rpms_rater.get_information()
 
-                        data["rpms_taker"].append(rpms_record)
+                                data["rpms_taker"].append(rpms_record)
 
             return JsonResponse(data, status=200)
 
@@ -824,22 +826,22 @@ def school_get_records_ipcrf(request):
                 if ipcrf.school_year not in data["hp_school_year"] and not ipcrf.is_for_teacher_proficient :
                     data["hp_school_year"].append(ipcrf.school_year)
 
-                ipcrf_record = {
-                    "school_year": ipcrf.school_year,
-                    "ipcrf_taker": None,
-                    "ipcrf_rater": None,
-                    "ipcrf": ipcrf.get_information(),
-                }
-
                 ipcrf_taker = models.People.objects.filter(is_deactivated = False, employee_id=ipcrf.employee_id, school_id=user.school_id).first()
                 if ipcrf_taker:
+                    ipcrf_record = {
+                        "school_year": ipcrf.school_year,
+                        "ipcrf_taker": None,
+                        "ipcrf_rater": None,
+                        "ipcrf": ipcrf.get_information(),
+                    }
+
                     ipcrf_record["ipcrf_taker"] = ipcrf_taker.get_information()
 
-                ipcrf_rater = models.People.objects.filter(employee_id=ipcrf.evaluator_id, school_id=user.school_id).first()
-                if ipcrf_rater:
-                    ipcrf_record["ipcrf_rater"] = ipcrf_rater.get_information()
+                    ipcrf_rater = models.People.objects.filter(employee_id=ipcrf.evaluator_id, school_id=user.school_id).first()
+                    if ipcrf_rater:
+                        ipcrf_record["ipcrf_rater"] = ipcrf_rater.get_information()
 
-                data["ipcrf_taker"].append(ipcrf_record)
+                    data["ipcrf_taker"].append(ipcrf_record)
 
             return JsonResponse(data, status=200)
 
