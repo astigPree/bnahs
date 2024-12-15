@@ -787,9 +787,7 @@ def teacher_get_records_rpms(request):
                             "rpms_rater": None
                         }
 
-                        rpms_taker = models.People.objects.filter(is_deactivated = False, employee_id=attachment.employee_id, school_id=user.school_id).first()
-                        if rpms_taker:
-                            rpms_record["rpms_taker"] = rpms_taker.get_information()
+                        rpms_record["rpms_taker"] = user.get_information()
 
                         rpms_rater = models.People.objects.filter(employee_id=attachment.evaluator_id, school_id=user.school_id).first()
                         if rpms_rater:
