@@ -73,22 +73,41 @@ def get_rpms_classworks(request):
             rpms_folder_id = request.POST.get('rpms_folder_id')
             if not rpms_folder_id:
                 return JsonResponse({
-                    'message' : 'RPMS folder id is required',
+                    'message' : 'rpms_folder_id not found',
                 }, status=400)
-
-            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_id=rpms_folder_id).order_by('-created_at').first()
-            if not rpms_folder:
+             
+            # formData.append('teacher_id', teacher_id ); 
+            # formData.append('school_year', school_year);
+        
+            teacher_id = request.POST.get('teacher_id')
+            if not teacher_id:
                 return JsonResponse({
-                    'message' : 'RPMS folder not found',
+                    'message' : 'teacher_id not found',
+                }, status=400)
+        
+            school_year = request.POST.get('school_year')
+            if not school_year:
+                return JsonResponse({
+                    'message' : 'school_year not found',
                 }, status=400)
                 
-            rpms_classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpms_folder_id).order_by('-created_at')
-            
+            rpms_folder = models.RPMSFolder.objects.filter(rpms_folder_school_year=school_year, rpms_folder_id=rpms_folder_id).order_by('-created_at').first()
+            if not rpms_folder:
+                return JsonResponse({
+                    'message' : 'RPMS Folder not found',
+                }, status=400)
+        
+            classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpms_folder_id).order_by('-created_at')
+            rpms_classworks = []
+            for classwork in classworks:
+                attachement = models.RPMSAttachment.objects.filter(employee_id=teacher_id, class_work_id=classwork.class_work_id).order_by('-created_at').first()
+                if attachement:
+                    rpms_classworks.append(classwork.get_rpms_classwork_information( attachement ))
             
             return JsonResponse({
-                'message' : 'RPMS classworks found successfully',
-                'rpms_classworks' : [rpms_classwork.get_rpms_classwork_information() for rpms_classwork in rpms_classworks],
-            }, status=200)
+                'rpms_folder' : rpms_folder.get_rpms_folder_information(),
+                'rpms_classworks' : rpms_classworks
+            },status=200)
                 
                 
                 
