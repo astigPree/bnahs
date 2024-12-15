@@ -778,25 +778,24 @@ def teacher_get_records_rpms(request):
 
                 classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpm.rpms_folder_id, school_id=user.school_id).order_by('-created_at')
                 for classwork in classworks:
-                    attachments = models.RPMSAttachment.objects.filter(class_work_id=classwork.class_work_id, school_id=user.school_id).order_by('-created_at')
-                    for attachment in attachments:
-                        if attachment:
-                            rpms_record = {
-                                "school_year": rpm.rpms_folder_school_year,
-                                "rpms_taker": None,
-                                "rpms_data": attachment.get_information(),
-                                "rpms_rater": None
-                            }
+                    attachments = models.RPMSAttachment.objects.filter( employee_id=user.employee_id, class_work_id=classwork.class_work_id, school_id=user.school_id).order_by('-created_at')
+                    for attachment in attachments: 
+                        rpms_record = {
+                            "school_year": rpm.rpms_folder_school_year,
+                            "rpms_taker": None,
+                            "rpms_data": attachment.get_information(),
+                            "rpms_rater": None
+                        }
 
-                            rpms_taker = models.People.objects.filter(is_deactivated = False, employee_id=attachment.employee_id, school_id=user.school_id).first()
-                            if rpms_taker:
-                                rpms_record["rpms_taker"] = rpms_taker.get_information()
+                        rpms_taker = models.People.objects.filter(is_deactivated = False, employee_id=attachment.employee_id, school_id=user.school_id).first()
+                        if rpms_taker:
+                            rpms_record["rpms_taker"] = rpms_taker.get_information()
 
-                            rpms_rater = models.People.objects.filter(employee_id=attachment.evaluator_id, school_id=user.school_id).first()
-                            if rpms_rater:
-                                rpms_record["rpms_rater"] = rpms_rater.get_information()
+                        rpms_rater = models.People.objects.filter(employee_id=attachment.evaluator_id, school_id=user.school_id).first()
+                        if rpms_rater:
+                            rpms_record["rpms_rater"] = rpms_rater.get_information()
 
-                            data["rpms_taker"].append(rpms_record)
+                        data["rpms_taker"].append(rpms_record)
 
             return JsonResponse(data, status=200)
 
