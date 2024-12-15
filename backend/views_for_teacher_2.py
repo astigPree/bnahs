@@ -733,7 +733,7 @@ def teacher_get_records_cot(request):
                     if evaluator:
                         cot_taker["cot_evaluator"] = evaluator.get_information()
                     
-                    teacher = models.People.objects.filter(is_deactivated = False, employee_id=cot.evaluated_id).first()
+                    teacher = models.People.objects.filter(employee_id=cot.evaluated_id).first()
                     if teacher:
                         cot_taker["cot_taker"] = teacher.get_information()
                     
