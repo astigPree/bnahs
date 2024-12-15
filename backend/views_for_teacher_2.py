@@ -708,9 +708,9 @@ def teacher_get_records_cot(request):
             
             school_year = request.POST.get('school_year', None)
             if school_year:
-                cots = models.COTForm.objects.filter(school_id=user.school_id , school_year=school_year).order_by('-created_at')
+                cots = models.COTForm.objects.filter(is_for_teacher_proficient=my_utils.is_proficient_faculty(user), school_id=user.school_id , school_year=school_year).order_by('-created_at')
             else:
-                cots = models.COTForm.objects.filter(school_id=user.school_id).order_by('-created_at')
+                cots = models.COTForm.objects.filter(is_for_teacher_proficient=my_utils.is_proficient_faculty(user) ,school_id=user.school_id).order_by('-created_at')
             for cot in cots:
                 if cot.quarter not in data["quarter"]:
                     data["quarter"].append(cot.quarter)
@@ -769,9 +769,9 @@ def teacher_get_records_rpms(request):
 
             school_year = request.POST.get('school_year', None)
             if school_year:
-                rpms = models.RPMSFolder.objects.filter(school_id=user.school_id , rpms_folder_school_year=school_year).order_by('-created_at')
+                rpms = models.RPMSFolder.objects.filter(is_for_teacher_proficient=my_utils.is_proficient_faculty(user), school_id=user.school_id , rpms_folder_school_year=school_year).order_by('-created_at')
             else:
-                rpms = models.RPMSFolder.objects.filter(school_id=user.school_id).order_by('-created_at')
+                rpms = models.RPMSFolder.objects.filter(is_for_teacher_proficient=my_utils.is_proficient_faculty(user), school_id=user.school_id).order_by('-created_at')
             for rpm in rpms:
                 if rpm.rpms_folder_school_year not in data["school_year"]:
                     data["school_year"].append(rpm.rpms_folder_school_year)
