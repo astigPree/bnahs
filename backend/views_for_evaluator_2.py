@@ -1032,9 +1032,9 @@ def evaluator_get_records_rpms(request):
             
             school_year = request.POST.get('school_year', None)
             if school_year:
-                rpms = models.RPMSFolder.objects.filter(school_id=user.school_id , rpms_folder_school_year=school_year).order_by('-created_at')
+                rpms = models.RPMSFolder.objects.filter(is_for_teacher_proficient=my_utils.is_proficient_faculty(user , is_faculty=True) , school_id=user.school_id , rpms_folder_school_year=school_year).order_by('-created_at')
             else:
-                rpms = models.RPMSFolder.objects.filter(school_id=user.school_id).order_by('-created_at')
+                rpms = models.RPMSFolder.objects.filter(is_for_teacher_proficient=my_utils.is_proficient_faculty(user, is_faculty=True) , school_id=user.school_id).order_by('-created_at')
             for rpm in rpms:
                 if rpm.rpms_folder_school_year not in data["p_school_year"] and rpm.is_for_teacher_proficient:
                     data["p_school_year"].append(rpm.rpms_folder_school_year)
@@ -1043,24 +1043,25 @@ def evaluator_get_records_rpms(request):
 
                 classworks = models.RPMSClassWork.objects.filter(rpms_folder_id=rpm.rpms_folder_id, school_id=user.school_id).order_by('-created_at')
                 for classwork in classworks:
-                    attachment = models.RPMSAttachment.objects.filter(class_work_id=classwork.class_work_id, school_id=user.school_id).order_by('-created_at').first()
-                    if attachment:
-                        rpms_record = {
-                            "school_year": rpm.rpms_folder_school_year,
-                            "rpms_taker": None,
-                            "rpms_data": attachment.get_information(),
-                            "rpms_rater": None
-                        }
+                    attachments = models.RPMSAttachment.objects.filter(class_work_id=classwork.class_work_id, school_id=user.school_id).order_by('-created_at')
+                    for attachment in attachments:
+                        if attachment:
+                            rpms_record = {
+                                "school_year": rpm.rpms_folder_school_year,
+                                "rpms_taker": None,
+                                "rpms_data": attachment.get_information(),
+                                "rpms_rater": None
+                            }
 
-                        rpms_taker = models.People.objects.filter(is_deactivated = False, employee_id=attachment.employee_id, school_id=user.school_id).first()
-                        if rpms_taker:
-                            rpms_record["rpms_taker"] = rpms_taker.get_information()
+                            rpms_taker = models.People.objects.filter(is_deactivated = False, employee_id=attachment.employee_id, school_id=user.school_id).first()
+                            if rpms_taker:
+                                rpms_record["rpms_taker"] = rpms_taker.get_information()
 
-                        rpms_rater = models.People.objects.filter(employee_id=attachment.evaluator_id, school_id=user.school_id).first()
-                        if rpms_rater:
-                            rpms_record["rpms_rater"] = rpms_rater.get_information()
+                            rpms_rater = models.People.objects.filter(employee_id=attachment.evaluator_id, school_id=user.school_id).first()
+                            if rpms_rater:
+                                rpms_record["rpms_rater"] = rpms_rater.get_information()
 
-                        data["rpms_taker"].append(rpms_record)
+                            data["rpms_taker"].append(rpms_record)
 
             return JsonResponse(data, status=200)
 
