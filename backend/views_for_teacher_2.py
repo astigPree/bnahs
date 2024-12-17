@@ -225,6 +225,8 @@ def teacher_get_rpms_folder(request):
                 attachement = models.RPMSAttachment.objects.filter(employee_id=user.employee_id, class_work_id=classwork.class_work_id).order_by('-created_at').first()
                 if attachement:
                     rpms_classworks.append(classwork.get_rpms_classwork_information( attachement ))
+                else :
+                    rpms_classworks.append(classwork.get_rpms_classwork_information())
             
             return JsonResponse({
                 'rpms_folder' : rpms_folder.get_rpms_folder_information(),
