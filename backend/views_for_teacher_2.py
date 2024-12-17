@@ -841,9 +841,9 @@ def teacher_get_records_ipcrf(request):
 
             school_year = request.POST.get('school_year', None)
             if school_year : 
-                ipcrfs = models.IPCRFForm.objects.filter(employee_id=user.employee_id, school_id=user.school_id, form_type="PART 1" , school_year=school_year).order_by('-created_at')
+                ipcrfs = models.IPCRFForm.objects.filter(evaluator_id=user.employee_id, school_id=user.school_id, form_type="PART 1" , school_year=school_year).order_by('-created_at')
             else :
-                ipcrfs = models.IPCRFForm.objects.filter(employee_id=user.employee_id, school_id=user.school_id, form_type="PART 1").order_by('-created_at')
+                ipcrfs = models.IPCRFForm.objects.filter(evaluator_id=user.employee_id, school_id=user.school_id, form_type="PART 1").order_by('-created_at')
             for ipcrf in ipcrfs:
                 if ipcrf.school_year not in data["school_year"]:
                     data["school_year"].append(ipcrf.school_year)
