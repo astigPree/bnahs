@@ -244,9 +244,9 @@ def get_rating_sheet_for_all_teacher(request):
                 cots = models.COTForm.objects.filter(quarter=quarter , school_id=user.school_id).order_by('-created_at')
                 for cot in cots:
                     if user.department == "N/A":
-                        teacher = models.People.objects.filter(is_deactivated = False, school_id=user.school_id, employee_id=cot.evaluated_id).first()
+                        teacher = models.People.objects.filter(is_deactivated = False, school_id=user.school_id, employee_id=cot.evaluated_id, role='Teacher').first()
                     else:
-                        teacher = models.People.objects.filter(is_deactivated = False, school_id=user.school_id, employee_id=cot.evaluated_id , department=user.department).first()
+                        teacher = models.People.objects.filter(is_deactivated = False, school_id=user.school_id, employee_id=cot.evaluated_id , department=user.department, role='Teacher').first()
                     
                     if teacher:
                         quarters[quarter].append({
