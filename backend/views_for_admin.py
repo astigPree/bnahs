@@ -474,7 +474,7 @@ def evaluation_submission_rate(request):
                     else:
                         total_rating += 0.0
                 data['values'].append(total_rating / number_of_teacher)
-                data['values_100'].append( (total_rating / number_of_teacher) * 100) 
+                data['values_100'].append( ((total_rating / number_of_teacher) / 5) * 100) 
 
             
             
