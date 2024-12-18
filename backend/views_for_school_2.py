@@ -697,7 +697,7 @@ def school_get_records_cot(request):
                 if cot.school_year not in data["hp_school_year"] and not cot.is_for_teacher_proficient:
                     data["hp_school_year"].append(cot.school_year)
                 
-                teacher = models.People.objects.filter(is_deactivated = False, employee_id=cot.evaluated_id).first()
+                teacher = models.People.objects.filter(is_deactivated = False, employee_id=cot.evaluated_id, role='Teacher').first()
                 if teacher:
                     cot_taker = {
                         "school_year" : cot.school_year,
@@ -765,7 +765,7 @@ def school_get_records_rpms(request):
                     attachments = models.RPMSAttachment.objects.filter(class_work_id=classwork.class_work_id, school_id=user.school_id).order_by('-created_at')
                     for attachment in attachments:
                         if attachment:
-                            rpms_taker = models.People.objects.filter(is_deactivated = False, employee_id=attachment.employee_id, school_id=user.school_id).first()
+                            rpms_taker = models.People.objects.filter(is_deactivated = False, employee_id=attachment.employee_id, school_id=user.school_id, role='Teacher').first()
                             if rpms_taker:
                                 rpms_record = {
                                     "school_year": rpm.rpms_folder_school_year,
@@ -826,7 +826,7 @@ def school_get_records_ipcrf(request):
                 if ipcrf.school_year not in data["hp_school_year"] and not ipcrf.is_for_teacher_proficient :
                     data["hp_school_year"].append(ipcrf.school_year)
 
-                ipcrf_taker = models.People.objects.filter(is_deactivated = False, employee_id=ipcrf.employee_id, school_id=user.school_id).first()
+                ipcrf_taker = models.People.objects.filter(is_deactivated = False, employee_id=ipcrf.employee_id, school_id=user.school_id, role='Teacher').first()
                 if ipcrf_taker:
                     ipcrf_record = {
                         "school_year": ipcrf.school_year,
