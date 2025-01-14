@@ -722,19 +722,30 @@ class COTForm(models.Model):
                 
         return data
     
-    def generatePromtTemplateNew(self):
+    def generatePromtTemplateNew(self): 
         all_promt = """
-        Based on the following evaluation data, what are the strengths? what are the weaknesses? what are the opportunities? what are the threats?  Make it atleast 2-3 sentences and should not exceed 350 characters in total
-        and only the sentences i need no need to add title or any additional information.
-        Also if there are no data provided then tell that they did not take the "Individual Performance Commitment and Review Form"
-        After generating convert it to a dictionary like this :
-        {
-            "strengths_prompt" : "Put the sentences here.",
-            "weaknesses_prompt" : "Put the sentences here.",
-            "opportunities_prompt" : "Put the sentences here.",
-            "threats_prompt" : "Put the sentences here.",
-        }
-        Objectives and Ratings (0 - 7):
+            Based on the following evaluation data, what are the strengths? what are the weaknesses? what are the opportunities? what are the threats?
+            For strengths, identify and summarize the key strengths of the teacher. 
+            Focus on the indicators where the teacher has received high ratings (6, 7, or 😎. Use the indicators as a reference, but do not copy them directly. 
+            Instead, provide a concise and insightful summary of the teacher's strengths, highlighting their positive attributes and effective teaching strategies. 
+            Generate a summary of strengths, ensuring that the output is approximately 500 words in length in an essay form and it doesn't need to have a title.
+            For weakness, identify and summarize the key weaknesses of the teacher. 
+            Focus on the indicators where the teacher has received low ratings (3, 4, or 5). Use the indicators as a reference, but do not copy them directly. 
+            Instead, provide a concise and insightful summary of the teacher's areas for improvement, highlighting specific challenges or gaps in their teaching approach. 
+            Generate a summary of weaknesses, ensuring that the output is approximately 500 words in length in an essay form and it doesn't need to have a title.
+            For opportunities,  make it atleast 2-3 sentences and should not exceed 350 characters in total
+            and only the sentences i need no need to add title or any additional information.
+            For threats, make it atleast 2-3 sentences and should not exceed 350 characters in total
+            and only the sentences i need no need to add title or any additional information.
+            Also if there are no data provided then tell that they did not take the "Individual Performance Commitment and Review Form"
+            After generating convert it to a dictionary like this :
+            {
+                "strengths_prompt" : "Put the sentences here.",
+                "weaknesses_prompt" : "Put the sentences here.",
+                "opportunities_prompt" : "Put the sentences here.",
+                "threats_prompt" : "Put the sentences here.",
+            }
+            Objectives and Ratings (0 - 7):
         """
         
         if self.content:
