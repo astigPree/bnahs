@@ -750,15 +750,16 @@ class COTForm(models.Model):
         return all_promt
     def generatePromtTemplate(self):
         strengths_prompt = """
-        Based on the following evaluation data, 
-        what are the strengths? Make it atleast 2-3 sentences and should not exceed 350 characters in total.
+        Based on the following evaluation data, considering the scores with 3 and 4 (being the lowest score), and 7 and 8 (being the highest score), 
+        what are the strengths? Make it atleast 3 - 5 sentences and should not exceed 500 characters in total.
         and only the sentences i need no need to add title or any additional information.
         Also if there are no data provided then tell that they did not take the "Individual Performance Commitment and Review Form"
         Objectives and Ratings (0 - 7):
         """
 
         weaknesses_prompt = """
-        Based on the following evaluation data, what are the weaknesses? Make it atleast 2-3 sentences and should not exceed 350 characters in total
+        Based on the following evaluation data, considering the scores with 3 and 4 (being the lowest score), and 7 and 8 (being the highest score), 
+	    what are the weaknesses? Make it atleast 3-5 sentences and should not exceed 500 characters in total
         and only the sentences i need no need to add title or any additional information.
         Also if there are no data provided then tell that they did not take the "Individual Performance Commitment and Review Form"
         Objectives and Ratings (0 - 7):
@@ -776,7 +777,7 @@ class COTForm(models.Model):
         and only the sentences i need no need to add title or any additional information.
         Also if there are no data provided then tell that they did not take the "Individual Performance Commitment and Review Form"
         Objectives and Ratings (0 - 7):
-"""
+        """
 
         if self.content:
             if 'Questions' in self.content:
