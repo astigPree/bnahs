@@ -730,14 +730,14 @@ class COTForm(models.Model):
 	Focus on the indicators or objectives where the teacher has a high selected score (6, 7, or 8 ). Use the objectives as a reference, and when the selected score of an objective is 3, 4, or 5, 
 	do not include or remove it from the strengths. But do not copy the objectives directly. 
 	Instead, provide a concise and insightful summary of the teacher's strengths, highlighting their positive attributes and effective teaching strategies. 
-	Also, if all the objectives have a selected score of 3, 4, or 5, the teacher shouldn't have strengths.
+	Also, if all the objectives have a selected score of either 3, 4, or 5, the teacher shouldn't have strengths.
 	Generate a summary of strengths, ensuring that the output is approximately 500 words or below in length in an essay form and it doesn't need to have a title, 
 	but if there are no strengths, just say teacher has no strengths or other similar phrase.
 	For weakness, identify and summarize the key weaknesses of the teacher. 
 	Focus on the indicators or objectives where the teacher has a low selected score (3, 4, or 5). Use the objectives as a reference, and when the selected score of an objective is 6, 7, or 8, 
 	do not include or remove it in weakness/es. But do not copy the objectives directly. 
 	Instead, provide a concise and insightful summary of the teacher's areas for improvement, highlighting specific challenges or gaps in their teaching approach. 
-	Also, if all the objectives have a selected score of 6, 7, or 8, the teacher shouldn't have strengths.
+	Also, if all the objectives have a selected score of either 6, 7, or 8, the teacher shouldn't have weakness.
 	Generate a summary of weaknesses, ensuring that the output is approximately 500 words or below in length in an essay form and it doesn't need to have a title, 
 	but if there are no weaknesses, just say teacher has no weaknesses or other similar phrase.
 	For opportunities, basing on the strengths and weaknesses, generate a summary for opportunities, make it atleast 2-3 sentences and should not exceed 350 characters in total
