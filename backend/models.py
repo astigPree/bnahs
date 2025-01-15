@@ -724,7 +724,8 @@ class COTForm(models.Model):
     
     def generatePromtTemplateNew(self): 
         all_promt = """
-        Based on the following evaluation data, what are the strengths? what are the weaknesses? what are the opportunities? what are the threats?
+        The evaluation data has columns called 'objectives' and 'selected', objectives are the indicators that are being rated and the selected is the score of the objective. 
+	So base on the following evaluation data, what are the strengths? what are the weaknesses? what are the opportunities? what are the threats?
         For strengths, identify and summarize the key strengths of the teacher. 
 	Focus on the indicators or objectives where the teacher has a high selected score (6, 7, or 8 ). Use the objectives as a reference, and when the selected score of an objective is 3, 4, or 5, 
 	do not include or remove it from the strengths. But do not copy the objectives directly. 
