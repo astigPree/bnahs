@@ -727,7 +727,7 @@ class COTForm(models.Model):
         The evaluation data has 'objective' and 'selected', OBJECTIVE are the indicators that are being rated and the SELECTED is the score of the objective. 
 	So base on the following evaluation data, what are the strengths? what are the weaknesses? what are the opportunities? what are the threats?
         For strengths, identify and summarize the key strengths of the teacher. 
-	Focus on the indicators or objectives where the teacher has a high selected score (6, 7, or 8 ). Use the objectives as a reference, and when the selected score of an objective is 3, 4, or 5, 
+	Focus on the indicators or objectives where the teacher has a high selected score (6, 7, or 8 ). And when the selected score of an objective is 3, 4, or 5, 
 	do not include or remove it from the strengths. But do not copy the objectives directly. 
 	Instead, provide a concise and insightful summary of the teacher's strengths, highlighting their positive attributes and effective teaching strategies. 
 	Also, if all the objectives have a selected score of either 3, 4, or 5, the teacher shouldn't have strengths.
