@@ -104,9 +104,17 @@ import json
 import time
 import logging
 import random
+import re
 
 def exponential_backoff(attempt, base=2, max_backoff=60):
     return min(base ** attempt + random.uniform(0, 1), max_backoff)
+
+def extract_json(text):
+    dict_pattern = re.compile(r'\{.*?\}', re.DOTALL)
+    match = dict_pattern.search(text)
+    if match:
+        return match.group(0)
+    return None
 
 def generate_text_v2(prompt: str):
     max_retries = 10  # Increase retries if needed
@@ -125,12 +133,16 @@ def generate_text_v2(prompt: str):
             if not raw_result.strip():
                 raise ValueError("Empty response received from API")
 
-            try:
-                result_json: dict = json.loads(raw_result)
-                return result_json
-            except json.JSONDecodeError as e:
-                logging.warning(f"JSON decode error: {e}. Returning raw string.")
-                return {'error': f"JSONDecodeError: {e} {raw_result}"}
+            json_text = extract_json(raw_result)  # Extract the dictionary part
+            if json_text:
+                try:
+                    result_json: dict = json.loads(json_text)
+                    return result_json
+                except json.JSONDecodeError as e:
+                    logging.warning(f"JSON decode error: {e}. Returning raw string.")
+                    return {'error': f"JSONDecodeError: {e}", 'raw_response': raw_result}
+            else:
+                return {'raw_response': raw_result}
 
         except Exception as e:
             error_message = str(e)
